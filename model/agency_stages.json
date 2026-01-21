@@ -1,0 +1,49 @@
+{
+  "axis_id": "agency",
+  "stages": [
+    {
+      "id": "A0",
+      "name": "Human-Only Development",
+      "summary_markdown": "All observation, decision-making, execution, and evaluation are performed by humans.",
+      "core_agency_statement": "Humans decide everything.",
+      "emotional_shift_markdown": "Identity is tightly coupled to typing, recall, and direct control.",
+      "sacred_cows_markdown": "- Code literacy equals competence\n- Architecture is a human-only activity",
+      "substage_ids": ["A0.1", "A0.2", "A0.3"]
+    },
+    {
+      "id": "A1",
+      "name": "Human Commands the Loop",
+      "summary_markdown": "AI provides mechanical and cognitive leverage but never initiates action.",
+      "core_agency_statement": "Humans decide every step; AI responds.",
+      "emotional_shift_markdown": "Letting go of typing as the primary expression of skill.",
+      "sacred_cows_markdown": "- Fast typing matters\n- Remembering APIs is valuable",
+      "substage_ids": ["A1.1", "A1.2"]
+    },
+    {
+      "id": "A2",
+      "name": "Human Supervises the Loop",
+      "summary_markdown": "Humans define conditions and guardrails; the system selects and sequences tasks.",
+      "core_agency_statement": "Humans decide boundaries; systems decide actions.",
+      "emotional_shift_markdown": "Loss of continuous situational awareness in exchange for throughput.",
+      "sacred_cows_markdown": "- Reading every test\n- Understanding all code paths",
+      "substage_ids": ["A2.1", "A2.2", "A2.3"]
+    },
+    {
+      "id": "A3",
+      "name": "Human Is Inside the Loop",
+      "summary_markdown": "The system decides when to consult humans; humans provide grounding and judgment.",
+      "core_agency_statement": "Systems hold operational agency; humans hold normative agency.",
+      "emotional_shift_markdown": "Trust without visibility; judgment without context.",
+      "sacred_cows_markdown": "- Needing to read code\n- Needing to understand architecture",
+      "substage_ids": ["A3.1", "A3.2", "A3.3", "A3.4"]
+    },
+    {
+      "id": "A4",
+      "name": "Personal Sovereign Systems (Beyond Scope)",
+      "summary_markdown": "Each human has a continuously adapting system that builds software only for them.",
+      "core_agency_statement": "Systems build; humans ground their own reality.",
+      "emotional_shift_markdown": "End of shared software and intermediary roles.",
+      "visibility": "hidden_by_default"
+    }
+  ]
+}

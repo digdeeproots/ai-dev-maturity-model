@@ -1,0 +1,270 @@
+{
+  "document_id": "agency_substages_v1",
+  "document_type": "model_detail",
+  "title": "Agency Axis – Substages (Detailed)",
+  "summary_markdown": "This document fully elaborates each Agency substage, describing behavior, emotional impact, responsibility ownership, readiness signals, effectiveness measures, failure modes, and transition dynamics. It is designed to support interactive exploration and progressive disclosure in a web UI.",
+  "core_assumptions": [
+    "Agency transfer is the dominant system constraint shaping all other improvement axes.",
+    "Software systems increasingly act, decide, and adapt without human intervention.",
+    "Humans retain responsibility for grounding: choosing realities, purposes, and values.",
+    "All durable knowledge lives in source control; context is ephemeral."
+  ],
+  "notation": {
+    "ownership_codes": {
+      "H": "Human-owned",
+      "A": "AI-owned",
+      "AG": "AI with human guidance",
+      "AO": "AI with human oversight/review",
+      "S": "Shared but converging toward AI"
+    }
+  },
+  "substages": [
+    {
+      "id": "A0",
+      "name": "No AI Assistance",
+      "stage": "Pre-Agency",
+      "one_line_definition": "All agency resides with humans; software is passive and fully specified.",
+      "core_behaviors": [
+        "Humans design, implement, test, and operate systems manually.",
+        "Automation exists only as explicitly written code.",
+        "Feedback cycles are slow and expensive."
+      ],
+      "emotional_state": {
+        "dominant": "Control through effort",
+        "secondary": ["Pride", "Fatigue", "Anxiety"],
+        "discomfort": "Everything depends on me; progress is fragile."
+      },
+      "responsibility_ownership": {
+        "testable_designs": "H",
+        "architecture": "H",
+        "business_decomposition": "H",
+        "infrastructure_choices": "H",
+        "unit_tests": "H",
+        "definition_of_correctness": "H",
+        "definition_of_fitness_to_purpose": "H",
+        "priority": "H",
+        "work_to_do": "H"
+      },
+      "readiness_to_enter_signals": [
+        "Pain from slow feedback loops is visible.",
+        "Desire to reduce manual cognitive load."
+      ],
+      "effectiveness_measures": [
+        "Lead time to change",
+        "Defect rates",
+        "Human burnout indicators"
+      ],
+      "failure_modes": [
+        "Hero culture",
+        "Brittle systems",
+        "Fear of change"
+      ],
+      "letting_go_to_progress": [
+        "The belief that understanding everything is required to act."
+      ],
+      "example": "A traditional enterprise software team with manual CI and human-driven releases."
+    },
+    {
+      "id": "A1",
+      "name": "Assistive AI",
+      "stage": "Human-Led",
+      "one_line_definition": "AI assists human intent but does not act independently.",
+      "core_behaviors": [
+        "AI generates suggestions, code, or explanations.",
+        "Humans initiate all actions and decisions.",
+        "AI outputs are treated as drafts."
+      ],
+      "emotional_state": {
+        "dominant": "Augmented competence",
+        "secondary": ["Relief", "Suspicion"],
+        "discomfort": "Can I trust this, or will it mislead me?"
+      },
+      "responsibility_ownership": {
+        "testable_designs": "H",
+        "architecture": "H",
+        "business_decomposition": "H",
+        "infrastructure_choices": "H",
+        "unit_tests": "AG",
+        "definition_of_correctness": "H",
+        "definition_of_fitness_to_purpose": "H",
+        "priority": "H",
+        "work_to_do": "H"
+      },
+      "readiness_to_enter_signals": [
+        "Comfort reviewing AI output.",
+        "Ability to reject or modify suggestions."
+      ],
+      "effectiveness_measures": [
+        "Time saved per task",
+        "Reduction in trivial errors"
+      ],
+      "failure_modes": [
+        "Over-trusting suggestions",
+        "Copy-paste without understanding"
+      ],
+      "letting_go_to_progress": [
+        "The belief that authorship equals responsibility."
+      ],
+      "example": "Developers using AI copilots to write boilerplate or explain unfamiliar code."
+    },
+    {
+      "id": "A2",
+      "name": "Delegated Execution",
+      "stage": "Task-Level Agency",
+      "one_line_definition": "AI executes bounded tasks independently under explicit human intent.",
+      "core_behaviors": [
+        "Humans specify goals; AI performs execution.",
+        "Work is chunked into delegable units.",
+        "Results are reviewed, not step-by-step actions."
+      ],
+      "emotional_state": {
+        "dominant": "Leverage",
+        "secondary": ["Unease", "Curiosity"],
+        "discomfort": "I didn’t do this myself—can I still own it?"
+      },
+      "responsibility_ownership": {
+        "testable_designs": "AG",
+        "architecture": "H",
+        "business_decomposition": "H",
+        "infrastructure_choices": "H",
+        "unit_tests": "A",
+        "definition_of_correctness": "H",
+        "definition_of_fitness_to_purpose": "H",
+        "priority": "H",
+        "work_to_do": "AG"
+      },
+      "readiness_to_enter_signals": [
+        "Clear task boundaries exist.",
+        "Humans are willing to review outcomes instead of process."
+      ],
+      "effectiveness_measures": [
+        "Task throughput",
+        "Review rejection rate"
+      ],
+      "failure_modes": [
+        "Poor task specification",
+        "Micromanagement through prompts"
+      ],
+      "letting_go_to_progress": [
+        "The need to see every intermediate step."
+      ],
+      "example": "AI agents implementing tickets end-to-end with human review."
+    },
+    {
+      "id": "A3.1",
+      "name": "Continuous Loop Agency",
+      "stage": "System-Level Agency",
+      "one_line_definition": "AI operates in a continuous sense–decide–act loop.",
+      "core_behaviors": [
+        "The system continuously observes and responds.",
+        "Back-pressure regulates behavior.",
+        "All durable artifacts are committed to source control."
+      ],
+      "emotional_state": {
+        "dominant": "Disorientation",
+        "secondary": ["Awe", "Loss"],
+        "discomfort": "The system is always working, even when I am not."
+      },
+      "responsibility_ownership": {
+        "testable_designs": "A",
+        "architecture": "AG",
+        "business_decomposition": "AG",
+        "infrastructure_choices": "AG",
+        "unit_tests": "A",
+        "definition_of_correctness": "AG",
+        "definition_of_fitness_to_purpose": "H",
+        "priority": "A",
+        "work_to_do": "A"
+      },
+      "failure_modes": [
+        "Runaway loops",
+        "Hidden coupling"
+      ],
+      "example": "A self-refactoring system continuously improving its own codebase."
+    },
+    {
+      "id": "A3.2",
+      "name": "Ralph Wiggum Loop",
+      "stage": "System-Level Agency",
+      "one_line_definition": "Simple loops produce disproportionate value through persistence.",
+      "core_behaviors": [
+        "Naive but relentless improvement cycles.",
+        "Minimal reasoning, maximal iteration."
+      ],
+      "example": "An agent repeatedly running tests, making small fixes, and committing results."
+    },
+    {
+      "id": "A3.3",
+      "name": "Multi-Agent Parallelism",
+      "stage": "System-Level Agency",
+      "one_line_definition": "Multiple agents operate concurrently on the same system.",
+      "core_behaviors": [
+        "Parallel exploration of solution space.",
+        "Conflict resolved via version control."
+      ],
+      "failure_modes": [
+        "Merge thrash",
+        "Incoherent direction"
+      ]
+    },
+    {
+      "id": "A3.4",
+      "name": "Event-Driven Agency",
+      "stage": "System-Level Agency",
+      "one_line_definition": "Agency emerges from event-driven, non-deterministic agent responses.",
+      "core_behaviors": [
+        "Events trigger agents opportunistically.",
+        "No central loop; behavior is emergent.",
+        "Events are ephemeral; source control is the memory."
+      ],
+      "emotional_state": {
+        "dominant": "Loss of narrative",
+        "secondary": ["Trust", "Surrender"],
+        "discomfort": "I no longer know why something happened—only that it did."
+      },
+      "responsibility_ownership": {
+        "architecture": "A",
+        "priority": "A",
+        "work_to_do": "A",
+        "definition_of_fitness_to_purpose": "H"
+      },
+      "failure_modes": [
+        "Untraceable causality",
+        "Misaligned emergent behavior"
+      ]
+    },
+    {
+      "id": "A4",
+      "name": "Grounded Autonomy",
+      "stage": "Full Agency",
+      "one_line_definition": "AI owns all software activity; humans provide grounding.",
+      "core_behaviors": [
+        "Humans choose which reality is being served.",
+        "AI handles all design, implementation, and operation."
+      ],
+      "emotional_state": {
+        "dominant": "Quiet authority",
+        "secondary": ["Relief", "Existential unease"],
+        "discomfort": "If I’m not doing, who am I?"
+      },
+      "responsibility_ownership": {
+        "definition_of_fitness_to_purpose": "H",
+        "grounding_values": "H",
+        "everything_else": "A"
+      },
+      "example": "A company where no human reads code, tests, or designs systems."
+    },
+    {
+      "id": "A5",
+      "name": "Personal Sovereign Software",
+      "stage": "Post-Company (Speculative)",
+      "stability": "unstable_future",
+      "one_line_definition": "Each human has custom software; shared software dissolves.",
+      "core_behaviors": [
+        "One-off, perfectly fit systems per individual.",
+        "No need for consensus or markets."
+      ],
+      "implication": "End of software companies as we know them."
+    }
+  ]
+}

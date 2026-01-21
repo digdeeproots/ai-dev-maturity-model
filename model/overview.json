@@ -1,0 +1,47 @@
+{
+  "model_id": "ai_dev_maturity_model",
+  "title": "AI-Driven Software Development Maturity Model",
+  "version": "0.1",
+  "summary_markdown": "This model describes how software development evolves as agency transfers from humans to AI-driven systems. The primary axis of progress is **agency in the development loop**, supported by secondary improvement dimensions and constrained by fate-determining system choices.",
+  "primary_axis": {
+    "id": "agency",
+    "name": "Agency in the Development Loop",
+    "definition_markdown": "Agency describes **who decides what happens next** in the software development loop (observe → decide → act → evaluate).",
+    "why_primary_markdown": "Agency is the most important axis because it defines the **binding constraint** of the system.\n\n- Every development system has a constraint: either human cognition or system evaluation.\n- Improvements in parallelism or self-improvement increase capacity **within** the current constraint but do not move it.\n- Changing agency changes **what kinds of failures are possible**, and therefore **what kinds of learning can occur**.\n\n> Parallelism changes *how much* work happens.\n> Self-improvement changes *how fast* behavior evolves.\n> Agency changes *who is allowed to be wrong next*.\n\nBecause of this, agency determines where discomfort lives, which identities dissolve, and what must be learned to progress.",
+    "emotional_frame_markdown": "People do not resist AI because they fear job loss. They resist it because **identities dissolve before roles disappear**.\n\nThis axis makes visible:\n- which responsibilities vanish,\n- when they vanish,\n- and what remains essentially human.\n\nProgress requires consciously trading **situational awareness** for **leverage**."
+  },
+  "secondary_axes": [
+    {
+      "id": "self_improvement",
+      "name": "System Self-Improvement",
+      "definition_markdown": "Whether and how the system modifies its own behavior over time based on observation and evaluation."
+    },
+    {
+      "id": "parallelism",
+      "name": "Parallelism",
+      "definition_markdown": "How many alternative futures or work streams the system can explore simultaneously."
+    }
+  ],
+  "fate_determining_choices": [
+    {
+      "id": "system_of_record",
+      "name": "System of Record / Data Gravity",
+      "definition_markdown": "Where authoritative state lives. Systems that keep all durable state in source control enable branching, inspection, replay, and self-improvement. Tool-centric systems cap out early."
+    },
+    {
+      "id": "determinism_boundary",
+      "name": "Determinism Boundary",
+      "definition_markdown": "Which operations must be correct and repeatable (deterministic) versus exploratory and probabilistic."
+    },
+    {
+      "id": "evaluation_explicitness",
+      "name": "Evaluation Explicitness",
+      "definition_markdown": "How correctness and quality are represented, ranging from implicit human judgment to executable tests and metrics."
+    },
+    {
+      "id": "memory_strategy",
+      "name": "Memory Strategy",
+      "definition_markdown": "What the system remembers, for how long, and why. Excess memory without pruning causes incoherence; too little prevents learning."
+    }
+  ]
+}
