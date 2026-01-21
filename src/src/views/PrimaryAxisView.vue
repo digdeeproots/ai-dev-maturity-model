@@ -35,16 +35,6 @@ function goBack() {
       <h1>{{ model.primary_axis.name }}</h1>
       <div class="definition markdown-content mt-md" v-html="md(model.primary_axis.definition_markdown)"></div>
 
-      <div class="why-primary card mt-xl">
-        <h3>Why This Is Primary</h3>
-        <div class="markdown-content" v-html="md(model.primary_axis.why_primary_markdown)"></div>
-      </div>
-
-      <div class="emotional-frame card mt-lg">
-        <h3>Emotional Frame</h3>
-        <div class="markdown-content" v-html="md(model.primary_axis.emotional_frame_markdown)"></div>
-      </div>
-
       <div class="stages mt-xl">
         <h2>Stages</h2>
 
@@ -116,17 +106,6 @@ function goBack() {
 .definition {
   font-size: var(--font-size-lg);
   color: var(--color-text-light);
-}
-
-.why-primary,
-.emotional-frame {
-  border-left: 4px solid var(--color-primary);
-}
-
-.why-primary h3,
-.emotional-frame h3 {
-  font-size: var(--font-size-lg);
-  margin-bottom: var(--spacing-sm);
 }
 
 /* Stages */
