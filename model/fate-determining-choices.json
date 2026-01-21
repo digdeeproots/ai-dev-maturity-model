@@ -1,0 +1,80 @@
+{
+  "fate_determining_choices": [
+    {
+      "id": "system_of_record",
+      "name": "System of Record / Data Gravity",
+      "summary_markdown": "Where authoritative information lives determines whether late-stage autonomy, replay, and parallelism are possible. This choice silently fixes the system’s ceiling.",
+      "definition_markdown": "The System of Record choice determines where durable, authoritative artifacts live: in source control, in external tools, or in bespoke databases. This includes requirements, plans, architectural decisions, tests, and evaluative context — not just code.",
+      "correct_choice_markdown": "All durable artifacts live as raw, versioned files in source control. External systems may exist, but they are projections or views, never authorities.",
+      "success_examples_markdown": [
+        "**Internal developer tools teams** that keep specs, RFCs, tests, and experiments as markdown files alongside code routinely enable fast branching and parallel experimentation without coordination overhead.",
+        "**AI-first refactoring systems** (e.g., internal tools built by large tech firms) that store domain models and refactoring plans in git can replay, compare, and rollback agent decisions safely.",
+        "**High-performing open-source projects** where all discussion artifacts eventually collapse into commits, issues-as-text, or design docs in-repo show strong long-term coherence despite high contributor churn."
+      ],
+      "failure_examples_markdown": [
+        "**Jira-centric organizations** where planning, priority, and rationale live exclusively in Jira tickets find AI agents blind to intent and unable to reason holistically about work.",
+        "**Miro-based architecture teams** accumulate non-versioned diagrams that cannot be branched or diffed; agents must hallucinate or ignore them.",
+        "**Vector-store-only memory systems** lose semantic grounding when embeddings drift or schemas change, breaking replayability."
+      ],
+      "typical_rationalizations_markdown": [
+        "\"We’ll just connect it via MCP.\"",
+        "\"Humans can look there if needed.\"",
+        "\"We don’t need to branch planning documents.\"",
+        "\"That information isn’t important enough to version.\""
+      ],
+      "early_warning_signs_markdown": [
+        "You cannot answer: *what did the system believe last Tuesday?*",
+        "Agents produce contradictory outputs depending on run order.",
+        "Parallel experiments require meetings instead of merges.",
+        "Important decisions are explained verbally, not referenceably."
+      ],
+      "what_breaks_if_wrong_markdown": "Late-stage agency (A3+), parallel exploration, automated improvement, and reliable rollback all become impractical.",
+      "confidence": "high"
+    },
+    {
+      "id": "determinism_boundary",
+      "name": "Determinism Boundaries",
+      "summary_markdown": "Late-stage autonomy requires knowing exactly which parts of the system must be reproducible and which may vary. Ambiguity here collapses trust and scalability.",
+      "definition_markdown": "Determinism boundaries define which components must behave identically given identical inputs, and which are allowed (or required) to be stochastic. This is a structural design choice, not a tuning decision.",
+      "correct_choice_markdown": "Core control flow, evaluation, orchestration, and state transitions are deterministic; creative generation and exploration are non-deterministic but always projected into deterministic evaluation layers.",
+      "deterministic_core_markdown": [
+        "Build and deployment pipelines",
+        "Test execution and evaluation",
+        "Agent orchestration rules",
+        "Branching, merging, and rollback mechanics",
+        "Acceptance/rejection of outputs"
+      ],
+      "non_deterministic_zone_markdown": [
+        "Code generation",
+        "Design exploration",
+        "Refactoring proposals",
+        "Hypothesis generation",
+        "Search over solution spaces"
+      ],
+      "success_examples_markdown": [
+        "**CI/CD systems** that treat generated code as input but enforce deterministic test gates scale reliably with AI assistance.",
+        "**Agentic refactoring tools** that explore many candidate changes stochastically but accept them only through deterministic checks achieve stable improvement.",
+        "**A/B evaluation frameworks** where stochastic proposals are scored by deterministic metrics enable automated optimization."
+      ],
+      "failure_examples_markdown": [
+        "**End-to-end prompt pipelines** where generation, execution, and evaluation are all stochastic produce irreproducible failures.",
+        "**Fully non-deterministic agents** that both generate and judge their own work drift rapidly and lose trust.",
+        "**Over-deterministic systems** (temperature=0 everywhere) stagnate and fail to explore better designs."
+      ],
+      "typical_rationalizations_markdown": [
+        "\"LLMs are non-deterministic anyway.\"",
+        "\"If it passes once, it’s probably fine.\"",
+        "\"We’ll just rerun it if it fails.\"",
+        "\"We don’t need reproducibility yet.\""
+      ],
+      "early_warning_signs_markdown": [
+        "You cannot reliably reproduce a failure.",
+        "Agent behavior changes across identical runs.",
+        "Debugging involves rerunning until it ‘looks right’.",
+        "Trust in automation is low despite apparent success."
+      ],
+      "what_breaks_if_wrong_markdown": "Automated improvement loops, long-running autonomy, and human trust all collapse. The system never stabilizes.",
+      "confidence": "medium_high"
+    }
+  ]
+}
