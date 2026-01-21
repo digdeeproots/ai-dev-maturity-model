@@ -142,7 +142,7 @@ onMounted(async () => {
           <button
             v-for="choice in fateChoices"
             :key="choice.id"
-            class="card axis-card clickable"
+            class="card axis-card"
             @click="viewFateChoice(choice.id)"
           >
             <h4>{{ choice.name }}</h4>
@@ -241,12 +241,14 @@ onMounted(async () => {
 }
 
 /* Clickable cards */
-.clickable {
+button.axis-card {
+  font: inherit;
   cursor: pointer;
   text-align: left;
+  width: 100%;
 }
 
-.clickable:hover {
+button.axis-card:hover {
   background-color: var(--color-background);
 }
 
