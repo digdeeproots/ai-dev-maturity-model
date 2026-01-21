@@ -138,13 +138,11 @@ onMounted(async () => {
 
       <div class="fate-choices mt-xl">
         <h3>Fate-Determining Choices</h3>
-        <p class="text-muted mb-md">System-level decisions that constrain how far agency can evolve.</p>
-
-        <div class="fate-choices-grid">
+        <div class="axes-grid">
           <button
             v-for="choice in fateChoices"
             :key="choice.id"
-            class="fate-choice-summary card"
+            class="card axis-card clickable"
             @click="viewFateChoice(choice.id)"
           >
             <h4>{{ choice.name }}</h4>
@@ -242,28 +240,14 @@ onMounted(async () => {
   color: #dc3545;
 }
 
-/* Fate-determining choices - Overview */
-.fate-choices-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: var(--spacing-lg);
-  margin-top: var(--spacing-md);
-}
-
-.fate-choice-summary {
-  text-align: left;
-  border-left: 4px solid var(--color-primary);
+/* Clickable cards */
+.clickable {
   cursor: pointer;
+  text-align: left;
 }
 
-.fate-choice-summary:hover {
-  border-left-color: var(--color-primary-dark);
+.clickable:hover {
   background-color: var(--color-background);
-}
-
-.fate-choice-summary h4 {
-  color: var(--color-primary);
-  margin-bottom: var(--spacing-sm);
 }
 
 /* Detail View */
