@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { marked } from 'marked'
 
 interface PrimaryAxis {
@@ -52,10 +52,19 @@ interface ModelOverview {
   fate_determining_choices: FateDeterminingChoice[]
 }
 
+type View = 'overview' | 'fate-choice-detail'
+
 const model = ref<ModelOverview | null>(null)
 const fateChoices = ref<FateDeterminingChoiceDetail[]>([])
 const loading = ref(true)
 const error = ref<string | null>(null)
+
+const currentView = ref<View>('overview')
+const selectedFateChoiceId = ref<string | null>(null)
+
+const selectedFateChoice = computed(() =>
+  fateChoices.value.find(c => c.id === selectedFateChoiceId.value) ?? null
+)
 
 function md(text: string): string {
   return marked.parse(text, { async: false }) as string
@@ -63,6 +72,16 @@ function md(text: string): string {
 
 function mdList(items: string[]): string {
   return items.map(item => marked.parse(item, { async: false }) as string).join('')
+}
+
+function viewFateChoice(id: string) {
+  selectedFateChoiceId.value = id
+  currentView.value = 'fate-choice-detail'
+}
+
+function goBack() {
+  currentView.value = 'overview'
+  selectedFateChoiceId.value = null
 }
 
 onMounted(async () => {
@@ -95,7 +114,8 @@ onMounted(async () => {
       Error: {{ error }}
     </div>
 
-    <div v-else-if="model" class="overview">
+    <!-- Overview View -->
+    <div v-else-if="model && currentView === 'overview'" class="overview">
       <h1>{{ model.title }}</h1>
       <p class="version text-muted">Version {{ model.version }}</p>
 
@@ -118,49 +138,64 @@ onMounted(async () => {
 
       <div class="fate-choices mt-xl">
         <h3>Fate-Determining Choices</h3>
-        <p class="text-muted mb-lg">System-level decisions that constrain how far agency can evolve.</p>
+        <p class="text-muted mb-md">System-level decisions that constrain how far agency can evolve.</p>
 
-        <div v-for="choice in fateChoices" :key="choice.id" class="fate-choice card mt-lg">
-          <h4>{{ choice.name }}</h4>
-          <div class="summary markdown-content" v-html="md(choice.summary_markdown)"></div>
-
-          <div class="fate-detail mt-lg">
-            <h5>Definition</h5>
-            <div class="markdown-content" v-html="md(choice.definition_markdown)"></div>
-          </div>
-
-          <div class="fate-detail mt-lg">
-            <h5>Correct Choice</h5>
-            <div class="markdown-content" v-html="md(choice.correct_choice_markdown)"></div>
-          </div>
-
-          <div class="fate-columns mt-lg">
-            <div class="fate-column success">
-              <h5>Success Examples</h5>
-              <div class="markdown-content" v-html="mdList(choice.success_examples_markdown)"></div>
-            </div>
-            <div class="fate-column failure">
-              <h5>Failure Examples</h5>
-              <div class="markdown-content" v-html="mdList(choice.failure_examples_markdown)"></div>
-            </div>
-          </div>
-
-          <div class="fate-columns mt-lg">
-            <div class="fate-column warning">
-              <h5>Early Warning Signs</h5>
-              <div class="markdown-content" v-html="mdList(choice.early_warning_signs_markdown)"></div>
-            </div>
-            <div class="fate-column rationalization">
-              <h5>Typical Rationalizations</h5>
-              <div class="markdown-content" v-html="mdList(choice.typical_rationalizations_markdown)"></div>
-            </div>
-          </div>
-
-          <div class="fate-detail mt-lg what-breaks">
-            <h5>What Breaks If Wrong</h5>
-            <div class="markdown-content" v-html="md(choice.what_breaks_if_wrong_markdown)"></div>
-          </div>
+        <div class="fate-choices-grid">
+          <button
+            v-for="choice in fateChoices"
+            :key="choice.id"
+            class="fate-choice-summary card"
+            @click="viewFateChoice(choice.id)"
+          >
+            <h4>{{ choice.name }}</h4>
+            <div class="text-muted markdown-content" v-html="md(choice.summary_markdown)"></div>
+          </button>
         </div>
+      </div>
+    </div>
+
+    <!-- Fate Choice Detail View -->
+    <div v-else-if="currentView === 'fate-choice-detail' && selectedFateChoice" class="detail-view">
+      <button class="back-button" @click="goBack">&larr; Back to Overview</button>
+
+      <h1>{{ selectedFateChoice.name }}</h1>
+      <div class="summary markdown-content mt-md" v-html="md(selectedFateChoice.summary_markdown)"></div>
+
+      <div class="fate-detail card mt-xl">
+        <h3>Definition</h3>
+        <div class="markdown-content" v-html="md(selectedFateChoice.definition_markdown)"></div>
+      </div>
+
+      <div class="fate-detail card mt-lg">
+        <h3>Correct Choice</h3>
+        <div class="markdown-content" v-html="md(selectedFateChoice.correct_choice_markdown)"></div>
+      </div>
+
+      <div class="fate-columns mt-xl">
+        <div class="fate-column success">
+          <h3>Success Examples</h3>
+          <div class="markdown-content" v-html="mdList(selectedFateChoice.success_examples_markdown)"></div>
+        </div>
+        <div class="fate-column failure">
+          <h3>Failure Examples</h3>
+          <div class="markdown-content" v-html="mdList(selectedFateChoice.failure_examples_markdown)"></div>
+        </div>
+      </div>
+
+      <div class="fate-columns mt-lg">
+        <div class="fate-column warning">
+          <h3>Early Warning Signs</h3>
+          <div class="markdown-content" v-html="mdList(selectedFateChoice.early_warning_signs_markdown)"></div>
+        </div>
+        <div class="fate-column rationalization">
+          <h3>Typical Rationalizations</h3>
+          <div class="markdown-content" v-html="mdList(selectedFateChoice.typical_rationalizations_markdown)"></div>
+        </div>
+      </div>
+
+      <div class="what-breaks card mt-xl">
+        <h3>What Breaks If Wrong</h3>
+        <div class="markdown-content" v-html="md(selectedFateChoice.what_breaks_if_wrong_markdown)"></div>
       </div>
     </div>
   </div>
@@ -207,26 +242,58 @@ onMounted(async () => {
   color: #dc3545;
 }
 
-/* Fate-determining choices */
-.fate-choice {
-  border-left: 4px solid var(--color-primary);
+/* Fate-determining choices - Overview */
+.fate-choices-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-md);
 }
 
-.fate-choice h4 {
+.fate-choice-summary {
+  text-align: left;
+  border-left: 4px solid var(--color-primary);
+  cursor: pointer;
+}
+
+.fate-choice-summary:hover {
+  border-left-color: var(--color-primary-dark);
+  background-color: var(--color-background);
+}
+
+.fate-choice-summary h4 {
   color: var(--color-primary);
   margin-bottom: var(--spacing-sm);
 }
 
-.fate-choice h5 {
+/* Detail View */
+.detail-view {
+  width: 100%;
+  max-width: 900px;
+}
+
+.back-button {
+  background: none;
+  border: none;
+  color: var(--color-primary);
   font-size: var(--font-size-base);
-  font-weight: 600;
-  color: var(--color-text);
+  cursor: pointer;
+  padding: var(--spacing-sm) 0;
+  margin-bottom: var(--spacing-md);
+}
+
+.back-button:hover {
+  color: var(--color-primary-dark);
+  text-decoration: underline;
+}
+
+.detail-view h3 {
+  font-size: var(--font-size-lg);
   margin-bottom: var(--spacing-sm);
 }
 
 .fate-detail {
-  padding-top: var(--spacing-md);
-  border-top: 1px solid var(--color-border);
+  border-left: 4px solid var(--color-primary);
 }
 
 .fate-columns {
