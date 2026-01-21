@@ -242,6 +242,7 @@ onMounted(async () => {
 
 /* Clickable cards */
 button.axis-card {
+  display: block;
   font: inherit;
   cursor: pointer;
   text-align: left;
