@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { marked } from 'marked'
 
 interface PrimaryAxis {
   id: string
@@ -35,6 +36,10 @@ const model = ref<ModelOverview | null>(null)
 const loading = ref(true)
 const error = ref<string | null>(null)
 
+function md(text: string): string {
+  return marked.parse(text, { async: false }) as string
+}
+
 onMounted(async () => {
   try {
     const response = await fetch('/model/overview.json')
@@ -62,13 +67,11 @@ onMounted(async () => {
       <h1>{{ model.title }}</h1>
       <p class="version text-muted">Version {{ model.version }}</p>
 
-      <div class="summary card mt-xl">
-        <p>{{ model.summary_markdown }}</p>
-      </div>
+      <div class="summary card mt-xl markdown-content" v-html="md(model.summary_markdown)"></div>
 
       <div class="primary-axis card mt-xl">
         <h2>Primary Axis: {{ model.primary_axis.name }}</h2>
-        <p class="definition">{{ model.primary_axis.definition_markdown }}</p>
+        <div class="definition markdown-content" v-html="md(model.primary_axis.definition_markdown)"></div>
       </div>
 
       <div class="secondary-axes mt-xl">
@@ -76,7 +79,7 @@ onMounted(async () => {
         <div class="axes-grid">
           <div v-for="axis in model.secondary_axes" :key="axis.id" class="card axis-card">
             <h4>{{ axis.name }}</h4>
-            <p class="text-muted">{{ axis.definition_markdown }}</p>
+            <div class="text-muted markdown-content" v-html="md(axis.definition_markdown)"></div>
           </div>
         </div>
       </div>
