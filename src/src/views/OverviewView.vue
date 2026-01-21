@@ -10,6 +10,10 @@ const { md } = useMarkdown()
 function viewFateChoice(id: string) {
   router.push({ name: 'fate-choice-detail', params: { id } })
 }
+
+function viewPrimaryAxis() {
+  router.push({ name: 'primary-axis' })
+}
 </script>
 
 <template>
@@ -28,10 +32,10 @@ function viewFateChoice(id: string) {
 
       <div class="summary card mt-xl markdown-content" v-html="md(model.summary_markdown)"></div>
 
-      <div class="primary-axis card mt-xl">
+      <button class="primary-axis card mt-xl" @click="viewPrimaryAxis">
         <h2>Primary Axis: {{ model.primary_axis.name }}</h2>
         <div class="definition markdown-content" v-html="md(model.primary_axis.definition_markdown)"></div>
-      </div>
+      </button>
 
       <div class="secondary-axes mt-xl">
         <h3>Secondary Axes</h3>
@@ -103,7 +107,8 @@ function viewFateChoice(id: string) {
 }
 
 /* Clickable cards */
-button.axis-card {
+button.axis-card,
+button.primary-axis {
   display: block;
   font: inherit;
   cursor: pointer;
@@ -111,7 +116,8 @@ button.axis-card {
   width: 100%;
 }
 
-button.axis-card:hover {
+button.axis-card:hover,
+button.primary-axis:hover {
   background-color: var(--color-background);
 }
 </style>

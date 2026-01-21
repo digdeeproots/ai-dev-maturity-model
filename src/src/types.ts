@@ -38,6 +38,22 @@ export interface FateChoicesData {
   fate_determining_choices: FateDeterminingChoiceDetail[]
 }
 
+export interface AgencyStage {
+  id: string
+  name: string
+  summary_markdown: string
+  core_agency_statement: string
+  emotional_shift_markdown: string
+  sacred_cows_markdown?: string
+  substage_ids?: string[]
+  visibility?: string
+}
+
+export interface AgencyStagesData {
+  axis_id: string
+  stages: AgencyStage[]
+}
+
 export interface ModelOverview {
   model_id: string
   title: string
