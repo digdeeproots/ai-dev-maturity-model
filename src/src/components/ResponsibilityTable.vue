@@ -10,6 +10,9 @@ const props = defineProps<{
 
 const matrixData = computed(() => getResponsibilityMatrixForSubstages(props.substageIds))
 
+// Ordered from human-owned to AI-owned
+const ownershipOrder: OwnershipCode[] = ['H', 'AG', 'AO', 'S', 'A']
+
 function getOwnershipClass(code: OwnershipCode): string {
   return `ownership-${code.toLowerCase()}`
 }
@@ -66,13 +69,13 @@ function getSubstageName(id: string): string {
     <div class="legend">
       <span class="legend-title">Legend:</span>
       <span
-        v-for="(info, code) in matrixData.ownershipCodes"
+        v-for="code in ownershipOrder"
         :key="code"
         class="legend-item"
-        :class="getOwnershipClass(code as OwnershipCode)"
+        :class="getOwnershipClass(code)"
       >
-        <span class="legend-code">{{ info.label }}</span>
-        <span class="legend-desc">{{ info.description }}</span>
+        <span class="legend-code">{{ getOwnershipInfo(code).label }}</span>
+        <span class="legend-desc">{{ getOwnershipInfo(code).description }}</span>
       </span>
     </div>
   </div>
