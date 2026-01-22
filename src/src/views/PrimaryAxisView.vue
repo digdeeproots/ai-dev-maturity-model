@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { useModelData } from '../composables/useModelData'
+import { useModelData, getSubstagesForStage } from '../composables/useModelData'
 import { useMarkdown } from '../composables/useMarkdown'
 
 const router = useRouter()
@@ -9,6 +9,7 @@ const { model, agencyStages } = useModelData()
 const { md } = useMarkdown()
 
 const expandedStageId = ref<string | null>(null)
+const expandedSubstageIds = ref<Set<string>>(new Set())
 
 const visibleStages = computed(() =>
   agencyStages.value.filter(s => s.visibility !== 'hidden_by_default')
@@ -20,6 +21,18 @@ function toggleStage(id: string) {
 
 function isExpanded(id: string): boolean {
   return expandedStageId.value === id
+}
+
+function toggleSubstage(id: string) {
+  if (expandedSubstageIds.value.has(id)) {
+    expandedSubstageIds.value.delete(id)
+  } else {
+    expandedSubstageIds.value.add(id)
+  }
+}
+
+function isSubstageExpanded(id: string): boolean {
+  return expandedSubstageIds.value.has(id)
 }
 
 function goBack() {
@@ -74,6 +87,74 @@ function goBack() {
             <div v-if="stage.sacred_cows_markdown" class="stage-detail sacred-cows">
               <h4>Sacred Cows to Release</h4>
               <div class="markdown-content" v-html="md(stage.sacred_cows_markdown)"></div>
+            </div>
+
+            <!-- Substages -->
+            <div v-if="getSubstagesForStage(stage.id).length > 0" class="substages-section">
+              <h4>Substages</h4>
+              <div class="substages-list">
+                <div
+                  v-for="substage in getSubstagesForStage(stage.id)"
+                  :key="substage.id"
+                  class="substage-card"
+                  :class="{ expanded: isSubstageExpanded(substage.id) }"
+                >
+                  <button class="substage-header" @click="toggleSubstage(substage.id)">
+                    <div class="substage-title">
+                      <span class="substage-id">{{ substage.id }}</span>
+                      <span class="substage-name">{{ substage.name }}</span>
+                    </div>
+                    <div v-if="!isSubstageExpanded(substage.id)" class="substage-summary">
+                      {{ substage.one_line_definition }}
+                    </div>
+                    <span class="expand-icon">{{ isSubstageExpanded(substage.id) ? '−' : '+' }}</span>
+                  </button>
+
+                  <div v-if="isSubstageExpanded(substage.id)" class="substage-content">
+                    <div class="substage-detail">
+                      <strong>Definition:</strong> {{ substage.one_line_definition }}
+                    </div>
+
+                    <div v-if="substage.core_behaviors?.length" class="substage-detail">
+                      <strong>Core Behaviors:</strong>
+                      <ul>
+                        <li v-for="(behavior, i) in substage.core_behaviors" :key="i">{{ behavior }}</li>
+                      </ul>
+                    </div>
+
+                    <div v-if="substage.emotional_state" class="substage-detail emotional-state">
+                      <strong>Emotional State:</strong>
+                      <div class="emotional-details">
+                        <div><em>Dominant:</em> {{ substage.emotional_state.dominant }}</div>
+                        <div v-if="substage.emotional_state.secondary?.length">
+                          <em>Secondary:</em> {{ substage.emotional_state.secondary.join(', ') }}
+                        </div>
+                        <div v-if="substage.emotional_state.discomfort">
+                          <em>Discomfort:</em> "{{ substage.emotional_state.discomfort }}"
+                        </div>
+                      </div>
+                    </div>
+
+                    <div v-if="substage.failure_modes?.length" class="substage-detail">
+                      <strong>Failure Modes:</strong>
+                      <ul>
+                        <li v-for="(mode, i) in substage.failure_modes" :key="i">{{ mode }}</li>
+                      </ul>
+                    </div>
+
+                    <div v-if="substage.letting_go_to_progress?.length" class="substage-detail">
+                      <strong>Letting Go to Progress:</strong>
+                      <ul>
+                        <li v-for="(item, i) in substage.letting_go_to_progress" :key="i">{{ item }}</li>
+                      </ul>
+                    </div>
+
+                    <div v-if="substage.example" class="substage-detail example">
+                      <strong>Example:</strong> {{ substage.example }}
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -214,5 +295,137 @@ function goBack() {
   padding: var(--spacing-md);
   border-radius: 6px;
   border: 1px solid #fde68a;
+}
+
+/* Substages */
+.substages-section {
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--color-border);
+}
+
+.substages-section > h4 {
+  font-size: var(--font-size-lg);
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-md);
+}
+
+.substages-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.substage-card {
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.substage-card.expanded {
+  border-color: var(--color-primary);
+  background: var(--color-surface);
+}
+
+.substage-header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: var(--spacing-md);
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+  gap: var(--spacing-md);
+}
+
+.substage-header:hover {
+  background-color: var(--color-surface);
+}
+
+.substage-card.expanded .substage-header:hover {
+  background-color: var(--color-background);
+}
+
+.substage-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-shrink: 0;
+}
+
+.substage-id {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  height: 1.75rem;
+  padding: 0 var(--spacing-sm);
+  background-color: var(--color-text-light);
+  color: white;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: var(--font-size-xs);
+}
+
+.substage-card.expanded .substage-id {
+  background-color: var(--color-primary);
+}
+
+.substage-name {
+  font-weight: 500;
+  font-size: var(--font-size-base);
+}
+
+.substage-summary {
+  flex: 1;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-light);
+  text-align: right;
+}
+
+.substage-content {
+  padding: 0 var(--spacing-md) var(--spacing-md);
+  border-top: 1px solid var(--color-border);
+}
+
+.substage-detail {
+  margin-top: var(--spacing-md);
+  font-size: var(--font-size-sm);
+}
+
+.substage-detail strong {
+  color: var(--color-text);
+}
+
+.substage-detail ul {
+  margin: var(--spacing-xs) 0 0 var(--spacing-lg);
+  padding: 0;
+}
+
+.substage-detail li {
+  margin-bottom: var(--spacing-xs);
+}
+
+.emotional-state .emotional-details {
+  margin-top: var(--spacing-xs);
+  padding-left: var(--spacing-md);
+}
+
+.emotional-state .emotional-details > div {
+  margin-bottom: var(--spacing-xs);
+}
+
+.emotional-state em {
+  color: var(--color-text-light);
+}
+
+.substage-detail.example {
+  background-color: #f0f9ff;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: 4px;
+  border-left: 3px solid var(--color-primary);
 }
 </style>

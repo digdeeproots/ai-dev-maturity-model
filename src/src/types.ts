@@ -49,6 +49,33 @@ export interface AgencyStage {
   visibility?: string
 }
 
+export interface SubstageEmotionalState {
+  dominant: string
+  secondary?: string[]
+  discomfort?: string
+}
+
+export interface Substage {
+  id: string
+  name: string
+  stage: string
+  one_line_definition: string
+  core_behaviors?: string[]
+  emotional_state?: SubstageEmotionalState
+  responsibility_ownership?: Record<string, string>
+  readiness_to_enter_signals?: string[]
+  effectiveness_measures?: string[]
+  failure_modes?: string[]
+  letting_go_to_progress?: string[]
+  example?: string
+  stability?: string
+  implication?: string
+}
+
+export interface SubstagesData {
+  substages: Substage[]
+}
+
 export interface AgencyStagesData {
   axis_id: string
   stages: AgencyStage[]
