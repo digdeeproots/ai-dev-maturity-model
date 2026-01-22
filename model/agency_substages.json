@@ -9,15 +9,6 @@
     "Humans retain responsibility for grounding: choosing realities, purposes, and values.",
     "All durable knowledge lives in source control; context is ephemeral."
   ],
-  "notation": {
-    "ownership_codes": {
-      "H": "Human-owned",
-      "A": "AI-owned",
-      "AG": "AI with human guidance",
-      "AO": "AI with human oversight/review",
-      "S": "Shared but converging toward AI"
-    }
-  },
   "substages": [
     {
       "id": "A0.1",
@@ -43,22 +34,6 @@
         "ready_to_experiment_markdown": "Repetitive manual work; desire for speed or assistance.",
         "effectiveness_metric_markdown": "Cycle time per change; defect escape rate.",
         "let_go_focus_markdown": "Let go of the belief that control requires direct execution."
-      },
-      "responsibility_ownership": {
-        "Definition of fitness to purpose / grounding": "H",
-        "Definition of correctness": "H",
-        "Prioritization of work": "H",
-        "Selection of work to do next": "H",
-        "Business/domain decomposition": "H",
-        "Architecture and system design": "H",
-        "Design for testability": "H",
-        "Unit test creation": "H",
-        "Changing product code": "H",
-        "Integration/system test creation": "H",
-        "Evaluation of results": "H",
-        "Infrastructure and deployment choices": "H",
-        "Detection of failure or drift": "H",
-        "Decision to continue / stop / escalate": "H"
       },
       "readiness_to_enter_signals": [
         "Pain from slow feedback loops is visible.",
@@ -102,22 +77,6 @@
         "effectiveness_metric_markdown": "Defects caught pre-merge; CI pass rate.",
         "let_go_focus_markdown": "Let go of the belief that tools are the same as delegation."
       },
-      "responsibility_ownership": {
-        "Definition of fitness to purpose / grounding": "H",
-        "Definition of correctness": "H",
-        "Prioritization of work": "H",
-        "Selection of work to do next": "H",
-        "Business/domain decomposition": "H",
-        "Architecture and system design": "H",
-        "Design for testability": "H",
-        "Unit test creation": "H",
-        "Changing product code": "H",
-        "Integration/system test creation": "H",
-        "Evaluation of results": "H",
-        "Infrastructure and deployment choices": "H",
-        "Detection of failure or drift": "H",
-        "Decision to continue / stop / escalate": "H"
-      },
       "readiness_to_enter_signals": [
         "Most errors are mechanical rather than conceptual."
       ],
@@ -156,22 +115,6 @@
         "effectiveness_metric_markdown": "Pipeline stability; manual intervention rate.",
         "let_go_focus_markdown": "Let go of the idea that automation must be pre-planned."
       },
-      "responsibility_ownership": {
-        "Definition of fitness to purpose / grounding": "H",
-        "Definition of correctness": "H",
-        "Prioritization of work": "H",
-        "Selection of work to do next": "H",
-        "Business/domain decomposition": "H",
-        "Architecture and system design": "H",
-        "Design for testability": "H",
-        "Unit test creation": "H",
-        "Changing product code": "H",
-        "Integration/system test creation": "H",
-        "Evaluation of results": "H",
-        "Infrastructure and deployment choices": "H",
-        "Detection of failure or drift": "H",
-        "Decision to continue / stop / escalate": "H"
-      },
       "readiness_to_enter_signals": [
         "Clear repetitive workflows exist."
       ],
@@ -209,22 +152,6 @@
         "effectiveness_metric_markdown": "Keystrokes saved; code churn.",
         "let_go_focus_markdown": "Let go of typing as the primary value."
       },
-      "responsibility_ownership": {
-        "Definition of fitness to purpose / grounding": "H",
-        "Definition of correctness": "H",
-        "Prioritization of work": "H",
-        "Selection of work to do next": "H",
-        "Business/domain decomposition": "H",
-        "Architecture and system design": "H",
-        "Design for testability": "H",
-        "Unit test creation": "H",
-        "Changing product code": "AG",
-        "Integration/system test creation": "H",
-        "Evaluation of results": "H",
-        "Infrastructure and deployment choices": "H",
-        "Detection of failure or drift": "H",
-        "Decision to continue / stop / escalate": "H"
-      },
       "readiness_to_enter_signals": [
         "Comfort with AI suggestions."
       ],
@@ -261,22 +188,6 @@
         "effectiveness_metric_markdown": "Defects found pre-merge.",
         "let_go_focus_markdown": "Let go of ego around being right."
       },
-      "responsibility_ownership": {
-        "Definition of fitness to purpose / grounding": "H",
-        "Definition of correctness": "H",
-        "Prioritization of work": "H",
-        "Selection of work to do next": "H",
-        "Business/domain decomposition": "H",
-        "Architecture and system design": "H",
-        "Design for testability": "AG",
-        "Unit test creation": "AG",
-        "Changing product code": "AG",
-        "Integration/system test creation": "AG",
-        "Evaluation of results": "H",
-        "Infrastructure and deployment choices": "H",
-        "Detection of failure or drift": "H",
-        "Decision to continue / stop / escalate": "H"
-      },
       "readiness_to_enter_signals": [
         "Comfort discussing uncertainty with AI."
       ],
@@ -311,22 +222,6 @@
         "ready_to_experiment_markdown": "Clear, bounded tasks exist.",
         "effectiveness_metric_markdown": "Acceptance rate of outputs.",
         "let_go_focus_markdown": "Let go of micromanaging steps."
-      },
-      "responsibility_ownership": {
-        "Definition of fitness to purpose / grounding": "H",
-        "Definition of correctness": "H",
-        "Prioritization of work": "H",
-        "Selection of work to do next": "H",
-        "Business/domain decomposition": "H",
-        "Architecture and system design": "H",
-        "Design for testability": "AG",
-        "Unit test creation": "AG",
-        "Changing product code": "AO",
-        "Integration/system test creation": "AG",
-        "Evaluation of results": "H",
-        "Infrastructure and deployment choices": "H",
-        "Detection of failure or drift": "H",
-        "Decision to continue / stop / escalate": "H"
       },
       "readiness_to_enter_signals": [
         "Confidence in reviewing AI output."
@@ -363,22 +258,6 @@
         "effectiveness_metric_markdown": "Variance of outcomes.",
         "let_go_focus_markdown": "Let go of ad-hoc uniqueness."
       },
-      "responsibility_ownership": {
-        "Definition of fitness to purpose / grounding": "H",
-        "Definition of correctness": "H",
-        "Prioritization of work": "H",
-        "Selection of work to do next": "H",
-        "Business/domain decomposition": "H",
-        "Architecture and system design": "AG",
-        "Design for testability": "AG",
-        "Unit test creation": "AG",
-        "Changing product code": "AO",
-        "Integration/system test creation": "AG",
-        "Evaluation of results": "H",
-        "Infrastructure and deployment choices": "AG",
-        "Detection of failure or drift": "H",
-        "Decision to continue / stop / escalate": "H"
-      },
       "readiness_to_enter_signals": [
         "Stable prompt patterns exist."
       ],
@@ -413,22 +292,6 @@
         "ready_to_experiment_markdown": "Reliable tests exist.",
         "effectiveness_metric_markdown": "Iterations per success.",
         "let_go_focus_markdown": "Let go of supervising every attempt."
-      },
-      "responsibility_ownership": {
-        "Definition of fitness to purpose / grounding": "H",
-        "Definition of correctness": "AG",
-        "Prioritization of work": "H",
-        "Selection of work to do next": "H",
-        "Business/domain decomposition": "H",
-        "Architecture and system design": "AG",
-        "Design for testability": "AG",
-        "Unit test creation": "AG",
-        "Changing product code": "AO",
-        "Integration/system test creation": "AG",
-        "Evaluation of results": "AO",
-        "Infrastructure and deployment choices": "AG",
-        "Detection of failure or drift": "AG",
-        "Decision to continue / stop / escalate": "H"
       },
       "readiness_to_enter_signals": [
         "High trust in automated tests."
@@ -467,22 +330,6 @@
         "ready_to_experiment_markdown": "Stable task execution exists; human is confident in per-task quality.",
         "effectiveness_metric_markdown": "Backlog throughput; task completion rate.",
         "let_go_focus_markdown": "Let go of needing to see every task; trust goal-level outcomes."
-      },
-      "responsibility_ownership": {
-        "Definition of fitness to purpose / grounding": "H",
-        "Definition of correctness": "AG",
-        "Prioritization of work": "H",
-        "Selection of work to do next": "A",
-        "Business/domain decomposition": "H",
-        "Architecture and system design": "AG",
-        "Design for testability": "AG",
-        "Unit test creation": "AG",
-        "Changing product code": "AO",
-        "Integration/system test creation": "AG",
-        "Evaluation of results": "AO",
-        "Infrastructure and deployment choices": "AG",
-        "Detection of failure or drift": "AG",
-        "Decision to continue / stop / escalate": "AG"
       },
       "readiness_to_enter_signals": [
         "Per-task execution is reliable.",
@@ -526,22 +373,6 @@
         "ready_to_experiment_markdown": "Task-level execution is trustworthy; goals are well-defined.",
         "effectiveness_metric_markdown": "Goal completion rate; rework after goal review.",
         "let_go_focus_markdown": "Let go of defining goals; trust flow-level rhythm and demos."
-      },
-      "responsibility_ownership": {
-        "Definition of fitness to purpose / grounding": "H",
-        "Definition of correctness": "AG",
-        "Prioritization of work": "S",
-        "Selection of work to do next": "A",
-        "Business/domain decomposition": "AG",
-        "Architecture and system design": "AG",
-        "Design for testability": "AG",
-        "Unit test creation": "AG",
-        "Changing product code": "AO",
-        "Integration/system test creation": "AG",
-        "Evaluation of results": "AO",
-        "Infrastructure and deployment choices": "AG",
-        "Detection of failure or drift": "AG",
-        "Decision to continue / stop / escalate": "AG"
       },
       "readiness_to_enter_signals": [
         "Goal decomposition is reliable.",
@@ -587,22 +418,6 @@
         "effectiveness_metric_markdown": "Demo value; process health indicators; time between meaningful slices.",
         "let_go_focus_markdown": "Let go of process supervision; trust system to escalate when judgment is needed."
       },
-      "responsibility_ownership": {
-        "Definition of fitness to purpose / grounding": "H",
-        "Definition of correctness": "AG",
-        "Prioritization of work": "S",
-        "Selection of work to do next": "A",
-        "Business/domain decomposition": "AG",
-        "Architecture and system design": "AG",
-        "Design for testability": "AG",
-        "Unit test creation": "A",
-        "Changing product code": "A",
-        "Integration/system test creation": "A",
-        "Evaluation of results": "AO",
-        "Infrastructure and deployment choices": "AG",
-        "Detection of failure or drift": "AG",
-        "Decision to continue / stop / escalate": "AG"
-      },
       "readiness_to_enter_signals": [
         "Demos consistently deliver valuable increments.",
         "Human trusts system's goal selection.",
@@ -644,22 +459,6 @@
         "effectiveness_metric_markdown": "False escalation rate.",
         "let_go_focus_markdown": "Let go of continuous supervision."
       },
-      "responsibility_ownership": {
-        "Definition of fitness to purpose / grounding": "H",
-        "Definition of correctness": "AG",
-        "Prioritization of work": "S",
-        "Selection of work to do next": "A",
-        "Business/domain decomposition": "AG",
-        "Architecture and system design": "AG",
-        "Design for testability": "AG",
-        "Unit test creation": "AG",
-        "Changing product code": "A",
-        "Integration/system test creation": "AG",
-        "Evaluation of results": "AO",
-        "Infrastructure and deployment choices": "AG",
-        "Detection of failure or drift": "A",
-        "Decision to continue / stop / escalate": "A"
-      },
       "readiness_to_enter_signals": [
         "Stable autonomous loops exist."
       ],
@@ -694,22 +493,6 @@
         "ready_to_experiment_markdown": "Confidence in agent goals.",
         "effectiveness_metric_markdown": "Issues found per review.",
         "let_go_focus_markdown": "Let go of needing full context."
-      },
-      "responsibility_ownership": {
-        "Definition of fitness to purpose / grounding": "H",
-        "Definition of correctness": "AG",
-        "Prioritization of work": "S",
-        "Selection of work to do next": "A",
-        "Business/domain decomposition": "AG",
-        "Architecture and system design": "AG",
-        "Design for testability": "AG",
-        "Unit test creation": "A",
-        "Changing product code": "A",
-        "Integration/system test creation": "A",
-        "Evaluation of results": "AO",
-        "Infrastructure and deployment choices": "AG",
-        "Detection of failure or drift": "A",
-        "Decision to continue / stop / escalate": "A"
       },
       "readiness_to_enter_signals": [
         "Comfort reviewing outcomes only."
@@ -747,22 +530,6 @@
         "effectiveness_metric_markdown": "Time unattended.",
         "let_go_focus_markdown": "Let go of situational awareness."
       },
-      "responsibility_ownership": {
-        "Definition of fitness to purpose / grounding": "H",
-        "Definition of correctness": "AG",
-        "Prioritization of work": "S",
-        "Selection of work to do next": "A",
-        "Business/domain decomposition": "AG",
-        "Architecture and system design": "AG",
-        "Design for testability": "A",
-        "Unit test creation": "A",
-        "Changing product code": "A",
-        "Integration/system test creation": "A",
-        "Evaluation of results": "AO",
-        "Infrastructure and deployment choices": "AG",
-        "Detection of failure or drift": "A",
-        "Decision to continue / stop / escalate": "A"
-      },
       "readiness_to_enter_signals": [
         "Acceptance of non-transparency."
       ],
@@ -797,22 +564,6 @@
         "ready_to_experiment_markdown": "Event taxonomy is clear.",
         "effectiveness_metric_markdown": "Mean time to resolution.",
         "let_go_focus_markdown": "Let go of linear narratives."
-      },
-      "responsibility_ownership": {
-        "Definition of fitness to purpose / grounding": "H",
-        "Definition of correctness": "AG",
-        "Prioritization of work": "S",
-        "Selection of work to do next": "A",
-        "Business/domain decomposition": "AG",
-        "Architecture and system design": "AG",
-        "Design for testability": "A",
-        "Unit test creation": "A",
-        "Changing product code": "A",
-        "Integration/system test creation": "A",
-        "Evaluation of results": "AO",
-        "Infrastructure and deployment choices": "AG",
-        "Detection of failure or drift": "A",
-        "Decision to continue / stop / escalate": "A"
       },
       "readiness_to_enter_signals": [
         "Comfort with emergent behavior."
@@ -849,22 +600,6 @@
         "ready_to_experiment_markdown": "Trust in full autonomy.",
         "effectiveness_metric_markdown": "Personal fit.",
         "let_go_focus_markdown": "Let go of shared software."
-      },
-      "responsibility_ownership": {
-        "Definition of fitness to purpose / grounding": "H",
-        "Definition of correctness": "A",
-        "Prioritization of work": "A",
-        "Selection of work to do next": "A",
-        "Business/domain decomposition": "A",
-        "Architecture and system design": "A",
-        "Design for testability": "A",
-        "Unit test creation": "A",
-        "Changing product code": "A",
-        "Integration/system test creation": "A",
-        "Evaluation of results": "A",
-        "Infrastructure and deployment choices": "A",
-        "Detection of failure or drift": "A",
-        "Decision to continue / stop / escalate": "A"
       },
       "readiness_to_enter_signals": [
         "Acceptance of individualized reality."

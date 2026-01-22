@@ -70,7 +70,6 @@ export interface Substage {
   emotional_state?: SubstageEmotionalState
   failure_modes_markdown?: string[]
   readiness?: SubstageReadiness
-  responsibility_ownership?: Record<string, string>
   readiness_to_enter_signals?: string[]
   effectiveness_measures?: string[]
   failure_modes?: string[]
