@@ -446,6 +446,185 @@
     },
     {
       "id": "A3.1",
+      "name": "Task-Level Supervision",
+      "keystone_behavior_markdown": "Human maintains prioritized backlog; system pulls tasks and executes. Human sees every task that flows through the process.",
+      "agency_allocation_markdown": "Human owns backlog and process visibility; AI executes tasks within the process.",
+      "example_markdown": "Human reviews the task queue daily, reprioritizes based on learnings, and watches tasks complete. They know what's being worked on at any moment.",
+      "emotional_state": {
+        "dominant": "Control through visibility",
+        "secondary": [
+          "Relief",
+          "Vigilance"
+        ],
+        "discomfort": "I'm not doing the work, but I still need to see it all."
+      },
+      "failure_modes_markdown": [
+        "Micromanaging task order",
+        "Bottlenecking on prioritization",
+        "Information overload from task-level visibility"
+      ],
+      "readiness": {
+        "ready_to_experiment_markdown": "Stable task execution exists; human is confident in per-task quality.",
+        "effectiveness_metric_markdown": "Backlog throughput; task completion rate.",
+        "let_go_focus_markdown": "Let go of needing to see every task; trust goal-level outcomes."
+      },
+      "responsibility_ownership": {
+        "Definition of fitness to purpose / grounding": "H",
+        "Definition of correctness": "AG",
+        "Prioritization of work": "H",
+        "Selection of work to do next": "A",
+        "Business/domain decomposition": "H",
+        "Architecture and system design": "AG",
+        "Design for testability": "AG",
+        "Unit test creation": "AG",
+        "Changing product code": "AO",
+        "Integration/system test creation": "AG",
+        "Evaluation of results": "AO",
+        "Infrastructure and deployment choices": "AG",
+        "Detection of failure or drift": "AG",
+        "Decision to continue / stop / escalate": "AG"
+      },
+      "readiness_to_enter_signals": [
+        "Per-task execution is reliable.",
+        "Human feels overwhelmed by task-level detail.",
+        "Goals are clear enough to trust decomposition."
+      ],
+      "effectiveness_measures": [
+        "Backlog velocity",
+        "Prioritization latency",
+        "Task-level defect rate"
+      ],
+      "failure_modes": [
+        "Backlog grooming becomes full-time job",
+        "Lost in task details, missing strategic drift"
+      ],
+      "letting_go_to_progress": [
+        "The need to see every task that flows through the system."
+      ],
+      "example": "Human manages a Kanban board; AI agents pull and complete tasks. Human reviews completed tasks and adjusts priorities."
+    },
+    {
+      "id": "A3.2",
+      "name": "Goal-Level Supervision",
+      "keystone_behavior_markdown": "Human defines goals; system decomposes into tasks and executes. Human engages at goal boundaries, not task boundaries.",
+      "agency_allocation_markdown": "Human owns objectives; AI owns task decomposition and execution within goals.",
+      "example_markdown": "Human says 'implement user authentication'; system breaks this into tasks, executes them, and reports when the goal is complete. Human reviews at goal completion.",
+      "emotional_state": {
+        "dominant": "Trust through outcomes",
+        "secondary": [
+          "Distance",
+          "Anticipation"
+        ],
+        "discomfort": "I don't know exactly what tasks are happening, only that progress is being made."
+      },
+      "failure_modes_markdown": [
+        "Goals too vague to verify",
+        "Misaligned decomposition",
+        "Surprise at goal completion review"
+      ],
+      "readiness": {
+        "ready_to_experiment_markdown": "Task-level execution is trustworthy; goals are well-defined.",
+        "effectiveness_metric_markdown": "Goal completion rate; rework after goal review.",
+        "let_go_focus_markdown": "Let go of defining goals; trust flow-level rhythm and demos."
+      },
+      "responsibility_ownership": {
+        "Definition of fitness to purpose / grounding": "H",
+        "Definition of correctness": "AG",
+        "Prioritization of work": "S",
+        "Selection of work to do next": "A",
+        "Business/domain decomposition": "AG",
+        "Architecture and system design": "AG",
+        "Design for testability": "AG",
+        "Unit test creation": "AG",
+        "Changing product code": "AO",
+        "Integration/system test creation": "AG",
+        "Evaluation of results": "AO",
+        "Infrastructure and deployment choices": "AG",
+        "Detection of failure or drift": "AG",
+        "Decision to continue / stop / escalate": "AG"
+      },
+      "readiness_to_enter_signals": [
+        "Goal decomposition is reliable.",
+        "Human trusts system's architectural choices within goals.",
+        "Review at goal boundaries feels sufficient."
+      ],
+      "effectiveness_measures": [
+        "Goals completed per period",
+        "Rework rate at goal review",
+        "Goal definition clarity"
+      ],
+      "failure_modes": [
+        "Goal scope creep",
+        "Decomposition drift from intent",
+        "Review fatigue at goal boundaries"
+      ],
+      "letting_go_to_progress": [
+        "The need to define and track individual goals."
+      ],
+      "example": "Human sets quarterly objectives; system continuously works toward them, reporting at objective milestones. Human reviews working software at each milestone."
+    },
+    {
+      "id": "A3.3",
+      "name": "Flow-Level Supervision",
+      "keystone_behavior_markdown": "Human watches overall development rhythm; engages at demos and checkpoints. Trusts goal selection; monitors process health.",
+      "agency_allocation_markdown": "Human owns process health and demo engagement; AI owns goal selection, decomposition, and execution.",
+      "example_markdown": "System continuously pulls from product vision, works in slices, and presents working software at regular demos. Human attends demos, provides feedback, and watches for process dysfunction.",
+      "emotional_state": {
+        "dominant": "Stewardship of rhythm",
+        "secondary": [
+          "Detachment",
+          "Watchfulness"
+        ],
+        "discomfort": "I don't know what goals are being pursued right now, only that slices keep appearing."
+      },
+      "failure_modes_markdown": [
+        "Demos become rubber stamps",
+        "Process dysfunction goes unnoticed",
+        "Strategic drift between demos"
+      ],
+      "readiness": {
+        "ready_to_experiment_markdown": "Goal-level execution is trustworthy; demos consistently produce valuable slices.",
+        "effectiveness_metric_markdown": "Demo value; process health indicators; time between meaningful slices.",
+        "let_go_focus_markdown": "Let go of process supervision; trust system to escalate when judgment is needed."
+      },
+      "responsibility_ownership": {
+        "Definition of fitness to purpose / grounding": "H",
+        "Definition of correctness": "AG",
+        "Prioritization of work": "S",
+        "Selection of work to do next": "A",
+        "Business/domain decomposition": "AG",
+        "Architecture and system design": "AG",
+        "Design for testability": "AG",
+        "Unit test creation": "A",
+        "Changing product code": "A",
+        "Integration/system test creation": "A",
+        "Evaluation of results": "AO",
+        "Infrastructure and deployment choices": "AG",
+        "Detection of failure or drift": "AG",
+        "Decision to continue / stop / escalate": "AG"
+      },
+      "readiness_to_enter_signals": [
+        "Demos consistently deliver valuable increments.",
+        "Human trusts system's goal selection.",
+        "Process interventions are rare."
+      ],
+      "effectiveness_measures": [
+        "Demo cadence and value",
+        "Process intervention frequency",
+        "Strategic alignment over time"
+      ],
+      "failure_modes": [
+        "Passive demo attendance",
+        "Missing early signs of process decay",
+        "Losing touch with product direction"
+      ],
+      "letting_go_to_progress": [
+        "The need to understand the development process itself."
+      ],
+      "example": "Weekly demo meetings where system presents completed slices. Human provides direction and feedback but doesn't know what's being worked on between demos."
+    },
+    {
+      "id": "A4.1",
       "name": "Hard-Coded Escalation",
       "keystone_behavior_markdown": "System escalates to humans on predefined conditions.",
       "agency_allocation_markdown": "AI runs; humans handle exceptions.",
@@ -496,7 +675,7 @@
       "example": "Early autonomous CI agents."
     },
     {
-      "id": "A3.2",
+      "id": "A4.2",
       "name": "Review-Gated Autonomy",
       "keystone_behavior_markdown": "Long autonomous runs with periodic human review.",
       "agency_allocation_markdown": "AI leads; humans validate checkpoints.",
@@ -547,7 +726,7 @@
       "example": "Long-running autonomous refactoring systems."
     },
     {
-      "id": "A3.3",
+      "id": "A4.3",
       "name": "Ralph Wiggum Mode",
       "keystone_behavior_markdown": "Simple loop, back-pressure, and a law that all durable state lives in source control.",
       "agency_allocation_markdown": "AI runs continuously; humans are consulted only on demand.",
@@ -599,7 +778,7 @@
       "example": "Minimal-agent orchestration systems."
     },
     {
-      "id": "A3.4",
+      "id": "A4.4",
       "name": "Event-Driven Autonomous Systems",
       "keystone_behavior_markdown": "Agents respond to events rather than running a loop; flows are non-deterministic but grounded by source control.",
       "agency_allocation_markdown": "System reacts; humans are normative anchors.",
@@ -650,7 +829,7 @@
       "example": "Reactive multi-agent systems."
     },
     {
-      "id": "A4.1",
+      "id": "A5.1",
       "name": "Personalized Autonomous Software",
       "keystone_behavior_markdown": "Software is generated and evolved per human reality; no shared product.",
       "agency_allocation_markdown": "System serves an individual; human provides grounding.",
