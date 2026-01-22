@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import type { OwnershipCode, OwnershipCodeInfo } from '../types'
 import { getResponsibilityMatrixForSubstages } from '../composables/useModelData'
 
@@ -8,8 +8,8 @@ const props = defineProps<{
   substageNames?: Record<string, string>
 }>()
 
+const expanded = ref(false)
 const matrixData = computed(() => getResponsibilityMatrixForSubstages(props.substageIds))
-
 
 function getOwnershipClass(code: OwnershipCode): string {
   return `ownership-${code.toLowerCase()}`
@@ -27,52 +27,186 @@ function hasTransition(respIndex: number): boolean {
 function getSubstageName(id: string): string {
   return props.substageNames?.[id] || id
 }
+
+function toggleExpanded() {
+  expanded.value = !expanded.value
+}
+
+function getTooltipText(respIndex: number, substageIndex: number): string {
+  const code = matrixData.value.matrix[substageIndex]?.[respIndex] || 'H'
+  const responsibility = matrixData.value.responsibilities[respIndex]
+  const ownership = getOwnershipInfo(code).description
+  return `${responsibility}: ${ownership}`
+}
 </script>
 
 <template>
-  <div class="responsibility-table-container">
-    <table class="responsibility-table">
-      <thead>
-        <tr>
-          <th class="responsibility-header">Responsibility</th>
-          <th
-            v-for="substageId in substageIds"
-            :key="substageId"
-            class="substage-header"
-          >
-            {{ getSubstageName(substageId) }}
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
+  <div class="responsibility-table-container" :class="{ expanded }">
+    <!-- Compact sparkline view -->
+    <div v-if="!expanded" class="sparkline" @click="toggleExpanded">
+      <div class="sparkline-grid">
+        <div
           v-for="(responsibility, respIndex) in matrixData.responsibilities"
           :key="responsibility"
+          class="sparkline-row"
           :class="{ 'has-transition': hasTransition(respIndex) }"
         >
-          <td class="responsibility-name">{{ responsibility }}</td>
-          <td
+          <div
             v-for="(substageId, substageIndex) in substageIds"
             :key="substageId"
-            class="ownership-cell"
+            class="sparkline-cell"
             :class="getOwnershipClass(matrixData.matrix[substageIndex]?.[respIndex] || 'H')"
           >
-            <span class="cell-content">
-              {{ getOwnershipInfo(matrixData.matrix[substageIndex]?.[respIndex] || 'H').label }}
-              <span class="tooltip">{{ getOwnershipInfo(matrixData.matrix[substageIndex]?.[respIndex] || 'H').description }}</span>
-            </span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+            <span class="sparkline-tooltip">{{ getTooltipText(respIndex, substageIndex) }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="sparkline-hint">Click to expand</div>
+    </div>
 
+    <!-- Expanded table view -->
+    <div v-else class="expanded-view">
+      <button class="collapse-btn" @click="toggleExpanded">Collapse</button>
+      <table class="responsibility-table">
+        <thead>
+          <tr>
+            <th class="responsibility-header">Responsibility</th>
+            <th
+              v-for="substageId in substageIds"
+              :key="substageId"
+              class="substage-header"
+            >
+              {{ getSubstageName(substageId) }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="(responsibility, respIndex) in matrixData.responsibilities"
+            :key="responsibility"
+            :class="{ 'has-transition': hasTransition(respIndex) }"
+          >
+            <td class="responsibility-name">{{ responsibility }}</td>
+            <td
+              v-for="(substageId, substageIndex) in substageIds"
+              :key="substageId"
+              class="ownership-cell"
+              :class="getOwnershipClass(matrixData.matrix[substageIndex]?.[respIndex] || 'H')"
+            >
+              <span class="cell-content">
+                {{ getOwnershipInfo(matrixData.matrix[substageIndex]?.[respIndex] || 'H').label }}
+                <span class="tooltip">{{ getOwnershipInfo(matrixData.matrix[substageIndex]?.[respIndex] || 'H').description }}</span>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
 <style scoped>
 .responsibility-table-container {
-  overflow-x: auto;
   margin: var(--spacing-md) 0;
+}
+
+/* Sparkline compact view */
+.sparkline {
+  cursor: pointer;
+  display: inline-block;
+  padding: var(--spacing-sm);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-surface);
+  transition: box-shadow 0.15s ease;
+}
+
+.sparkline:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sparkline-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.sparkline-row {
+  display: flex;
+  gap: 1px;
+}
+
+.sparkline-row.has-transition {
+  outline: 1px solid #fbbf24;
+  outline-offset: -1px;
+}
+
+.sparkline-cell {
+  width: 12px;
+  height: 8px;
+  position: relative;
+}
+
+.sparkline-tooltip {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #1f2937;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  white-space: nowrap;
+  z-index: 100;
+  transition: opacity 0.15s ease-in-out;
+  pointer-events: none;
+  margin-bottom: 6px;
+}
+
+.sparkline-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-top-color: #1f2937;
+}
+
+.sparkline-cell:hover .sparkline-tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+.sparkline-hint {
+  font-size: 10px;
+  color: var(--color-text-light);
+  text-align: center;
+  margin-top: var(--spacing-xs);
+}
+
+/* Expanded view */
+.expanded-view {
+  overflow-x: auto;
+}
+
+.collapse-btn {
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 4px 12px;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-light);
+  cursor: pointer;
+  margin-bottom: var(--spacing-sm);
+}
+
+.collapse-btn:hover {
+  background-color: var(--color-surface);
+  color: var(--color-text);
 }
 
 .responsibility-table {
@@ -146,7 +280,7 @@ function getSubstageName(id: string): string {
   color: #2b8a3e;
 }
 
-/* Tooltip */
+/* Tooltip for expanded view */
 .cell-content {
   position: relative;
   cursor: help;
