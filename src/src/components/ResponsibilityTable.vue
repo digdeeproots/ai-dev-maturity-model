@@ -56,9 +56,11 @@ function getSubstageName(id: string): string {
             :key="substageId"
             class="ownership-cell"
             :class="getOwnershipClass(matrixData.matrix[substageIndex]?.[respIndex] || 'H')"
-            :title="getOwnershipInfo(matrixData.matrix[substageIndex]?.[respIndex] || 'H').description"
           >
-            {{ getOwnershipInfo(matrixData.matrix[substageIndex]?.[respIndex] || 'H').label }}
+            <span class="cell-content">
+              {{ getOwnershipInfo(matrixData.matrix[substageIndex]?.[respIndex] || 'H').label }}
+              <span class="tooltip">{{ getOwnershipInfo(matrixData.matrix[substageIndex]?.[respIndex] || 'H').description }}</span>
+            </span>
           </td>
         </tr>
       </tbody>
@@ -144,4 +146,43 @@ function getSubstageName(id: string): string {
   color: #2b8a3e;
 }
 
+/* Tooltip */
+.cell-content {
+  position: relative;
+  cursor: help;
+}
+
+.tooltip {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #1f2937;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: var(--font-size-xs);
+  white-space: nowrap;
+  z-index: 100;
+  transition: opacity 0.15s ease-in-out;
+  pointer-events: none;
+  margin-bottom: 4px;
+}
+
+.tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-top-color: #1f2937;
+}
+
+.cell-content:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
 </style>
