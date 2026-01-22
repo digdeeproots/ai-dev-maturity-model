@@ -24,6 +24,10 @@ function hasTransition(respIndex: number): boolean {
   return new Set(codes).size > 1
 }
 
+function getOwnershipCode(substageIndex: number, respIndex: number): OwnershipCode {
+  return matrixData.value.matrix[substageIndex]?.[respIndex] || 'H'
+}
+
 function getSubstageName(id: string): string {
   return props.substageNames?.[id] || id
 }
@@ -46,16 +50,15 @@ function getTooltipText(respIndex: number, substageIndex: number): string {
     <div v-if="!expanded" class="sparkline" @click="toggleExpanded">
       <div class="sparkline-grid">
         <div
-          v-for="(responsibility, respIndex) in matrixData.responsibilities"
-          :key="responsibility"
+          v-for="(substageId, substageIndex) in substageIds"
+          :key="substageId"
           class="sparkline-row"
-          :class="{ 'has-transition': hasTransition(respIndex) }"
         >
           <div
-            v-for="(substageId, substageIndex) in substageIds"
-            :key="substageId"
+            v-for="(responsibility, respIndex) in matrixData.responsibilities"
+            :key="responsibility"
             class="sparkline-cell"
-            :class="getOwnershipClass(matrixData.matrix[substageIndex]?.[respIndex] || 'H')"
+            :class="[getOwnershipClass(getOwnershipCode(substageIndex, respIndex)), { 'has-transition': hasTransition(respIndex) }]"
           >
             <span class="sparkline-tooltip">{{ getTooltipText(respIndex, substageIndex) }}</span>
           </div>
@@ -70,32 +73,32 @@ function getTooltipText(respIndex: number, substageIndex: number): string {
       <table class="responsibility-table">
         <thead>
           <tr>
-            <th class="responsibility-header">Responsibility</th>
+            <th class="substage-header">Substage</th>
             <th
-              v-for="substageId in substageIds"
-              :key="substageId"
-              class="substage-header"
+              v-for="(responsibility, respIndex) in matrixData.responsibilities"
+              :key="responsibility"
+              class="responsibility-header"
+              :class="{ 'has-transition': hasTransition(respIndex) }"
             >
-              {{ getSubstageName(substageId) }}
+              {{ responsibility }}
             </th>
           </tr>
         </thead>
         <tbody>
           <tr
-            v-for="(responsibility, respIndex) in matrixData.responsibilities"
-            :key="responsibility"
-            :class="{ 'has-transition': hasTransition(respIndex) }"
+            v-for="(substageId, substageIndex) in substageIds"
+            :key="substageId"
           >
-            <td class="responsibility-name">{{ responsibility }}</td>
+            <td class="substage-name">{{ getSubstageName(substageId) }}</td>
             <td
-              v-for="(substageId, substageIndex) in substageIds"
-              :key="substageId"
+              v-for="(responsibility, respIndex) in matrixData.responsibilities"
+              :key="responsibility"
               class="ownership-cell"
-              :class="getOwnershipClass(matrixData.matrix[substageIndex]?.[respIndex] || 'H')"
+              :class="[getOwnershipClass(getOwnershipCode(substageIndex, respIndex)), { 'has-transition': hasTransition(respIndex) }]"
             >
               <span class="cell-content">
-                {{ getOwnershipInfo(matrixData.matrix[substageIndex]?.[respIndex] || 'H').label }}
-                <span class="tooltip">{{ getOwnershipInfo(matrixData.matrix[substageIndex]?.[respIndex] || 'H').description }}</span>
+                {{ getOwnershipInfo(getOwnershipCode(substageIndex, respIndex)).label }}
+                <span class="tooltip">{{ getOwnershipInfo(getOwnershipCode(substageIndex, respIndex)).description }}</span>
               </span>
             </td>
           </tr>
@@ -136,15 +139,15 @@ function getTooltipText(respIndex: number, substageIndex: number): string {
   gap: 1px;
 }
 
-.sparkline-row.has-transition {
-  outline: 1px solid #fbbf24;
-  outline-offset: -1px;
+.sparkline-cell {
+  width: 8px;
+  height: 12px;
+  position: relative;
 }
 
-.sparkline-cell {
-  width: 12px;
-  height: 8px;
-  position: relative;
+.sparkline-cell.has-transition {
+  outline: 1px solid #fbbf24;
+  outline-offset: -1px;
 }
 
 .sparkline-tooltip {
@@ -222,31 +225,34 @@ function getTooltipText(respIndex: number, substageIndex: number): string {
   text-align: center;
 }
 
-.responsibility-header {
+.substage-header {
   text-align: left;
   background-color: var(--color-surface);
   font-weight: 600;
-  min-width: 200px;
-}
-
-.substage-header {
-  background-color: var(--color-surface);
-  font-weight: 600;
-  white-space: nowrap;
   min-width: 80px;
 }
 
-.responsibility-name {
+.responsibility-header {
+  background-color: var(--color-surface);
+  font-weight: 600;
+  font-size: var(--font-size-xs);
+  min-width: 60px;
+  max-width: 120px;
+  word-wrap: break-word;
+}
+
+.responsibility-header.has-transition {
+  background-color: #fef3c7;
+}
+
+.substage-name {
   text-align: left;
   font-weight: 500;
+  white-space: nowrap;
 }
 
 .has-transition {
   background-color: #fffbeb;
-}
-
-.has-transition .responsibility-name {
-  font-weight: 600;
 }
 
 .ownership-cell {
