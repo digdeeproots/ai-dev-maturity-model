@@ -3,10 +3,20 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useModelData, getSubstagesForStage } from '../composables/useModelData'
 import { useMarkdown } from '../composables/useMarkdown'
+import ResponsibilityTable from '../components/ResponsibilityTable.vue'
 
 const router = useRouter()
 const { model, agencyStages } = useModelData()
 const { md } = useMarkdown()
+
+function getSubstageIds(stageId: string): string[] {
+  return getSubstagesForStage(stageId).map(s => s.id)
+}
+
+function getSubstageNames(stageId: string): Record<string, string> {
+  const substages = getSubstagesForStage(stageId)
+  return Object.fromEntries(substages.map(s => [s.id, s.id]))
+}
 
 const expandedStageId = ref<string | null>(null)
 const expandedSubstageIds = ref<Set<string>>(new Set())
@@ -89,6 +99,15 @@ function goBack() {
               <div class="markdown-content" v-html="md(stage.sacred_cows_markdown)"></div>
             </div>
 
+            <!-- Responsibility Transitions -->
+            <div v-if="getSubstageIds(stage.id).length > 0" class="responsibility-section">
+              <h4>Responsibility Transitions</h4>
+              <ResponsibilityTable
+                :substage-ids="getSubstageIds(stage.id)"
+                :substage-names="getSubstageNames(stage.id)"
+              />
+            </div>
+
             <!-- Substages -->
             <div v-if="getSubstagesForStage(stage.id).length > 0" class="substages-section">
               <h4>Substages</h4>
@@ -105,21 +124,20 @@ function goBack() {
                       <span class="substage-name">{{ substage.name }}</span>
                     </div>
                     <div v-if="!isSubstageExpanded(substage.id)" class="substage-summary">
-                      {{ substage.one_line_definition }}
+                      {{ substage.keystone_behavior_markdown || substage.agency_allocation_markdown || '' }}
                     </div>
                     <span class="expand-icon">{{ isSubstageExpanded(substage.id) ? '−' : '+' }}</span>
                   </button>
 
                   <div v-if="isSubstageExpanded(substage.id)" class="substage-content">
-                    <div class="substage-detail">
-                      <strong>Definition:</strong> {{ substage.one_line_definition }}
+                    <div v-if="substage.keystone_behavior_markdown" class="substage-detail">
+                      <strong>Keystone Behavior:</strong>
+                      <div class="markdown-content" v-html="md(substage.keystone_behavior_markdown)"></div>
                     </div>
 
-                    <div v-if="substage.core_behaviors?.length" class="substage-detail">
-                      <strong>Core Behaviors:</strong>
-                      <ul>
-                        <li v-for="(behavior, i) in substage.core_behaviors" :key="i">{{ behavior }}</li>
-                      </ul>
+                    <div v-if="substage.agency_allocation_markdown" class="substage-detail">
+                      <strong>Agency Allocation:</strong>
+                      <div class="markdown-content" v-html="md(substage.agency_allocation_markdown)"></div>
                     </div>
 
                     <div v-if="substage.emotional_state" class="substage-detail emotional-state">
@@ -135,22 +153,31 @@ function goBack() {
                       </div>
                     </div>
 
-                    <div v-if="substage.failure_modes?.length" class="substage-detail">
+                    <div v-if="substage.failure_modes_markdown?.length" class="substage-detail">
                       <strong>Failure Modes:</strong>
                       <ul>
-                        <li v-for="(mode, i) in substage.failure_modes" :key="i">{{ mode }}</li>
+                        <li v-for="(mode, i) in substage.failure_modes_markdown" :key="i">{{ mode }}</li>
                       </ul>
                     </div>
 
-                    <div v-if="substage.letting_go_to_progress?.length" class="substage-detail">
-                      <strong>Letting Go to Progress:</strong>
-                      <ul>
-                        <li v-for="(item, i) in substage.letting_go_to_progress" :key="i">{{ item }}</li>
-                      </ul>
+                    <div v-if="substage.readiness" class="substage-detail readiness">
+                      <strong>Readiness:</strong>
+                      <div class="readiness-details">
+                        <div v-if="substage.readiness.ready_to_experiment_markdown">
+                          <em>Ready to experiment:</em> {{ substage.readiness.ready_to_experiment_markdown }}
+                        </div>
+                        <div v-if="substage.readiness.effectiveness_metric_markdown">
+                          <em>Effectiveness metric:</em> {{ substage.readiness.effectiveness_metric_markdown }}
+                        </div>
+                        <div v-if="substage.readiness.let_go_focus_markdown">
+                          <em>Let go focus:</em> {{ substage.readiness.let_go_focus_markdown }}
+                        </div>
+                      </div>
                     </div>
 
-                    <div v-if="substage.example" class="substage-detail example">
-                      <strong>Example:</strong> {{ substage.example }}
+                    <div v-if="substage.example_markdown" class="substage-detail example">
+                      <strong>Example:</strong>
+                      <div class="markdown-content" v-html="md(substage.example_markdown)"></div>
                     </div>
                   </div>
                 </div>
@@ -427,5 +454,31 @@ function goBack() {
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: 4px;
   border-left: 3px solid var(--color-primary);
+}
+
+.readiness-details {
+  margin-top: var(--spacing-xs);
+  padding-left: var(--spacing-md);
+}
+
+.readiness-details > div {
+  margin-bottom: var(--spacing-xs);
+}
+
+.readiness-details em {
+  color: var(--color-text-light);
+}
+
+/* Responsibility section */
+.responsibility-section {
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--color-border);
+}
+
+.responsibility-section > h4 {
+  font-size: var(--font-size-lg);
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-md);
 }
 </style>

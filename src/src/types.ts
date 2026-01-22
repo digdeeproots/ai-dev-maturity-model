@@ -55,13 +55,21 @@ export interface SubstageEmotionalState {
   discomfort?: string
 }
 
+export interface SubstageReadiness {
+  ready_to_experiment_markdown?: string
+  effectiveness_metric_markdown?: string
+  let_go_focus_markdown?: string
+}
+
 export interface Substage {
   id: string
   name: string
-  stage: string
-  one_line_definition: string
-  core_behaviors?: string[]
+  keystone_behavior_markdown?: string
+  agency_allocation_markdown?: string
+  example_markdown?: string
   emotional_state?: SubstageEmotionalState
+  failure_modes_markdown?: string[]
+  readiness?: SubstageReadiness
   responsibility_ownership?: Record<string, string>
   readiness_to_enter_signals?: string[]
   effectiveness_measures?: string[]
@@ -74,6 +82,20 @@ export interface Substage {
 
 export interface SubstagesData {
   substages: Substage[]
+}
+
+// Responsibility ownership types
+export type OwnershipCode = 'H' | 'A' | 'AG' | 'AO' | 'S'
+
+export interface OwnershipCodeInfo {
+  label: string
+  description: string
+}
+
+export interface ResponsibilityOwnershipData {
+  responsibilities: string[]
+  ownership_codes: Record<OwnershipCode, OwnershipCodeInfo>
+  matrix: Record<string, OwnershipCode[]>
 }
 
 export interface AgencyStagesData {
