@@ -11,6 +11,27 @@ const props = defineProps<{
 const expanded = ref(false)
 const matrixData = computed(() => getResponsibilityMatrixForSubstages(props.substageIds))
 
+const shortNames: Record<string, string> = {
+  'Definition of fitness to purpose / grounding': 'Grounding',
+  'Definition of correctness': 'Correctness',
+  'Prioritization of work': 'Priority',
+  'Selection of work to do next': 'Work Select',
+  'Business/domain decomposition': 'Decomp',
+  'Architecture and system design': 'Arch',
+  'Design for testability': 'Testability',
+  'Unit test creation': 'Unit Tests',
+  'Changing product code': 'Code',
+  'Integration/system test creation': 'Integ Tests',
+  'Evaluation of results': 'Evaluation',
+  'Infrastructure and deployment choices': 'Infra',
+  'Detection of failure or drift': 'Detect Fail',
+  'Decision to continue / stop / escalate': 'Escalation'
+}
+
+function getShortName(responsibility: string): string {
+  return shortNames[responsibility] || responsibility
+}
+
 function getOwnershipClass(code: OwnershipCode): string {
   return `ownership-${code.toLowerCase()}`
 }
@@ -80,7 +101,9 @@ function getTooltipText(respIndex: number, substageIndex: number): string {
               class="responsibility-header"
               :class="{ 'has-transition': hasTransition(respIndex) }"
             >
-              {{ responsibility }}
+              <div class="rotated-header">
+                <span :title="responsibility">{{ getShortName(responsibility) }}</span>
+              </div>
             </th>
           </tr>
         </thead>
@@ -236,13 +259,32 @@ function getTooltipText(respIndex: number, substageIndex: number): string {
   background-color: var(--color-surface);
   font-weight: 600;
   font-size: var(--font-size-xs);
-  min-width: 60px;
-  max-width: 120px;
-  word-wrap: break-word;
+  padding: 0;
+  height: 100px;
+  min-width: 32px;
+  max-width: 32px;
+  vertical-align: bottom;
 }
 
 .responsibility-header.has-transition {
   background-color: #fef3c7;
+}
+
+.rotated-header {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding-bottom: 6px;
+}
+
+.rotated-header span {
+  transform: rotate(-55deg);
+  transform-origin: left bottom;
+  white-space: nowrap;
+  display: block;
+  padding-left: 4px;
 }
 
 .substage-name {
