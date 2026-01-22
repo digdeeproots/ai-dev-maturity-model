@@ -28,8 +28,29 @@ const shortNames: Record<string, string> = {
   'Decision to continue / stop / escalate': 'Escalation'
 }
 
+const codes: Record<string, string> = {
+  'Definition of fitness to purpose / grounding': 'GRD',
+  'Definition of correctness': 'COR',
+  'Prioritization of work': 'PRI',
+  'Selection of work to do next': 'SEL',
+  'Business/domain decomposition': 'DEC',
+  'Architecture and system design': 'ARC',
+  'Design for testability': 'TST',
+  'Unit test creation': 'UNT',
+  'Changing product code': 'COD',
+  'Integration/system test creation': 'INT',
+  'Evaluation of results': 'EVL',
+  'Infrastructure and deployment choices': 'INF',
+  'Detection of failure or drift': 'DET',
+  'Decision to continue / stop / escalate': 'ESC'
+}
+
 function getShortName(responsibility: string): string {
   return shortNames[responsibility] || responsibility
+}
+
+function getCode(responsibility: string): string {
+  return codes[responsibility] || '???'
 }
 
 function getOwnershipClass(code: OwnershipCode): string {
@@ -70,16 +91,30 @@ function getTooltipText(respIndex: number, substageIndex: number): string {
     <!-- Compact sparkline view -->
     <div v-if="!expanded" class="sparkline" @click="toggleExpanded">
       <div class="sparkline-grid">
+        <!-- Header row with responsibility codes -->
+        <div class="sparkline-header-row">
+          <div class="sparkline-row-label"></div>
+          <div
+            v-for="responsibility in matrixData.responsibilities"
+            :key="responsibility"
+            class="sparkline-col-label"
+            :title="responsibility"
+          >
+            {{ getCode(responsibility) }}
+          </div>
+        </div>
+        <!-- Data rows -->
         <div
           v-for="(substageId, substageIndex) in substageIds"
           :key="substageId"
           class="sparkline-row"
         >
+          <div class="sparkline-row-label">{{ substageId }}</div>
           <div
             v-for="(responsibility, respIndex) in matrixData.responsibilities"
             :key="responsibility"
             class="sparkline-cell"
-            :class="[getOwnershipClass(getOwnershipCode(substageIndex, respIndex)), { 'has-transition': hasTransition(respIndex) }]"
+            :class="getOwnershipClass(getOwnershipCode(substageIndex, respIndex))"
           >
             <span class="sparkline-tooltip">{{ getTooltipText(respIndex, substageIndex) }}</span>
           </div>
@@ -157,20 +192,44 @@ function getTooltipText(respIndex: number, substageIndex: number): string {
   gap: 1px;
 }
 
+.sparkline-header-row {
+  display: flex;
+  gap: 1px;
+  margin-bottom: 2px;
+}
+
+.sparkline-col-label {
+  width: 12px;
+  font-size: 6px;
+  text-align: center;
+  color: var(--color-text-light);
+  overflow: hidden;
+  cursor: help;
+}
+
 .sparkline-row {
   display: flex;
   gap: 1px;
+  align-items: center;
+}
+
+.sparkline-row-label {
+  width: 28px;
+  font-size: 8px;
+  color: var(--color-text-light);
+  text-align: right;
+  padding-right: 3px;
+  flex-shrink: 0;
+}
+
+.sparkline-header-row .sparkline-row-label {
+  width: 28px;
 }
 
 .sparkline-cell {
-  width: 8px;
-  height: 12px;
+  width: 12px;
+  height: 10px;
   position: relative;
-}
-
-.sparkline-cell.has-transition {
-  outline: 1px solid #fbbf24;
-  outline-offset: -1px;
 }
 
 .sparkline-tooltip {
