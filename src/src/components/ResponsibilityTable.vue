@@ -129,30 +129,30 @@ function getSubstageName(id: string): string {
   font-size: var(--font-size-xs);
 }
 
-/* Ownership colors */
+/* Ownership colors - gradient from Human (blue) to AI (green) */
 .ownership-h {
   background-color: #dbeafe;
   color: #1e40af;
 }
 
-.ownership-a {
-  background-color: #dcfce7;
-  color: #166534;
-}
-
 .ownership-ag {
-  background-color: #fef3c7;
-  color: #92400e;
+  background-color: #a5d8ff;
+  color: #1864ab;
 }
 
 .ownership-ao {
-  background-color: #fce7f3;
-  color: #9d174d;
+  background-color: #99e9f2;
+  color: #0b7285;
 }
 
 .ownership-s {
-  background-color: #e0e7ff;
-  color: #3730a3;
+  background-color: #96f2d7;
+  color: #087f5b;
+}
+
+.ownership-a {
+  background-color: #b2f2bb;
+  color: #2b8a3e;
 }
 
 /* Legend */
