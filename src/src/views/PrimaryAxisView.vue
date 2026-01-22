@@ -25,16 +25,13 @@ const visibleStages = computed(() =>
   agencyStages.value.filter(s => s.visibility !== 'hidden_by_default')
 )
 
-// Axis-level overview: first and last substage of each visible stage
+// Axis-level overview: all substages from all visible stages
 const axisOverviewSubstageIds = computed(() => {
   const ids: string[] = []
   for (const stage of visibleStages.value) {
     const substages = getSubstagesForStage(stage.id)
-    if (substages.length > 0) {
-      ids.push(substages[0].id)
-      if (substages.length > 1) {
-        ids.push(substages[substages.length - 1].id)
-      }
+    for (const substage of substages) {
+      ids.push(substage.id)
     }
   }
   return ids
@@ -44,11 +41,8 @@ const axisOverviewSubstageNames = computed(() => {
   const names: Record<string, string> = {}
   for (const stage of visibleStages.value) {
     const substages = getSubstagesForStage(stage.id)
-    if (substages.length > 0) {
-      names[substages[0].id] = `${stage.id} Early`
-      if (substages.length > 1) {
-        names[substages[substages.length - 1].id] = `${stage.id} Late`
-      }
+    for (const substage of substages) {
+      names[substage.id] = substage.id
     }
   }
   return names
@@ -90,7 +84,7 @@ function goBack() {
       <!-- Axis-level responsibility overview -->
       <div class="axis-responsibility-section mt-xl">
         <h2>Responsibility Overview</h2>
-        <p class="section-desc">How responsibilities shift across stages (showing early and late substages of each stage)</p>
+        <p class="section-desc">How responsibilities shift across all substages</p>
         <ResponsibilityTable
           :substage-ids="axisOverviewSubstageIds"
           :substage-names="axisOverviewSubstageNames"
