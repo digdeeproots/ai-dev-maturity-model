@@ -25,6 +25,35 @@ const visibleStages = computed(() =>
   agencyStages.value.filter(s => s.visibility !== 'hidden_by_default')
 )
 
+// Axis-level overview: first and last substage of each visible stage
+const axisOverviewSubstageIds = computed(() => {
+  const ids: string[] = []
+  for (const stage of visibleStages.value) {
+    const substages = getSubstagesForStage(stage.id)
+    if (substages.length > 0) {
+      ids.push(substages[0].id)
+      if (substages.length > 1) {
+        ids.push(substages[substages.length - 1].id)
+      }
+    }
+  }
+  return ids
+})
+
+const axisOverviewSubstageNames = computed(() => {
+  const names: Record<string, string> = {}
+  for (const stage of visibleStages.value) {
+    const substages = getSubstagesForStage(stage.id)
+    if (substages.length > 0) {
+      names[substages[0].id] = `${stage.id} Early`
+      if (substages.length > 1) {
+        names[substages[substages.length - 1].id] = `${stage.id} Late`
+      }
+    }
+  }
+  return names
+})
+
 function toggleStage(id: string) {
   expandedStageId.value = expandedStageId.value === id ? null : id
 }
@@ -57,6 +86,16 @@ function goBack() {
 
       <h1>{{ model.primary_axis.name }}</h1>
       <div class="definition markdown-content mt-md" v-html="md(model.primary_axis.definition_markdown)"></div>
+
+      <!-- Axis-level responsibility overview -->
+      <div class="axis-responsibility-section mt-xl">
+        <h2>Responsibility Overview</h2>
+        <p class="section-desc">How responsibilities shift across stages (showing early and late substages of each stage)</p>
+        <ResponsibilityTable
+          :substage-ids="axisOverviewSubstageIds"
+          :substage-names="axisOverviewSubstageNames"
+        />
+      </div>
 
       <div class="stages mt-xl">
         <h2>Stages</h2>
@@ -214,6 +253,17 @@ function goBack() {
 .definition {
   font-size: var(--font-size-lg);
   color: var(--color-text-light);
+}
+
+/* Axis responsibility overview */
+.axis-responsibility-section h2 {
+  margin-bottom: var(--spacing-sm);
+}
+
+.axis-responsibility-section .section-desc {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-light);
+  margin-bottom: var(--spacing-md);
 }
 
 /* Stages */
