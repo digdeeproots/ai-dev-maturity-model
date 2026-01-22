@@ -10,8 +10,6 @@ const props = defineProps<{
 
 const matrixData = computed(() => getResponsibilityMatrixForSubstages(props.substageIds))
 
-// Ordered from human-owned to AI-owned
-const ownershipOrder: OwnershipCode[] = ['H', 'AG', 'AO', 'S', 'A']
 
 function getOwnershipClass(code: OwnershipCode): string {
   return `ownership-${code.toLowerCase()}`
@@ -66,18 +64,6 @@ function getSubstageName(id: string): string {
       </tbody>
     </table>
 
-    <div class="legend">
-      <span class="legend-title">Legend:</span>
-      <span
-        v-for="code in ownershipOrder"
-        :key="code"
-        class="legend-item"
-        :class="getOwnershipClass(code)"
-      >
-        <span class="legend-code">{{ getOwnershipInfo(code).label }}</span>
-        <span class="legend-desc">{{ getOwnershipInfo(code).description }}</span>
-      </span>
-    </div>
   </div>
 </template>
 
@@ -158,36 +144,4 @@ function getSubstageName(id: string): string {
   color: #2b8a3e;
 }
 
-/* Legend */
-.legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-md);
-  margin-top: var(--spacing-md);
-  padding: var(--spacing-sm) var(--spacing-md);
-  background-color: var(--color-surface);
-  border-radius: 4px;
-  font-size: var(--font-size-xs);
-}
-
-.legend-title {
-  font-weight: 600;
-  color: var(--color-text-light);
-}
-
-.legend-item {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-}
-
-.legend-code {
-  padding: 2px 6px;
-  border-radius: 3px;
-  font-weight: 600;
-}
-
-.legend-desc {
-  color: var(--color-text-light);
-}
 </style>
