@@ -1,0 +1,43 @@
+{
+  "responsibilities": [
+    "Definition of fitness to purpose / grounding",
+    "Definition of correctness",
+    "Prioritization of work",
+    "Selection of work to do next",
+    "Business/domain decomposition",
+    "Architecture and system design",
+    "Design for testability",
+    "Unit test creation",
+    "Changing product code",
+    "Integration/system test creation",
+    "Evaluation of results",
+    "Infrastructure and deployment choices",
+    "Detection of failure or drift",
+    "Decision to continue / stop / escalate"
+  ],
+  "ownership_codes": {
+    "H": { "label": "Human", "description": "Human-owned" },
+    "A": { "label": "AI", "description": "AI-owned" },
+    "AG": { "label": "AI+Guide", "description": "AI with human guidance" },
+    "AO": { "label": "AI+Review", "description": "AI with human oversight/review" },
+    "S": { "label": "Shared", "description": "Shared but converging toward AI" }
+  },
+  "matrix": {
+    "A0.1": ["H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"],
+    "A0.2": ["H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"],
+    "A0.3": ["H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"],
+    "A1.1": ["H", "H", "H", "H", "H", "H", "H", "H", "AG", "H", "H", "H", "H", "H"],
+    "A1.2": ["H", "H", "H", "H", "H", "H", "AG", "AG", "AG", "AG", "H", "H", "H", "H"],
+    "A2.1": ["H", "H", "H", "H", "H", "H", "AG", "AO", "AO", "AG", "H", "H", "H", "H"],
+    "A2.2": ["H", "H", "H", "H", "H", "AG", "AG", "AO", "A", "AG", "H", "AG", "AG", "AG"],
+    "A2.3": ["H", "AG", "H", "H", "H", "AG", "AG", "A", "A", "AO", "AO", "AG", "A", "A"],
+    "A3.1": ["H", "AG", "H", "A", "H", "AG", "AG", "A", "A", "A", "AO", "AG", "A", "A"],
+    "A3.2": ["H", "AG", "S", "A", "AG", "AG", "AG", "A", "A", "A", "A", "AG", "A", "A"],
+    "A3.3": ["H", "AG", "S", "A", "A", "A", "A", "A", "A", "A", "A", "AG", "A", "A"],
+    "A4.1": ["H", "AG", "S", "A", "A", "A", "A", "A", "A", "A", "A", "AG", "A", "A"],
+    "A4.2": ["H", "AG", "S", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A"],
+    "A4.3": ["H", "AG", "S", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A"],
+    "A4.4": ["H", "AG", "S", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A"],
+    "A5.1": ["H", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A"]
+  }
+}

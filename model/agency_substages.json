@@ -1,49 +1,39 @@
 {
   "document_id": "agency_substages_v1",
   "document_type": "model_detail",
-  "title": "Agency Axis – Substages (Detailed)",
-  "summary_markdown": "This document fully elaborates each Agency substage, describing behavior, emotional impact, responsibility ownership, readiness signals, effectiveness measures, failure modes, and transition dynamics. It is designed to support interactive exploration and progressive disclosure in a web UI.",
+  "title": "Agency Substages in AI-Augmented Software Development",
+  "summary_markdown": "This document enumerates the substages of the Agency axis. Each substage represents a stable configuration of responsibility, authority, and attention between humans and AI systems. Progression is non-linear but ordered; later substages require earlier capacities to be internalized or delegated.",
   "core_assumptions": [
     "Agency transfer is the dominant system constraint shaping all other improvement axes.",
     "Software systems increasingly act, decide, and adapt without human intervention.",
     "Humans retain responsibility for grounding: choosing realities, purposes, and values.",
     "All durable knowledge lives in source control; context is ephemeral."
   ],
-  "notation": {
-    "ownership_codes": {
-      "H": "Human-owned",
-      "A": "AI-owned",
-      "AG": "AI with human guidance",
-      "AO": "AI with human oversight/review",
-      "S": "Shared but converging toward AI"
-    }
-  },
   "substages": [
     {
-      "id": "A0",
-      "name": "No AI Assistance",
-      "stage": "Pre-Agency",
-      "one_line_definition": "All agency resides with humans; software is passive and fully specified.",
-      "core_behaviors": [
-        "Humans design, implement, test, and operate systems manually.",
-        "Automation exists only as explicitly written code.",
-        "Feedback cycles are slow and expensive."
-      ],
+      "id": "A0.1",
+      "name": "Manual Coding",
+      "keystone_behavior_markdown": "Human manually writes all code, tests, and designs. No AI involvement.",
+      "agency_allocation_markdown": "Human commands and executes the entire loop.",
+      "example_markdown": "A developer writes code in a text editor, runs tests manually, and debugs by inspection.",
       "emotional_state": {
         "dominant": "Control through effort",
-        "secondary": ["Pride", "Fatigue", "Anxiety"],
+        "secondary": [
+          "Pride",
+          "Fatigue",
+          "Anxiety"
+        ],
         "discomfort": "Everything depends on me; progress is fragile."
       },
-      "responsibility_ownership": {
-        "testable_designs": "H",
-        "architecture": "H",
-        "business_decomposition": "H",
-        "infrastructure_choices": "H",
-        "unit_tests": "H",
-        "definition_of_correctness": "H",
-        "definition_of_fitness_to_purpose": "H",
-        "priority": "H",
-        "work_to_do": "H"
+      "failure_modes_markdown": [
+        "Burnout",
+        "Slow iteration",
+        "Hidden complexity accumulation"
+      ],
+      "readiness": {
+        "ready_to_experiment_markdown": "Repetitive manual work; desire for speed or assistance.",
+        "effectiveness_metric_markdown": "Cycle time per change; defect escape rate.",
+        "let_go_focus_markdown": "Let go of the belief that control requires direct execution."
       },
       "readiness_to_enter_signals": [
         "Pain from slow feedback loops is visible.",
@@ -65,206 +55,565 @@
       "example": "A traditional enterprise software team with manual CI and human-driven releases."
     },
     {
-      "id": "A1",
-      "name": "Assistive AI",
-      "stage": "Human-Led",
-      "one_line_definition": "AI assists human intent but does not act independently.",
-      "core_behaviors": [
-        "AI generates suggestions, code, or explanations.",
-        "Humans initiate all actions and decisions.",
-        "AI outputs are treated as drafts."
-      ],
+      "id": "A0.2",
+      "name": "Heavy Tooling",
+      "keystone_behavior_markdown": "Humans rely on IDEs, linters, static analysis, and CI to catch errors early.",
+      "agency_allocation_markdown": "Human commands the loop; tools provide guardrails.",
+      "example_markdown": "A developer uses an IDE with autocomplete, linting, and CI checks on every commit.",
       "emotional_state": {
-        "dominant": "Augmented competence",
-        "secondary": ["Relief", "Suspicion"],
-        "discomfort": "Can I trust this, or will it mislead me?"
+        "dominant": "Safety through structure",
+        "secondary": [
+          "Relief",
+          "Dependence"
+        ],
+        "discomfort": "I rely on tools, but I still carry all decisions."
       },
-      "responsibility_ownership": {
-        "testable_designs": "H",
-        "architecture": "H",
-        "business_decomposition": "H",
-        "infrastructure_choices": "H",
-        "unit_tests": "AG",
-        "definition_of_correctness": "H",
-        "definition_of_fitness_to_purpose": "H",
-        "priority": "H",
-        "work_to_do": "H"
+      "failure_modes_markdown": [
+        "Tool cargo-culting",
+        "False sense of quality"
+      ],
+      "readiness": {
+        "ready_to_experiment_markdown": "Tools catch many issues; remaining work is still repetitive.",
+        "effectiveness_metric_markdown": "Defects caught pre-merge; CI pass rate.",
+        "let_go_focus_markdown": "Let go of the belief that tools are the same as delegation."
       },
       "readiness_to_enter_signals": [
-        "Comfort reviewing AI output.",
-        "Ability to reject or modify suggestions."
+        "Most errors are mechanical rather than conceptual."
       ],
       "effectiveness_measures": [
-        "Time saved per task",
-        "Reduction in trivial errors"
+        "CI failure rate",
+        "Time spent fixing style or syntax issues"
       ],
       "failure_modes": [
-        "Over-trusting suggestions",
-        "Copy-paste without understanding"
+        "Overconfidence in green builds"
       ],
       "letting_go_to_progress": [
-        "The belief that authorship equals responsibility."
+        "The belief that tools replace thinking."
       ],
-      "example": "Developers using AI copilots to write boilerplate or explain unfamiliar code."
+      "example": "A modern dev team with strong IDEs and CI but no AI."
     },
     {
-      "id": "A2",
-      "name": "Delegated Execution",
-      "stage": "Task-Level Agency",
-      "one_line_definition": "AI executes bounded tasks independently under explicit human intent.",
-      "core_behaviors": [
-        "Humans specify goals; AI performs execution.",
-        "Work is chunked into delegable units.",
-        "Results are reviewed, not step-by-step actions."
-      ],
+      "id": "A0.3",
+      "name": "Scripted Automation",
+      "keystone_behavior_markdown": "Humans encode repeatable steps into scripts and pipelines.",
+      "agency_allocation_markdown": "Human decides; scripts execute deterministically.",
+      "example_markdown": "Makefiles, CI pipelines, release scripts automate known workflows.",
       "emotional_state": {
-        "dominant": "Leverage",
-        "secondary": ["Unease", "Curiosity"],
-        "discomfort": "I didn’t do this myself—can I still own it?"
+        "dominant": "Control through repeatability",
+        "secondary": [
+          "Relief",
+          "Rigidity"
+        ],
+        "discomfort": "Automation helps, but only for what I already understand."
       },
-      "responsibility_ownership": {
-        "testable_designs": "AG",
-        "architecture": "H",
-        "business_decomposition": "H",
-        "infrastructure_choices": "H",
-        "unit_tests": "A",
-        "definition_of_correctness": "H",
-        "definition_of_fitness_to_purpose": "H",
-        "priority": "H",
-        "work_to_do": "AG"
+      "failure_modes_markdown": [
+        "Automation brittleness",
+        "Script sprawl"
+      ],
+      "readiness": {
+        "ready_to_experiment_markdown": "Scripts work reliably; novelty remains manual.",
+        "effectiveness_metric_markdown": "Pipeline stability; manual intervention rate.",
+        "let_go_focus_markdown": "Let go of the idea that automation must be pre-planned."
       },
       "readiness_to_enter_signals": [
-        "Clear task boundaries exist.",
-        "Humans are willing to review outcomes instead of process."
+        "Clear repetitive workflows exist."
       ],
       "effectiveness_measures": [
-        "Task throughput",
-        "Review rejection rate"
+        "Automation coverage",
+        "Manual steps remaining"
       ],
       "failure_modes": [
-        "Poor task specification",
-        "Micromanagement through prompts"
+        "Scripts encode outdated assumptions"
       ],
       "letting_go_to_progress": [
-        "The need to see every intermediate step."
+        "The belief that automation must be deterministic to be useful."
       ],
-      "example": "AI agents implementing tickets end-to-end with human review."
+      "example": "CI/CD-heavy teams before AI adoption."
+    },
+    {
+      "id": "A1.1",
+      "name": "Mechanical Leverage",
+      "keystone_behavior_markdown": "AI is used for autocomplete and snippet generation.",
+      "agency_allocation_markdown": "Human commands; AI accelerates execution.",
+      "example_markdown": "Using Copilot to write boilerplate code.",
+      "emotional_state": {
+        "dominant": "Speed through assistance",
+        "secondary": [
+          "Delight",
+          "Suspicion"
+        ],
+        "discomfort": "It helps, but I still own everything."
+      },
+      "failure_modes_markdown": [
+        "Blind acceptance of suggestions"
+      ],
+      "readiness": {
+        "ready_to_experiment_markdown": "Typing and boilerplate dominate effort.",
+        "effectiveness_metric_markdown": "Keystrokes saved; code churn.",
+        "let_go_focus_markdown": "Let go of typing as the primary value."
+      },
+      "readiness_to_enter_signals": [
+        "Comfort with AI suggestions."
+      ],
+      "effectiveness_measures": [
+        "Acceptance rate of suggestions"
+      ],
+      "failure_modes": [
+        "Cargo-cult code"
+      ],
+      "letting_go_to_progress": [
+        "The belief that writing code equals designing software."
+      ],
+      "example": "Individual developers using Copilot."
+    },
+    {
+      "id": "A1.2",
+      "name": "Cognitive Mirror",
+      "keystone_behavior_markdown": "AI is used to explain, critique, and question human thinking.",
+      "agency_allocation_markdown": "Human decides; AI reflects and challenges.",
+      "example_markdown": "Asking AI to review code or find missed edge cases.",
+      "emotional_state": {
+        "dominant": "Reflection through dialogue",
+        "secondary": [
+          "Humility",
+          "Relief"
+        ],
+        "discomfort": "My blind spots are visible."
+      },
+      "failure_modes_markdown": [
+        "Over-trusting critiques"
+      ],
+      "readiness": {
+        "ready_to_experiment_markdown": "Desire for better reasoning support.",
+        "effectiveness_metric_markdown": "Defects found pre-merge.",
+        "let_go_focus_markdown": "Let go of ego around being right."
+      },
+      "readiness_to_enter_signals": [
+        "Comfort discussing uncertainty with AI."
+      ],
+      "effectiveness_measures": [
+        "Reduction in rework"
+      ],
+      "failure_modes": [
+        "AI becomes rubber stamp"
+      ],
+      "letting_go_to_progress": [
+        "The belief that insight must originate from humans."
+      ],
+      "example": "Developers using AI as reviewer."
+    },
+    {
+      "id": "A2.1",
+      "name": "Delegated Execution",
+      "keystone_behavior_markdown": "Agents perform bounded tasks under human direction.",
+      "agency_allocation_markdown": "Human selects task; AI executes.",
+      "example_markdown": "Asking an agent to fix a bug or write a module.",
+      "emotional_state": {
+        "dominant": "Relief through delegation",
+        "secondary": [
+          "Anxiety"
+        ],
+        "discomfort": "Will it do what I meant?"
+      },
+      "failure_modes_markdown": [
+        "Overly vague delegation"
+      ],
+      "readiness": {
+        "ready_to_experiment_markdown": "Clear, bounded tasks exist.",
+        "effectiveness_metric_markdown": "Acceptance rate of outputs.",
+        "let_go_focus_markdown": "Let go of micromanaging steps."
+      },
+      "readiness_to_enter_signals": [
+        "Confidence in reviewing AI output."
+      ],
+      "effectiveness_measures": [
+        "Rework rate"
+      ],
+      "failure_modes": [
+        "Delegation without review"
+      ],
+      "letting_go_to_progress": [
+        "The belief that quality requires human execution."
+      ],
+      "example": "Using Cline or Claude Code for single tasks."
+    },
+    {
+      "id": "A2.2",
+      "name": "Repeatable Delegation",
+      "keystone_behavior_markdown": "Delegation is standardized via scripts, templates, and prompts.",
+      "agency_allocation_markdown": "Human defines pattern; AI executes repeatedly.",
+      "example_markdown": "Slash commands for common workflows.",
+      "emotional_state": {
+        "dominant": "Stability through patterns",
+        "secondary": [
+          "Confidence"
+        ],
+        "discomfort": "Patterns may fossilize."
+      },
+      "failure_modes_markdown": [
+        "Stale templates"
+      ],
+      "readiness": {
+        "ready_to_experiment_markdown": "Repeated similar delegations.",
+        "effectiveness_metric_markdown": "Variance of outcomes.",
+        "let_go_focus_markdown": "Let go of ad-hoc uniqueness."
+      },
+      "readiness_to_enter_signals": [
+        "Stable prompt patterns exist."
+      ],
+      "effectiveness_measures": [
+        "Consistency of outputs"
+      ],
+      "failure_modes": [
+        "Template rigidity"
+      ],
+      "letting_go_to_progress": [
+        "The belief that humans must adapt every time."
+      ],
+      "example": "Teams with standardized AI workflows."
+    },
+    {
+      "id": "A2.3",
+      "name": "Closed Local Loops",
+      "keystone_behavior_markdown": "Agents run until local correctness conditions are met.",
+      "agency_allocation_markdown": "AI iterates locally; human reviews outcome.",
+      "example_markdown": "Run until tests pass.",
+      "emotional_state": {
+        "dominant": "Trust through feedback",
+        "secondary": [
+          "Relief"
+        ],
+        "discomfort": "What if the tests are wrong?"
+      },
+      "failure_modes_markdown": [
+        "Overfitting to tests"
+      ],
+      "readiness": {
+        "ready_to_experiment_markdown": "Reliable tests exist.",
+        "effectiveness_metric_markdown": "Iterations per success.",
+        "let_go_focus_markdown": "Let go of supervising every attempt."
+      },
+      "readiness_to_enter_signals": [
+        "High trust in automated tests."
+      ],
+      "effectiveness_measures": [
+        "Autonomous loop success rate"
+      ],
+      "failure_modes": [
+        "Tests as proxy for truth"
+      ],
+      "letting_go_to_progress": [
+        "The need to watch every loop."
+      ],
+      "example": "Agentic TDD systems."
     },
     {
       "id": "A3.1",
-      "name": "Continuous Loop Agency",
-      "stage": "System-Level Agency",
-      "one_line_definition": "AI operates in a continuous sense–decide–act loop.",
-      "core_behaviors": [
-        "The system continuously observes and responds.",
-        "Back-pressure regulates behavior.",
-        "All durable artifacts are committed to source control."
-      ],
+      "name": "Task-Level Supervision",
+      "keystone_behavior_markdown": "Human maintains prioritized backlog; system pulls tasks and executes. Human sees every task that flows through the process.",
+      "agency_allocation_markdown": "Human owns backlog and process visibility; AI executes tasks within the process.",
+      "example_markdown": "Human reviews the task queue daily, reprioritizes based on learnings, and watches tasks complete. They know what's being worked on at any moment.",
       "emotional_state": {
-        "dominant": "Disorientation",
-        "secondary": ["Awe", "Loss"],
-        "discomfort": "The system is always working, even when I am not."
+        "dominant": "Control through visibility",
+        "secondary": [
+          "Relief",
+          "Vigilance"
+        ],
+        "discomfort": "I'm not doing the work, but I still need to see it all."
       },
-      "responsibility_ownership": {
-        "testable_designs": "A",
-        "architecture": "AG",
-        "business_decomposition": "AG",
-        "infrastructure_choices": "AG",
-        "unit_tests": "A",
-        "definition_of_correctness": "AG",
-        "definition_of_fitness_to_purpose": "H",
-        "priority": "A",
-        "work_to_do": "A"
-      },
-      "failure_modes": [
-        "Runaway loops",
-        "Hidden coupling"
+      "failure_modes_markdown": [
+        "Micromanaging task order",
+        "Bottlenecking on prioritization",
+        "Information overload from task-level visibility"
       ],
-      "example": "A self-refactoring system continuously improving its own codebase."
+      "readiness": {
+        "ready_to_experiment_markdown": "Stable task execution exists; human is confident in per-task quality.",
+        "effectiveness_metric_markdown": "Backlog throughput; task completion rate.",
+        "let_go_focus_markdown": "Let go of needing to see every task; trust goal-level outcomes."
+      },
+      "readiness_to_enter_signals": [
+        "Per-task execution is reliable.",
+        "Human feels overwhelmed by task-level detail.",
+        "Goals are clear enough to trust decomposition."
+      ],
+      "effectiveness_measures": [
+        "Backlog velocity",
+        "Prioritization latency",
+        "Task-level defect rate"
+      ],
+      "failure_modes": [
+        "Backlog grooming becomes full-time job",
+        "Lost in task details, missing strategic drift"
+      ],
+      "letting_go_to_progress": [
+        "The need to see every task that flows through the system."
+      ],
+      "example": "Human manages a Kanban board; AI agents pull and complete tasks. Human reviews completed tasks and adjusts priorities."
     },
     {
       "id": "A3.2",
-      "name": "Ralph Wiggum Loop",
-      "stage": "System-Level Agency",
-      "one_line_definition": "Simple loops produce disproportionate value through persistence.",
-      "core_behaviors": [
-        "Naive but relentless improvement cycles.",
-        "Minimal reasoning, maximal iteration."
+      "name": "Goal-Level Supervision",
+      "keystone_behavior_markdown": "Human defines goals; system decomposes into tasks and executes. Human engages at goal boundaries, not task boundaries.",
+      "agency_allocation_markdown": "Human owns objectives; AI owns task decomposition and execution within goals.",
+      "example_markdown": "Human says 'implement user authentication'; system breaks this into tasks, executes them, and reports when the goal is complete. Human reviews at goal completion.",
+      "emotional_state": {
+        "dominant": "Trust through outcomes",
+        "secondary": [
+          "Distance",
+          "Anticipation"
+        ],
+        "discomfort": "I don't know exactly what tasks are happening, only that progress is being made."
+      },
+      "failure_modes_markdown": [
+        "Goals too vague to verify",
+        "Misaligned decomposition",
+        "Surprise at goal completion review"
       ],
-      "example": "An agent repeatedly running tests, making small fixes, and committing results."
+      "readiness": {
+        "ready_to_experiment_markdown": "Task-level execution is trustworthy; goals are well-defined.",
+        "effectiveness_metric_markdown": "Goal completion rate; rework after goal review.",
+        "let_go_focus_markdown": "Let go of defining goals; trust flow-level rhythm and demos."
+      },
+      "readiness_to_enter_signals": [
+        "Goal decomposition is reliable.",
+        "Human trusts system's architectural choices within goals.",
+        "Review at goal boundaries feels sufficient."
+      ],
+      "effectiveness_measures": [
+        "Goals completed per period",
+        "Rework rate at goal review",
+        "Goal definition clarity"
+      ],
+      "failure_modes": [
+        "Goal scope creep",
+        "Decomposition drift from intent",
+        "Review fatigue at goal boundaries"
+      ],
+      "letting_go_to_progress": [
+        "The need to define and track individual goals."
+      ],
+      "example": "Human sets quarterly objectives; system continuously works toward them, reporting at objective milestones. Human reviews working software at each milestone."
     },
     {
       "id": "A3.3",
-      "name": "Multi-Agent Parallelism",
-      "stage": "System-Level Agency",
-      "one_line_definition": "Multiple agents operate concurrently on the same system.",
-      "core_behaviors": [
-        "Parallel exploration of solution space.",
-        "Conflict resolved via version control."
+      "name": "Flow-Level Supervision",
+      "keystone_behavior_markdown": "Human watches overall development rhythm; engages at demos and checkpoints. Trusts goal selection; monitors process health.",
+      "agency_allocation_markdown": "Human owns process health and demo engagement; AI owns goal selection, decomposition, and execution.",
+      "example_markdown": "System continuously pulls from product vision, works in slices, and presents working software at regular demos. Human attends demos, provides feedback, and watches for process dysfunction.",
+      "emotional_state": {
+        "dominant": "Stewardship of rhythm",
+        "secondary": [
+          "Detachment",
+          "Watchfulness"
+        ],
+        "discomfort": "I don't know what goals are being pursued right now, only that slices keep appearing."
+      },
+      "failure_modes_markdown": [
+        "Demos become rubber stamps",
+        "Process dysfunction goes unnoticed",
+        "Strategic drift between demos"
+      ],
+      "readiness": {
+        "ready_to_experiment_markdown": "Goal-level execution is trustworthy; demos consistently produce valuable slices.",
+        "effectiveness_metric_markdown": "Demo value; process health indicators; time between meaningful slices.",
+        "let_go_focus_markdown": "Let go of process supervision; trust system to escalate when judgment is needed."
+      },
+      "readiness_to_enter_signals": [
+        "Demos consistently deliver valuable increments.",
+        "Human trusts system's goal selection.",
+        "Process interventions are rare."
+      ],
+      "effectiveness_measures": [
+        "Demo cadence and value",
+        "Process intervention frequency",
+        "Strategic alignment over time"
       ],
       "failure_modes": [
-        "Merge thrash",
-        "Incoherent direction"
-      ]
+        "Passive demo attendance",
+        "Missing early signs of process decay",
+        "Losing touch with product direction"
+      ],
+      "letting_go_to_progress": [
+        "The need to understand the development process itself."
+      ],
+      "example": "Weekly demo meetings where system presents completed slices. Human provides direction and feedback but doesn't know what's being worked on between demos."
     },
     {
-      "id": "A3.4",
-      "name": "Event-Driven Agency",
-      "stage": "System-Level Agency",
-      "one_line_definition": "Agency emerges from event-driven, non-deterministic agent responses.",
-      "core_behaviors": [
-        "Events trigger agents opportunistically.",
-        "No central loop; behavior is emergent.",
-        "Events are ephemeral; source control is the memory."
-      ],
+      "id": "A4.1",
+      "name": "Hard-Coded Escalation",
+      "keystone_behavior_markdown": "System escalates to humans on predefined conditions.",
+      "agency_allocation_markdown": "AI runs; humans handle exceptions.",
+      "example_markdown": "Ask human if tests fail repeatedly.",
       "emotional_state": {
-        "dominant": "Loss of narrative",
-        "secondary": ["Trust", "Surrender"],
-        "discomfort": "I no longer know why something happened—only that it did."
+        "dominant": "Cautious trust",
+        "secondary": [
+          "Alertness"
+        ],
+        "discomfort": "Did we anticipate the right cases?"
       },
-      "responsibility_ownership": {
-        "architecture": "A",
-        "priority": "A",
-        "work_to_do": "A",
-        "definition_of_fitness_to_purpose": "H"
+      "failure_modes_markdown": [
+        "Missed escalation cases"
+      ],
+      "readiness": {
+        "ready_to_experiment_markdown": "Clear failure modes are known.",
+        "effectiveness_metric_markdown": "False escalation rate.",
+        "let_go_focus_markdown": "Let go of continuous supervision."
       },
+      "readiness_to_enter_signals": [
+        "Stable autonomous loops exist."
+      ],
+      "effectiveness_measures": [
+        "Escalation precision"
+      ],
       "failure_modes": [
-        "Untraceable causality",
-        "Misaligned emergent behavior"
-      ]
+        "Escalation fatigue"
+      ],
+      "letting_go_to_progress": [
+        "The belief that humans must be the first line of defense."
+      ],
+      "example": "Early autonomous CI agents."
     },
     {
-      "id": "A4",
-      "name": "Grounded Autonomy",
-      "stage": "Full Agency",
-      "one_line_definition": "AI owns all software activity; humans provide grounding.",
-      "core_behaviors": [
-        "Humans choose which reality is being served.",
-        "AI handles all design, implementation, and operation."
-      ],
+      "id": "A4.2",
+      "name": "Review-Gated Autonomy",
+      "keystone_behavior_markdown": "Long autonomous runs with periodic human review.",
+      "agency_allocation_markdown": "AI leads; humans validate checkpoints.",
+      "example_markdown": "Daily review of agent commits.",
       "emotional_state": {
-        "dominant": "Quiet authority",
-        "secondary": ["Relief", "Existential unease"],
-        "discomfort": "If I’m not doing, who am I?"
+        "dominant": "Trust with distance",
+        "secondary": [
+          "Unease"
+        ],
+        "discomfort": "I don’t see everything anymore."
       },
-      "responsibility_ownership": {
-        "definition_of_fitness_to_purpose": "H",
-        "grounding_values": "H",
-        "everything_else": "A"
+      "failure_modes_markdown": [
+        "Delayed detection of issues"
+      ],
+      "readiness": {
+        "ready_to_experiment_markdown": "Confidence in agent goals.",
+        "effectiveness_metric_markdown": "Issues found per review.",
+        "let_go_focus_markdown": "Let go of needing full context."
       },
-      "example": "A company where no human reads code, tests, or designs systems."
+      "readiness_to_enter_signals": [
+        "Comfort reviewing outcomes only."
+      ],
+      "effectiveness_measures": [
+        "Post-review correction rate"
+      ],
+      "failure_modes": [
+        "Over-trust"
+      ],
+      "letting_go_to_progress": [
+        "The belief that understanding requires observation."
+      ],
+      "example": "Long-running autonomous refactoring systems."
     },
     {
-      "id": "A5",
-      "name": "Personal Sovereign Software",
-      "stage": "Post-Company (Speculative)",
-      "stability": "unstable_future",
-      "one_line_definition": "Each human has custom software; shared software dissolves.",
-      "core_behaviors": [
-        "One-off, perfectly fit systems per individual.",
-        "No need for consensus or markets."
+      "id": "A4.3",
+      "name": "Ralph Wiggum Mode",
+      "keystone_behavior_markdown": "Simple loop, back-pressure, and a law that all durable state lives in source control.",
+      "agency_allocation_markdown": "AI runs continuously; humans are consulted only on demand.",
+      "example_markdown": "An agent repeatedly pulls tasks from git, works, commits, and waits.",
+      "emotional_state": {
+        "dominant": "Letting go",
+        "secondary": [
+          "Awe",
+          "Disorientation"
+        ],
+        "discomfort": "I don’t know what it’s doing right now."
+      },
+      "failure_modes_markdown": [
+        "Poor grounding"
       ],
-      "implication": "End of software companies as we know them."
+      "readiness": {
+        "ready_to_experiment_markdown": "Strong trust in system invariants.",
+        "effectiveness_metric_markdown": "Time unattended.",
+        "let_go_focus_markdown": "Let go of situational awareness."
+      },
+      "readiness_to_enter_signals": [
+        "Acceptance of non-transparency."
+      ],
+      "effectiveness_measures": [
+        "Unattended productivity"
+      ],
+      "failure_modes": [
+        "Loss of human intuition"
+      ],
+      "letting_go_to_progress": [
+        "The need to know what is happening."
+      ],
+      "example": "Minimal-agent orchestration systems."
+    },
+    {
+      "id": "A4.4",
+      "name": "Event-Driven Autonomous Systems",
+      "keystone_behavior_markdown": "Agents respond to events rather than running a loop; flows are non-deterministic but grounded by source control.",
+      "agency_allocation_markdown": "System reacts; humans are normative anchors.",
+      "example_markdown": "Agents trigger on repo changes, test failures, or signals.",
+      "emotional_state": {
+        "dominant": "Detachment",
+        "secondary": [
+          "Trust"
+        ],
+        "discomfort": "Causality is opaque."
+      },
+      "failure_modes_markdown": [
+        "Emergent complexity"
+      ],
+      "readiness": {
+        "ready_to_experiment_markdown": "Event taxonomy is clear.",
+        "effectiveness_metric_markdown": "Mean time to resolution.",
+        "let_go_focus_markdown": "Let go of linear narratives."
+      },
+      "readiness_to_enter_signals": [
+        "Comfort with emergent behavior."
+      ],
+      "effectiveness_measures": [
+        "Event handling latency"
+      ],
+      "failure_modes": [
+        "Runaway reactions"
+      ],
+      "letting_go_to_progress": [
+        "The need for predictability."
+      ],
+      "example": "Reactive multi-agent systems."
+    },
+    {
+      "id": "A5.1",
+      "name": "Personalized Autonomous Software",
+      "keystone_behavior_markdown": "Software is generated and evolved per human reality; no shared product.",
+      "agency_allocation_markdown": "System serves an individual; human provides grounding.",
+      "example_markdown": "Each person has a continuously adapting software companion.",
+      "emotional_state": {
+        "dominant": "Empowerment",
+        "secondary": [
+          "Loss",
+          "Freedom"
+        ],
+        "discomfort": "Shared norms dissolve."
+      },
+      "failure_modes_markdown": [
+        "Isolation"
+      ],
+      "readiness": {
+        "ready_to_experiment_markdown": "Trust in full autonomy.",
+        "effectiveness_metric_markdown": "Personal fit.",
+        "let_go_focus_markdown": "Let go of shared software."
+      },
+      "readiness_to_enter_signals": [
+        "Acceptance of individualized reality."
+      ],
+      "effectiveness_measures": [
+        "Personal satisfaction"
+      ],
+      "failure_modes": [
+        "Loss of shared understanding"
+      ],
+      "letting_go_to_progress": [
+        "The idea of software as a product."
+      ],
+      "example": "Speculative end-state."
     }
   ]
 }

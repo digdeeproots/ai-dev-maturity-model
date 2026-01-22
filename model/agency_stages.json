@@ -12,7 +12,7 @@
     },
     {
       "id": "A1",
-      "name": "Human Commands the Loop",
+      "name": "Human Commands Tasks",
       "summary_markdown": "AI provides mechanical and cognitive leverage but never initiates action.",
       "core_agency_statement": "Humans decide every step; AI responds.",
       "emotional_shift_markdown": "Letting go of typing as the primary expression of skill.",
@@ -21,24 +21,33 @@
     },
     {
       "id": "A2",
+      "name": "Human Commands the Loop",
+      "summary_markdown": "Humans direct bounded work; AI executes tasks end-to-end within defined scope.",
+      "core_agency_statement": "Humans decide what to do; AI decides how to do it.",
+      "emotional_shift_markdown": "Letting go of controlling each step in exchange for directing outcomes.",
+      "sacred_cows_markdown": "- Needing to see every line of code written\n- Understanding implementation details before approval",
+      "substage_ids": ["A2.1", "A2.2", "A2.3"]
+    },
+    {
+      "id": "A3",
       "name": "Human Supervises the Loop",
       "summary_markdown": "Humans define conditions and guardrails; the system selects and sequences tasks.",
       "core_agency_statement": "Humans decide boundaries; systems decide actions.",
       "emotional_shift_markdown": "Loss of continuous situational awareness in exchange for throughput.",
       "sacred_cows_markdown": "- Reading every test\n- Understanding all code paths",
-      "substage_ids": ["A2.1", "A2.2", "A2.3"]
+      "substage_ids": ["A3.1", "A3.2", "A3.3"]
     },
     {
-      "id": "A3",
+      "id": "A4",
       "name": "Human Is Inside the Loop",
       "summary_markdown": "The system decides when to consult humans; humans provide grounding and judgment.",
       "core_agency_statement": "Systems hold operational agency; humans hold normative agency.",
       "emotional_shift_markdown": "Trust without visibility; judgment without context.",
       "sacred_cows_markdown": "- Needing to read code\n- Needing to understand architecture",
-      "substage_ids": ["A3.1", "A3.2", "A3.3", "A3.4"]
+      "substage_ids": ["A4.1", "A4.2", "A4.3", "A4.4"]
     },
     {
-      "id": "A4",
+      "id": "A5",
       "name": "Personal Sovereign Systems (Beyond Scope)",
       "summary_markdown": "Each human has a continuously adapting system that builds software only for them.",
       "core_agency_statement": "Systems build; humans ground their own reality.",
