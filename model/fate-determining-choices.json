@@ -28,7 +28,7 @@
         "Parallel experiments require meetings instead of merges.",
         "Important decisions are explained verbally, not referenceably."
       ],
-      "what_breaks_if_wrong_markdown": "Late-stage agency (A3+), parallel exploration, automated improvement, and reliable rollback all become impractical.",
+      "what_breaks_if_wrong_markdown": "Late-stage agency (A4+), parallel exploration, automated improvement, and reliable rollback all become impractical.",
       "confidence": "high"
     },
     {
