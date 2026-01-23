@@ -409,7 +409,7 @@ function goBack() {
 }
 
 .substage-card {
-  background: var(--color-background);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 6px;
   overflow: hidden;
@@ -417,7 +417,6 @@ function goBack() {
 
 .substage-card.expanded {
   border-color: var(--color-primary);
-  background: var(--color-surface);
 }
 
 .substage-header {
@@ -434,10 +433,6 @@ function goBack() {
 }
 
 .substage-header:hover {
-  background-color: var(--color-surface);
-}
-
-.substage-card.expanded .substage-header:hover {
   background-color: var(--color-background);
 }
 
