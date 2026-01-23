@@ -17,10 +17,10 @@
   ],
   "ownership_codes": {
     "H": { "label": "Human", "description": "Human-owned" },
-    "A": { "label": "AI", "description": "AI-owned" },
+    "S": { "label": "Shared", "description": "Shared but converging toward AI" },
     "AG": { "label": "AI+Guide", "description": "AI with human guidance" },
     "AO": { "label": "AI+Review", "description": "AI with human oversight/review" },
-    "S": { "label": "Shared", "description": "Shared but converging toward AI" }
+    "A": { "label": "AI", "description": "AI-owned" }
   },
   "matrix": {
     "A0.1": ["H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"],

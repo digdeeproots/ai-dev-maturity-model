@@ -348,16 +348,16 @@ function getTooltipText(respIndex: number, substageIndex: number): string {
   font-size: var(--font-size-xs);
 }
 
-/* Ownership colors - gradient from Human (blue) to AI (orange) */
+/* Ownership colors - gradient from Human (orange) to AI (blue) */
 /* Scale order: H -> S -> AG -> AO -> A */
 .ownership-h {
-  background-color: #bfdbfe;
-  color: #1e40af;
+  background-color: #fdba74;
+  color: #9a3412;
 }
 
 .ownership-s {
-  background-color: #a7f3d0;
-  color: #065f46;
+  background-color: #fcd34d;
+  color: #92400e;
 }
 
 .ownership-ag {
@@ -366,13 +366,13 @@ function getTooltipText(respIndex: number, substageIndex: number): string {
 }
 
 .ownership-ao {
-  background-color: #fcd34d;
-  color: #92400e;
+  background-color: #a7f3d0;
+  color: #065f46;
 }
 
 .ownership-a {
-  background-color: #fdba74;
-  color: #9a3412;
+  background-color: #bfdbfe;
+  color: #1e40af;
 }
 
 /* Tooltip for expanded view */
