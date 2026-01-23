@@ -349,28 +349,29 @@ function getTooltipText(respIndex: number, substageIndex: number): string {
 }
 
 /* Ownership colors - gradient from Human (blue) to AI (orange) */
+/* Scale order: H -> S -> AG -> AO -> A */
 .ownership-h {
   background-color: #bfdbfe;
   color: #1e40af;
 }
 
+.ownership-s {
+  background-color: #a7f3d0;
+  color: #065f46;
+}
+
 .ownership-ag {
-  background-color: #ddd6fe;
-  color: #5b21b6;
+  background-color: #fef08a;
+  color: #854d0e;
 }
 
 .ownership-ao {
-  background-color: #fbcfe8;
-  color: #9d174d;
-}
-
-.ownership-s {
-  background-color: #fde68a;
+  background-color: #fcd34d;
   color: #92400e;
 }
 
 .ownership-a {
-  background-color: #fed7aa;
+  background-color: #fdba74;
   color: #9a3412;
 }
 
