@@ -27,7 +27,7 @@
     {
       "id": "decomposition",
       "short": "Decompose",
-      "full": "Goal decomposition",
+      "full": "Work decomposition",
       "description": "How do goals break down into achievable tasks?"
     },
     {
@@ -41,6 +41,30 @@
       "short": "Select",
       "full": "Task selection",
       "description": "What specific task to work on next?"
+    },
+    {
+      "id": "process_design",
+      "short": "Process",
+      "full": "Process design",
+      "description": "How does development work flow? Workflow rules, commit policies, iteration structure."
+    },
+    {
+      "id": "step_oversight",
+      "short": "Steps",
+      "full": "Step-level oversight",
+      "description": "Observing and reviewing individual process steps (commits, task completions)."
+    },
+    {
+      "id": "cycle_oversight",
+      "short": "Cycles",
+      "full": "Cycle-level oversight",
+      "description": "Observing and reviewing iteration cycles (demos, reviews, loop completions)."
+    },
+    {
+      "id": "flow_oversight",
+      "short": "Flow",
+      "full": "Flow-level oversight",
+      "description": "Monitoring overall development rhythm, process health, and strategic alignment."
     },
     {
       "id": "architecture",
@@ -111,21 +135,21 @@
     "A": { "label": "AI", "description": "AI-owned" }
   },
   "matrix": {
-    "A0.1": ["H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"],
-    "A0.2": ["H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"],
-    "A0.3": ["H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"],
-    "A1.1": ["H", "H", "H", "H", "H", "H", "H", "H", "H", "AG", "H", "H", "H", "H", "H", "H", "H"],
-    "A1.2": ["H", "H", "H", "H", "H", "H", "H", "H", "H", "AG", "AG", "H", "H", "H", "AG", "H", "H"],
-    "A2.1": ["H", "H", "H", "H", "H", "H", "H", "AG", "AG", "AO", "AO", "AG", "H", "AG", "AG", "H", "H"],
-    "A2.2": ["H", "H", "H", "H", "H", "H", "H", "AG", "AO", "A", "AO", "AG", "AG", "AG", "AG", "H", "H"],
-    "A2.3": ["H", "AG", "H", "H", "H", "H", "H", "AG", "A", "A", "A", "AO", "AG", "AO", "AO", "AO", "H"],
-    "A3.1": ["H", "AG", "H", "H", "H", "H", "A", "AO", "A", "A", "A", "A", "AG", "AO", "AO", "A", "H"],
-    "A3.2": ["H", "AG", "H", "H", "A", "A", "A", "AO", "A", "A", "A", "A", "AO", "A", "A", "A", "H"],
-    "A3.3": ["H", "AO", "H", "A", "A", "A", "A", "A", "A", "A", "A", "A", "AO", "A", "A", "A", "AG"],
-    "A4.1": ["H", "AO", "H", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "AG"],
-    "A4.2": ["H", "A", "H", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "AO"],
-    "A4.3": ["H", "A", "H", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A"],
-    "A4.4": ["H", "A", "H", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A"],
-    "A5.1": ["H", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A"]
+    "A0.1": ["H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"],
+    "A0.2": ["H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"],
+    "A0.3": ["H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"],
+    "A1.1": ["H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "AG", "H", "H", "H", "H", "H", "H", "H"],
+    "A1.2": ["H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "AG", "AG", "H", "H", "H", "AG", "H", "H"],
+    "A2.1": ["H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "AG", "AG", "AO", "AO", "AG", "H", "AG", "AG", "H", "H"],
+    "A2.2": ["H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "AG", "AO", "A", "AO", "AG", "AG", "AG", "AG", "H", "H"],
+    "A2.3": ["H", "AG", "H", "H", "H", "H", "H", "H", "H", "H", "H", "AG", "A", "A", "A", "AO", "AG", "AO", "AO", "AO", "H"],
+    "A3.1": ["H", "AG", "H", "AG", "H", "AG", "A", "AG", "H", "AO", "AO", "AO", "A", "A", "A", "A", "AO", "AO", "AO", "A", "H"],
+    "A3.2": ["H", "AG", "H", "AO", "A", "A", "A", "AO", "AO", "H", "AO", "AO", "A", "A", "A", "A", "AO", "A", "A", "A", "H"],
+    "A3.3": ["H", "AO", "H", "A", "A", "A", "A", "AO", "A", "AO", "H", "A", "A", "A", "A", "A", "AO", "A", "A", "A", "AG"],
+    "A4.1": ["H", "AO", "H", "A", "A", "A", "A", "A", "A", "A", "AO", "A", "A", "A", "A", "A", "A", "A", "A", "A", "AG"],
+    "A4.2": ["H", "A", "H", "A", "A", "A", "A", "A", "A", "A", "AO", "A", "A", "A", "A", "A", "A", "A", "A", "A", "AO"],
+    "A4.3": ["H", "A", "H", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A"],
+    "A4.4": ["H", "A", "H", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A"],
+    "A5.1": ["H", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A"]
   }
 }
