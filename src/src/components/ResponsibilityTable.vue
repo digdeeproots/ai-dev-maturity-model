@@ -338,7 +338,7 @@ function getTooltipText(respIndex: number, substageIndex: number): string {
 }
 
 .substage-name {
-  text-align: left;
+  text-align: right;
   font-weight: 500;
   white-space: nowrap;
 }
