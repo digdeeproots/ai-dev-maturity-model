@@ -108,7 +108,7 @@ function goBack() {
             <div class="stage-summary text-muted" v-if="!isExpanded(stage.id)">
               {{ stage.core_agency_statement }}
             </div>
-            <span class="expand-icon">{{ isExpanded(stage.id) ? '−' : '+' }}</span>
+            <span class="expand-icon" :class="{ expanded: isExpanded(stage.id) }">›</span>
           </button>
 
           <div v-if="isExpanded(stage.id)" class="stage-content">
@@ -159,10 +159,15 @@ function goBack() {
                     <div v-if="!isSubstageExpanded(substage.id)" class="substage-summary">
                       {{ substage.keystone_behavior_markdown || substage.agency_allocation_markdown || '' }}
                     </div>
-                    <span class="expand-icon">{{ isSubstageExpanded(substage.id) ? '−' : '+' }}</span>
+                    <span class="expand-icon" :class="{ expanded: isSubstageExpanded(substage.id) }">›</span>
                   </button>
 
                   <div v-if="isSubstageExpanded(substage.id)" class="substage-content">
+                    <div v-if="substage.example_markdown" class="substage-detail example">
+                      <strong>Example:</strong>
+                      <div class="markdown-content" v-html="md(substage.example_markdown)"></div>
+                    </div>
+
                     <div v-if="substage.keystone_behavior_markdown" class="substage-detail">
                       <strong>Keystone Behavior:</strong>
                       <div class="markdown-content" v-html="md(substage.keystone_behavior_markdown)"></div>
@@ -206,11 +211,6 @@ function goBack() {
                           <em>Let go focus:</em> {{ substage.readiness.let_go_focus_markdown }}
                         </div>
                       </div>
-                    </div>
-
-                    <div v-if="substage.example_markdown" class="substage-detail example">
-                      <strong>Example:</strong>
-                      <div class="markdown-content" v-html="md(substage.example_markdown)"></div>
                     </div>
                   </div>
                 </div>
@@ -337,6 +337,12 @@ function goBack() {
   flex-shrink: 0;
   width: 1.5rem;
   text-align: center;
+  transition: transform var(--transition-normal);
+  display: inline-block;
+}
+
+.expand-icon.expanded {
+  transform: rotate(90deg);
 }
 
 .stage-content {

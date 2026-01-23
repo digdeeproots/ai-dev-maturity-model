@@ -45,7 +45,7 @@ function viewPrimaryAxis() {
         <div class="collapsible-section card mt-lg" :class="{ expanded: showWhyPrimary }">
           <button class="section-header" @click="showWhyPrimary = !showWhyPrimary">
             <h3>Why This Is Primary</h3>
-            <span class="expand-icon">{{ showWhyPrimary ? '−' : '+' }}</span>
+            <span class="expand-icon" :class="{ expanded: showWhyPrimary }">›</span>
           </button>
           <div v-if="showWhyPrimary" class="section-content markdown-content" v-html="md(model.primary_axis.why_primary_markdown)"></div>
         </div>
@@ -53,7 +53,7 @@ function viewPrimaryAxis() {
         <div class="collapsible-section card mt-lg" :class="{ expanded: showEmotionalFrame }">
           <button class="section-header" @click="showEmotionalFrame = !showEmotionalFrame">
             <h3>Emotional Frame</h3>
-            <span class="expand-icon">{{ showEmotionalFrame ? '−' : '+' }}</span>
+            <span class="expand-icon" :class="{ expanded: showEmotionalFrame }">›</span>
           </button>
           <div v-if="showEmotionalFrame" class="section-content markdown-content" v-html="md(model.primary_axis.emotional_frame_markdown)"></div>
         </div>
@@ -177,6 +177,12 @@ button.primary-axis:hover {
 .expand-icon {
   font-size: var(--font-size-xl);
   color: var(--color-primary);
+  transition: transform var(--transition-normal);
+  display: inline-block;
+}
+
+.expand-icon.expanded {
+  transform: rotate(90deg);
 }
 
 .section-content {
