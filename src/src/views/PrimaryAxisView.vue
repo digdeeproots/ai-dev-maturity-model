@@ -180,13 +180,6 @@ function goBack() {
                       </ul>
                     </div>
 
-                    <div v-if="substage.enabling_investments_markdown?.length" class="substage-detail enabling-investments">
-                      <strong>Enabling Investments:</strong>
-                      <ul>
-                        <li v-for="(investment, i) in substage.enabling_investments_markdown" :key="i">{{ investment }}</li>
-                      </ul>
-                    </div>
-
                     <div v-if="substage.agency_allocation_markdown" class="substage-detail">
                       <strong>Agency Allocation:</strong>
                       <div class="markdown-content" v-html="md(substage.agency_allocation_markdown)"></div>
@@ -212,14 +205,21 @@ function goBack() {
                       </ul>
                     </div>
 
+                    <div v-if="substage.enabling_investments_markdown?.length" class="substage-detail">
+                      <strong>Example Enabling Investments:</strong>
+                      <ul>
+                        <li v-for="(investment, i) in substage.enabling_investments_markdown" :key="i">{{ investment }}</li>
+                      </ul>
+                    </div>
+
                     <div v-if="substage.readiness" class="substage-detail readiness">
                       <strong>Readiness:</strong>
                       <div class="readiness-details">
                         <div v-if="substage.readiness.ready_to_experiment_markdown">
-                          <em>Ready to experiment:</em> {{ substage.readiness.ready_to_experiment_markdown }}
+                          <em>You may be ready to experiment with this substage if:</em> {{ substage.readiness.ready_to_experiment_markdown }}
                         </div>
                         <div v-if="substage.readiness.effectiveness_metric_markdown">
-                          <em>Effectiveness metric:</em> {{ substage.readiness.effectiveness_metric_markdown }}
+                          <em>Effectiveness metric for progress within this substage:</em> {{ substage.readiness.effectiveness_metric_markdown }}
                         </div>
                         <div v-if="substage.readiness.let_go_focus_markdown">
                           <em>Let go focus:</em> {{ substage.readiness.let_go_focus_markdown }}
@@ -518,13 +518,6 @@ function goBack() {
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: 4px;
   border-left: 3px solid var(--color-primary);
-}
-
-.substage-detail.enabling-investments {
-  background-color: #f0fdf4;
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: 4px;
-  border-left: 3px solid #22c55e;
 }
 
 .substage-detail.enabling-investments ul {
