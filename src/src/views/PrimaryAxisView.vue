@@ -173,6 +173,13 @@ function goBack() {
                       <div class="markdown-content" v-html="md(substage.keystone_behavior_markdown)"></div>
                     </div>
 
+                    <div v-if="substage.secondary_behaviors_markdown?.length" class="substage-detail">
+                      <strong>Secondary Behaviors:</strong>
+                      <ul>
+                        <li v-for="(behavior, i) in substage.secondary_behaviors_markdown" :key="i">{{ behavior }}</li>
+                      </ul>
+                    </div>
+
                     <div v-if="substage.agency_allocation_markdown" class="substage-detail">
                       <strong>Agency Allocation:</strong>
                       <div class="markdown-content" v-html="md(substage.agency_allocation_markdown)"></div>

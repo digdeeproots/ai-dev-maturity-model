@@ -310,7 +310,13 @@
     {
       "id": "A3.1",
       "name": "Step-Level Process Supervision",
-      "keystone_behavior_markdown": "AI runs the defined process; human observes every step. Human decomposes work into tasks, defines how each step should flow, and fixes the process definition when steps go wrong. Human sees every commit, every task boundary, every small decision.",
+      "keystone_behavior_markdown": "AI runs the defined process; human observes every step.",
+      "secondary_behaviors_markdown": [
+        "Human decomposes work into tasks",
+        "Human defines how each step should flow",
+        "Human fixes the process definition when steps go wrong",
+        "Human sees every commit, every task boundary, every small decision"
+      ],
       "agency_allocation_markdown": "AI executes the process; human supervises at step granularity and fixes process definitions.",
       "example_markdown": "AI follows the defined workflow—commits when tests pass, branches per task, runs CI automatically. Human watches each task complete, reviews each commit, and adjusts the process rules when steps produce unexpected results. Human decomposes features into the task list.",
       "emotional_state": {
@@ -354,7 +360,12 @@
     {
       "id": "A3.2",
       "name": "Loop-Level Process Supervision",
-      "keystone_behavior_markdown": "AI runs the process; human observes every iteration cycle. Human defines goals for each loop, participates in demos and reviews at cycle boundaries, and improves the process at the iteration level. Human doesn't see every step, but engages at every loop completion.",
+      "keystone_behavior_markdown": "AI runs the process; human observes every iteration cycle.",
+      "secondary_behaviors_markdown": [
+        "Human defines goals for each loop",
+        "Human participates in demos and reviews at cycle boundaries",
+        "Human improves the process at the iteration level"
+      ],
       "agency_allocation_markdown": "AI executes steps and decomposes within loops; human supervises at iteration boundaries and fixes process cycles.",
       "example_markdown": "AI breaks down goals into tasks, executes them, and presents completed work at iteration end. Human attends every demo, reviews what was accomplished, defines goals for the next iteration, and adjusts the process when cycles produce unexpected results.",
       "emotional_state": {
@@ -398,7 +409,13 @@
     {
       "id": "A3.3",
       "name": "Flow-Level Process Supervision",
-      "keystone_behavior_markdown": "AI runs the process; human observes overall flow and approach. Human provides direction, monitors process health, and tunes the cycle structure itself. Human doesn't participate in every loop, but knows what's happening and handles exceptions. Focus is on strategic direction and avoiding process dysfunction.",
+      "keystone_behavior_markdown": "AI runs the process; human observes overall flow and approach.",
+      "secondary_behaviors_markdown": [
+        "Human provides strategic direction",
+        "Human monitors process health",
+        "Human tunes the cycle structure itself",
+        "Human handles exceptions when they arise"
+      ],
       "agency_allocation_markdown": "AI executes loops and defines iteration goals; human supervises flow, provides direction, and fixes the overall process structure.",
       "example_markdown": "AI runs continuous iterations, selecting goals from the product vision and executing cycles. Human monitors overall progress, checks in periodically (not every loop), provides strategic direction when needed, and adjusts the meta-process when the overall flow shows dysfunction.",
       "emotional_state": {
