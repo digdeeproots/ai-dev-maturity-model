@@ -84,8 +84,6 @@ function goBack() {
 
       <!-- Axis-level responsibility overview -->
       <div class="axis-responsibility-section mt-xl">
-        <h2>Responsibility Overview</h2>
-        <p class="section-desc">How responsibilities shift across all substages</p>
         <ResponsibilityTable
           :substage-ids="axisOverviewSubstageIds"
           :substage-names="axisOverviewSubstageNames"
@@ -141,7 +139,6 @@ function goBack() {
 
             <!-- Responsibility Transitions -->
             <div v-if="getSubstageIds(stage.id).length > 0" class="responsibility-section">
-              <h4>Responsibility Transitions</h4>
               <ResponsibilityTable
                 :substage-ids="getSubstageIds(stage.id)"
                 :substage-names="getSubstageNames(stage.id)"
