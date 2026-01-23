@@ -91,8 +91,15 @@ export interface OwnershipCodeInfo {
   description: string
 }
 
+export interface Responsibility {
+  id: string
+  short: string
+  full: string
+  description: string
+}
+
 export interface ResponsibilityOwnershipData {
-  responsibilities: string[]
+  responsibilities: Responsibility[]
   ownership_codes: Record<OwnershipCode, OwnershipCodeInfo>
   matrix: Record<string, OwnershipCode[]>
 }

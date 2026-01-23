@@ -309,134 +309,134 @@
     },
     {
       "id": "A3.1",
-      "name": "Task-Level Supervision",
-      "keystone_behavior_markdown": "Human maintains prioritized backlog; system pulls tasks and executes. Human sees every task that flows through the process.",
-      "agency_allocation_markdown": "Human owns backlog and process visibility; AI executes tasks within the process.",
-      "example_markdown": "Human reviews the task queue daily, reprioritizes based on learnings, and watches tasks complete. They know what's being worked on at any moment.",
+      "name": "Human-Run Process",
+      "keystone_behavior_markdown": "Human owns and operates the software development process. They define workflow, decide commit boundaries, manage branches, run CI, and schedule work. AI executes tasks within human-designed process constraints.",
+      "agency_allocation_markdown": "Human owns the process; AI performs work within it.",
+      "example_markdown": "Human defines the branching strategy, decides when work is 'done enough to commit', triggers builds, manages the backlog structure, and controls the release cadence. AI writes code and fixes bugs when asked.",
       "emotional_state": {
-        "dominant": "Control through visibility",
+        "dominant": "Control through process ownership",
+        "secondary": [
+          "Competence",
+          "Burden"
+        ],
+        "discomfort": "I'm running the factory, not just working in it."
+      },
+      "failure_modes_markdown": [
+        "Process overhead consumes available attention",
+        "AI waits on human process decisions",
+        "Human becomes bottleneck for workflow, not just judgment"
+      ],
+      "readiness": {
+        "ready_to_experiment_markdown": "Process decisions feel mechanical; human notices they're just executing a known playbook.",
+        "effectiveness_metric_markdown": "Time spent on process vs. direction; wait time for process decisions.",
+        "let_go_focus_markdown": "Let go of running the process; let AI operate within guardrails."
+      },
+      "readiness_to_enter_signals": [
+        "Process steps are predictable and repeatable.",
+        "Human realizes they're not making real decisions, just following procedure.",
+        "AI execution quality within tasks is trusted."
+      ],
+      "effectiveness_measures": [
+        "Process decision latency",
+        "Human time on process vs. product",
+        "Work blocked awaiting process steps"
+      ],
+      "failure_modes": [
+        "Process management becomes the job",
+        "AI capability outpaces process throughput"
+      ],
+      "letting_go_to_progress": [
+        "The belief that humans must operate the development machinery."
+      ],
+      "example": "Human manages branches, decides when to merge, runs tests, and structures the backlog. AI implements features and fixes within this human-operated workflow."
+    },
+    {
+      "id": "A3.2",
+      "name": "AI-Run Process with Human Guardrails",
+      "keystone_behavior_markdown": "AI operates the development process: commits, branches, CI, task breakdown. Human sets process constraints and intervenes when guardrails are hit. Human still designs the process; AI executes it.",
+      "agency_allocation_markdown": "Human owns process design and guardrails; AI runs the process day-to-day.",
+      "example_markdown": "Human defines 'commit when tests pass', 'never push directly to main', 'break work into slices under 2 hours'. AI follows these rules autonomously, committing, branching, and organizing work. Human reviews when guardrails trigger.",
+      "emotional_state": {
+        "dominant": "Trust through constraints",
         "secondary": [
           "Relief",
           "Vigilance"
         ],
-        "discomfort": "I'm not doing the work, but I still need to see it all."
+        "discomfort": "I designed the rules, but I don't see every step anymore."
       },
       "failure_modes_markdown": [
-        "Micromanaging task order",
-        "Bottlenecking on prioritization",
-        "Information overload from task-level visibility"
+        "Guardrails too tight (AI constantly blocked)",
+        "Guardrails too loose (drift undetected)",
+        "Process rules become stale as context evolves"
       ],
       "readiness": {
-        "ready_to_experiment_markdown": "Stable task execution exists; human is confident in per-task quality.",
-        "effectiveness_metric_markdown": "Backlog throughput; task completion rate.",
-        "let_go_focus_markdown": "Let go of needing to see every task; trust goal-level outcomes."
+        "ready_to_experiment_markdown": "Guardrails rarely trigger; AI process operation is smooth and predictable.",
+        "effectiveness_metric_markdown": "Guardrail trigger frequency; human intervention rate.",
+        "let_go_focus_markdown": "Let go of designing the process; trust AI to evolve it."
       },
       "readiness_to_enter_signals": [
-        "Per-task execution is reliable.",
-        "Human feels overwhelmed by task-level detail.",
-        "Goals are clear enough to trust decomposition."
+        "Process runs smoothly without human operation.",
+        "Guardrail interventions are rare and valuable.",
+        "Human notices the process could adapt faster than they can redesign it."
       ],
       "effectiveness_measures": [
-        "Backlog velocity",
-        "Prioritization latency",
-        "Task-level defect rate"
+        "Autonomous process run time",
+        "Intervention frequency",
+        "Process rule staleness"
       ],
       "failure_modes": [
-        "Backlog grooming becomes full-time job",
-        "Lost in task details, missing strategic drift"
+        "Over-engineering guardrails",
+        "Guardrail maintenance becomes new overhead",
+        "Missing process improvements because rules are fixed"
       ],
       "letting_go_to_progress": [
-        "The need to see every task that flows through the system."
+        "The belief that humans must design the development process."
       ],
-      "example": "Human manages a Kanban board; AI agents pull and complete tasks. Human reviews completed tasks and adjusts priorities."
-    },
-    {
-      "id": "A3.2",
-      "name": "Goal-Level Supervision",
-      "keystone_behavior_markdown": "Human defines goals; system decomposes into tasks and executes. Human engages at goal boundaries, not task boundaries.",
-      "agency_allocation_markdown": "Human owns objectives; AI owns task decomposition and execution within goals.",
-      "example_markdown": "Human says 'implement user authentication'; system breaks this into tasks, executes them, and reports when the goal is complete. Human reviews at goal completion.",
-      "emotional_state": {
-        "dominant": "Trust through outcomes",
-        "secondary": [
-          "Distance",
-          "Anticipation"
-        ],
-        "discomfort": "I don't know exactly what tasks are happening, only that progress is being made."
-      },
-      "failure_modes_markdown": [
-        "Goals too vague to verify",
-        "Misaligned decomposition",
-        "Surprise at goal completion review"
-      ],
-      "readiness": {
-        "ready_to_experiment_markdown": "Task-level execution is trustworthy; goals are well-defined.",
-        "effectiveness_metric_markdown": "Goal completion rate; rework after goal review.",
-        "let_go_focus_markdown": "Let go of defining goals; trust flow-level rhythm and demos."
-      },
-      "readiness_to_enter_signals": [
-        "Goal decomposition is reliable.",
-        "Human trusts system's architectural choices within goals.",
-        "Review at goal boundaries feels sufficient."
-      ],
-      "effectiveness_measures": [
-        "Goals completed per period",
-        "Rework rate at goal review",
-        "Goal definition clarity"
-      ],
-      "failure_modes": [
-        "Goal scope creep",
-        "Decomposition drift from intent",
-        "Review fatigue at goal boundaries"
-      ],
-      "letting_go_to_progress": [
-        "The need to define and track individual goals."
-      ],
-      "example": "Human sets quarterly objectives; system continuously works toward them, reporting at objective milestones. Human reviews working software at each milestone."
+      "example": "AI commits when ready, manages its own branches, runs CI, and structures work. Human has set constraints like 'small commits', 'always green', 'demo weekly'. Human reviews at constraint boundaries or when AI escalates."
     },
     {
       "id": "A3.3",
-      "name": "Flow-Level Supervision",
-      "keystone_behavior_markdown": "Human watches overall development rhythm; engages at demos and checkpoints. Trusts goal selection; monitors process health.",
-      "agency_allocation_markdown": "Human owns process health and demo engagement; AI owns goal selection, decomposition, and execution.",
-      "example_markdown": "System continuously pulls from product vision, works in slices, and presents working software at regular demos. Human attends demos, provides feedback, and watches for process dysfunction.",
+      "name": "AI-Owned Process",
+      "keystone_behavior_markdown": "AI owns and evolves the development process itself. Human participates as a stakeholder—providing direction, receiving demos, giving feedback—but doesn't design or constrain how development happens.",
+      "agency_allocation_markdown": "AI owns process design and operation; human provides purpose and feedback.",
+      "example_markdown": "AI decides how to structure work, when to commit, how to branch, when to refactor, how to test. Human says 'I want user auth' and later sees working software. Human doesn't know or specify whether AI used TDD, pair programming, or any particular workflow.",
       "emotional_state": {
-        "dominant": "Stewardship of rhythm",
+        "dominant": "Participation without control",
         "secondary": [
-          "Detachment",
-          "Watchfulness"
+          "Freedom",
+          "Disorientation"
         ],
-        "discomfort": "I don't know what goals are being pursued right now, only that slices keep appearing."
+        "discomfort": "I don't know how it works anymore—only that it does."
       },
       "failure_modes_markdown": [
-        "Demos become rubber stamps",
-        "Process dysfunction goes unnoticed",
-        "Strategic drift between demos"
+        "Process evolves in ways human can't audit",
+        "Human loses ability to intervene effectively",
+        "Misalignment between process and human values goes undetected"
       ],
       "readiness": {
-        "ready_to_experiment_markdown": "Goal-level execution is trustworthy; demos consistently produce valuable slices.",
-        "effectiveness_metric_markdown": "Demo value; process health indicators; time between meaningful slices.",
-        "let_go_focus_markdown": "Let go of process supervision; trust system to escalate when judgment is needed."
+        "ready_to_experiment_markdown": "Process outcomes are consistently good; human realizes their process opinions don't improve results.",
+        "effectiveness_metric_markdown": "Outcome quality; human intervention value (was it helpful?).",
+        "let_go_focus_markdown": "Let go of needing to understand how development happens."
       },
       "readiness_to_enter_signals": [
-        "Demos consistently deliver valuable increments.",
-        "Human trusts system's goal selection.",
-        "Process interventions are rare."
+        "AI-evolved process produces better outcomes than human-designed process.",
+        "Human process suggestions are rarely improvements.",
+        "Trust in outcomes is higher than trust in process visibility."
       ],
       "effectiveness_measures": [
-        "Demo cadence and value",
-        "Process intervention frequency",
-        "Strategic alignment over time"
+        "Outcome quality without process oversight",
+        "Value of remaining human interventions",
+        "Speed of process adaptation"
       ],
       "failure_modes": [
-        "Passive demo attendance",
-        "Missing early signs of process decay",
-        "Losing touch with product direction"
+        "Process opacity breeds distrust",
+        "Human skills for process intervention atrophy",
+        "Subtle process dysfunction invisible until crisis"
       ],
       "letting_go_to_progress": [
         "The need to understand the development process itself."
       ],
-      "example": "Weekly demo meetings where system presents completed slices. Human provides direction and feedback but doesn't know what's being worked on between demos."
+      "example": "Human provides product direction and attends demos. AI runs the entire development operation—workflow, commits, testing strategy, refactoring decisions—evolving its approach based on what works. Human is a stakeholder, not an operator or architect."
     },
     {
       "id": "A4.1",

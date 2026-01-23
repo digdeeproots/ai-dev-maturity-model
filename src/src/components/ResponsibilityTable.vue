@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import type { OwnershipCode, OwnershipCodeInfo } from '../types'
+import type { OwnershipCode, OwnershipCodeInfo, Responsibility } from '../types'
 import { getResponsibilityMatrixForSubstages } from '../composables/useModelData'
 
 const props = defineProps<{
@@ -10,48 +10,6 @@ const props = defineProps<{
 
 const expanded = ref(false)
 const matrixData = computed(() => getResponsibilityMatrixForSubstages(props.substageIds))
-
-const shortNames: Record<string, string> = {
-  'Definition of fitness to purpose / grounding': 'Grounding',
-  'Definition of correctness': 'Correctness',
-  'Prioritization of work': 'Priority',
-  'Selection of work to do next': 'Work Select',
-  'Business/domain decomposition': 'Decomp',
-  'Architecture and system design': 'Arch',
-  'Design for testability': 'Testability',
-  'Unit test creation': 'Unit Tests',
-  'Changing product code': 'Code',
-  'Integration/system test creation': 'Integ Tests',
-  'Evaluation of results': 'Evaluation',
-  'Infrastructure and deployment choices': 'Infra',
-  'Detection of failure or drift': 'Detect Fail',
-  'Decision to continue / stop / escalate': 'Escalation'
-}
-
-const codes: Record<string, string> = {
-  'Definition of fitness to purpose / grounding': 'GRD',
-  'Definition of correctness': 'COR',
-  'Prioritization of work': 'PRI',
-  'Selection of work to do next': 'SEL',
-  'Business/domain decomposition': 'DEC',
-  'Architecture and system design': 'ARC',
-  'Design for testability': 'TST',
-  'Unit test creation': 'UNT',
-  'Changing product code': 'COD',
-  'Integration/system test creation': 'INT',
-  'Evaluation of results': 'EVL',
-  'Infrastructure and deployment choices': 'INF',
-  'Detection of failure or drift': 'DET',
-  'Decision to continue / stop / escalate': 'ESC'
-}
-
-function getShortName(responsibility: string): string {
-  return shortNames[responsibility] || responsibility
-}
-
-function getCode(responsibility: string): string {
-  return codes[responsibility] || '???'
-}
 
 function getOwnershipClass(code: OwnershipCode): string {
   return `ownership-${code.toLowerCase()}`
@@ -74,11 +32,10 @@ function toggleExpanded() {
   expanded.value = !expanded.value
 }
 
-function getTooltipText(respIndex: number, substageIndex: number): string {
+function getTooltipText(responsibility: Responsibility, substageIndex: number, respIndex: number): string {
   const code = matrixData.value.matrix[substageIndex]?.[respIndex] || 'H'
-  const responsibility = matrixData.value.responsibilities[respIndex]
   const ownership = getOwnershipInfo(code).description
-  return `${responsibility}: ${ownership}`
+  return `${responsibility.full}: ${ownership}`
 }
 </script>
 
@@ -92,11 +49,11 @@ function getTooltipText(respIndex: number, substageIndex: number): string {
           <div class="sparkline-row-label"></div>
           <div
             v-for="responsibility in matrixData.responsibilities"
-            :key="responsibility"
+            :key="responsibility.id"
             class="sparkline-col-label"
-            :title="responsibility"
+            :title="responsibility.full"
           >
-            {{ getCode(responsibility) }}
+            {{ responsibility.id.substring(0, 3).toUpperCase() }}
           </div>
         </div>
         <!-- Data rows -->
@@ -108,11 +65,11 @@ function getTooltipText(respIndex: number, substageIndex: number): string {
           <div class="sparkline-row-label">{{ substageId }}</div>
           <div
             v-for="(responsibility, respIndex) in matrixData.responsibilities"
-            :key="responsibility"
+            :key="responsibility.id"
             class="sparkline-cell"
             :class="getOwnershipClass(getOwnershipCode(substageIndex, respIndex))"
           >
-            <span class="sparkline-tooltip">{{ getTooltipText(respIndex, substageIndex) }}</span>
+            <span class="sparkline-tooltip">{{ getTooltipText(responsibility, substageIndex, respIndex) }}</span>
           </div>
         </div>
       </div>
@@ -128,11 +85,11 @@ function getTooltipText(respIndex: number, substageIndex: number): string {
             <th class="substage-header">Substage</th>
             <th
               v-for="responsibility in matrixData.responsibilities"
-              :key="responsibility"
+              :key="responsibility.id"
               class="responsibility-header"
             >
               <div class="rotated-header">
-                <span :title="responsibility">{{ getShortName(responsibility) }}</span>
+                <span :title="responsibility.full">{{ responsibility.short }}</span>
               </div>
             </th>
           </tr>
@@ -145,7 +102,7 @@ function getTooltipText(respIndex: number, substageIndex: number): string {
             <td class="substage-name">{{ getSubstageLabel(substageId) }}</td>
             <td
               v-for="(responsibility, respIndex) in matrixData.responsibilities"
-              :key="responsibility"
+              :key="responsibility.id"
               class="ownership-cell"
               :class="getOwnershipClass(getOwnershipCode(substageIndex, respIndex))"
             >

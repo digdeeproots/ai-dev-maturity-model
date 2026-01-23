@@ -1,21 +1,109 @@
 {
   "responsibilities": [
-    "Definition of fitness to purpose / grounding",
-    "Definition of correctness",
-    "Prioritization of work",
-    "Selection of work to do next",
-    "Business/domain decomposition",
-    "Architecture and system design",
-    "Design for testability",
-    "Unit test creation",
-    "Changing product code",
-    "Integration/system test creation",
-    "Evaluation of results",
-    "Infrastructure and deployment choices",
-    "Detection of failure or drift",
-    "Decision to continue / stop / escalate"
+    {
+      "id": "grounding",
+      "short": "Grounding",
+      "full": "Fitness to purpose / reality grounding",
+      "description": "Is the system serving its intended purpose? Is it connected to reality?"
+    },
+    {
+      "id": "boundaries",
+      "short": "Boundaries",
+      "full": "Boundary definition",
+      "description": "What scope and authority is delegated? Where are the edges of AI autonomy?"
+    },
+    {
+      "id": "direction",
+      "short": "Direction",
+      "full": "Product direction / vision",
+      "description": "What should the product become? What's the overall roadmap?"
+    },
+    {
+      "id": "goals",
+      "short": "Goals",
+      "full": "Goal definition",
+      "description": "What specific outcomes are we pursuing now?"
+    },
+    {
+      "id": "decomposition",
+      "short": "Decompose",
+      "full": "Goal decomposition",
+      "description": "How do goals break down into achievable tasks?"
+    },
+    {
+      "id": "prioritization",
+      "short": "Prioritize",
+      "full": "Task prioritization",
+      "description": "In what order should tasks be done?"
+    },
+    {
+      "id": "selection",
+      "short": "Select",
+      "full": "Task selection",
+      "description": "What specific task to work on next?"
+    },
+    {
+      "id": "architecture",
+      "short": "Arch",
+      "full": "Architecture and system design",
+      "description": "How should the system be structured technically?"
+    },
+    {
+      "id": "testability",
+      "short": "Testable",
+      "full": "Design for testability",
+      "description": "How do we make the system verifiable?"
+    },
+    {
+      "id": "code",
+      "short": "Code",
+      "full": "Code changes",
+      "description": "Writing and modifying production code"
+    },
+    {
+      "id": "unit_tests",
+      "short": "Unit",
+      "full": "Unit test creation",
+      "description": "Creating tests for individual units/components"
+    },
+    {
+      "id": "integration_tests",
+      "short": "Integ",
+      "full": "Integration/system test creation",
+      "description": "Creating tests that verify system behavior"
+    },
+    {
+      "id": "infrastructure",
+      "short": "Infra",
+      "full": "Infrastructure",
+      "description": "Deployment, CI/CD, and operational concerns"
+    },
+    {
+      "id": "criteria",
+      "short": "Criteria",
+      "full": "Success criteria definition",
+      "description": "What does 'good output' look like for a given task?"
+    },
+    {
+      "id": "evaluation",
+      "short": "Evaluate",
+      "full": "Output evaluation",
+      "description": "Does this specific output meet the success criteria?"
+    },
+    {
+      "id": "drift",
+      "short": "Drift",
+      "full": "Drift/health detection",
+      "description": "Is the overall system working well? Are we drifting from intent?"
+    },
+    {
+      "id": "escalation",
+      "short": "Escalate",
+      "full": "Continue/stop/escalate decision",
+      "description": "Should work continue, stop, or involve a human?"
+    }
   ],
-  "ownership_codes": {
+    "ownership_codes": {
     "H": { "label": "Human", "description": "Human-owned" },
     "S": { "label": "Shared", "description": "Shared but converging toward AI" },
     "AG": { "label": "AI+Guide", "description": "AI with human guidance" },
@@ -23,21 +111,21 @@
     "A": { "label": "AI", "description": "AI-owned" }
   },
   "matrix": {
-    "A0.1": ["H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"],
-    "A0.2": ["H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"],
-    "A0.3": ["H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"],
-    "A1.1": ["H", "H", "H", "H", "H", "H", "H", "H", "AG", "H", "H", "H", "H", "H"],
-    "A1.2": ["H", "H", "H", "H", "H", "H", "H", "AG", "AG", "AG", "H", "H", "H", "H"],
-    "A2.1": ["H", "H", "H", "H", "H", "H", "AG", "AO", "AO", "AG", "H", "H", "H", "H"],
-    "A2.2": ["H", "H", "H", "H", "H", "AG", "AO", "AO", "A", "AG", "H", "H", "H", "H"],
-    "A2.3": ["H", "AG", "H", "H", "H", "AG", "A", "A", "A", "AO", "AO", "AG", "AO", "H"],
-    "A3.1": ["H", "AO", "H", "A", "H", "AO", "A", "A", "A", "A", "AO", "AG", "A", "H"],
-    "A3.2": ["H", "A", "S", "A", "AG", "AO", "A", "A", "A", "A", "A", "AO", "A", "H"],
-    "A3.3": ["H", "A", "AO", "A", "A", "A", "A", "A", "A", "A", "A", "AO", "A", "AG"],
-    "A4.1": ["H", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "AG"],
-    "A4.2": ["H", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "AO"],
-    "A4.3": ["H", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A"],
-    "A4.4": ["H", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A"],
-    "A5.1": ["H", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A"]
+    "A0.1": ["H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"],
+    "A0.2": ["H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"],
+    "A0.3": ["H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"],
+    "A1.1": ["H", "H", "H", "H", "H", "H", "H", "H", "H", "AG", "H", "H", "H", "H", "H", "H", "H"],
+    "A1.2": ["H", "H", "H", "H", "H", "H", "H", "H", "H", "AG", "AG", "H", "H", "H", "AG", "H", "H"],
+    "A2.1": ["H", "H", "H", "H", "H", "H", "H", "AG", "AG", "AO", "AO", "AG", "H", "AG", "AG", "H", "H"],
+    "A2.2": ["H", "H", "H", "H", "H", "H", "H", "AG", "AO", "A", "AO", "AG", "AG", "AG", "AG", "H", "H"],
+    "A2.3": ["H", "AG", "H", "H", "H", "H", "H", "AG", "A", "A", "A", "AO", "AG", "AO", "AO", "AO", "H"],
+    "A3.1": ["H", "AG", "H", "H", "H", "H", "A", "AO", "A", "A", "A", "A", "AG", "AO", "AO", "A", "H"],
+    "A3.2": ["H", "AG", "H", "H", "A", "A", "A", "AO", "A", "A", "A", "A", "AO", "A", "A", "A", "H"],
+    "A3.3": ["H", "AO", "H", "A", "A", "A", "A", "A", "A", "A", "A", "A", "AO", "A", "A", "A", "AG"],
+    "A4.1": ["H", "AO", "H", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "AG"],
+    "A4.2": ["H", "A", "H", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "AO"],
+    "A4.3": ["H", "A", "H", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A"],
+    "A4.4": ["H", "A", "H", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A"],
+    "A5.1": ["H", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A"]
   }
 }
