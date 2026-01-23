@@ -325,11 +325,12 @@ function goBack() {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
+  min-width: 2.5rem;
+  height: 2rem;
+  padding: 0 var(--spacing-sm);
   background-color: var(--color-primary);
   color: white;
-  border-radius: 50%;
+  border-radius: 6px;
   font-weight: 600;
   font-size: var(--font-size-sm);
 }
@@ -456,7 +457,7 @@ function goBack() {
   padding: 0 var(--spacing-sm);
   background-color: var(--color-text-light);
   color: white;
-  border-radius: 4px;
+  border-radius: 6px;
   font-weight: 600;
   font-size: var(--font-size-xs);
 }
