@@ -15,7 +15,7 @@
       "name": "Manual Coding",
       "keystone_behavior_markdown": "Human manually writes all code, tests, and designs. No AI involvement.",
       "agency_allocation_markdown": "Human commands and executes the entire loop.",
-      "example_markdown": "A developer writes code in a text editor, runs tests manually, and debugs by inspection.",
+      "example_markdown": "A COBOL team at a regional bank writes mainframe code in vim, submits batch jobs to compile, runs test jobs manually, and debugs by reading JCL output and core dumps. Every change requires understanding the full execution path.",
       "emotional_state": {
         "dominant": "Control through effort",
         "secondary": [
@@ -52,14 +52,14 @@
       "letting_go_to_progress": [
         "The belief that understanding everything is required to act."
       ],
-      "example": "A traditional enterprise software team with manual CI and human-driven releases."
+      "example": "Early 2000s Java shops: developers run `javac` manually, execute tests one class at a time, and deploy by copying WAR files to servers via FTP."
     },
     {
       "id": "A0.2",
       "name": "Heavy Tooling",
       "keystone_behavior_markdown": "Humans rely on IDEs, linters, static analysis, and CI to catch errors early.",
       "agency_allocation_markdown": "Human commands the loop; tools provide guardrails.",
-      "example_markdown": "A developer uses an IDE with autocomplete, linting, and CI checks on every commit.",
+      "example_markdown": "A React team uses VS Code with ESLint, Prettier, and TypeScript. Red squiggles appear instantly for type errors. Every PR triggers GitHub Actions running tests, type checks, and linting. The IDE catches most syntax errors before the developer even saves.",
       "emotional_state": {
         "dominant": "Safety through structure",
         "secondary": [
@@ -90,14 +90,14 @@
       "letting_go_to_progress": [
         "The belief that tools replace thinking."
       ],
-      "example": "A modern dev team with strong IDEs and CI but no AI."
+      "example": "A 2019 startup using JetBrains IDEs with real-time inspections, SonarQube for code quality, and CircleCI pipelines—comprehensive tooling, but no AI assistance."
     },
     {
       "id": "A0.3",
       "name": "Scripted Automation",
       "keystone_behavior_markdown": "Humans encode repeatable steps into scripts and pipelines.",
       "agency_allocation_markdown": "Human decides; scripts execute deterministically.",
-      "example_markdown": "Makefiles, CI pipelines, release scripts automate known workflows.",
+      "example_markdown": "A team uses a Makefile with targets like `make build`, `make test`, `make deploy`. Their Jenkins pipeline runs on every merge to main: build → test → staging deploy → smoke tests → production deploy. Known workflows are captured in scripts; novel work is still manual.",
       "emotional_state": {
         "dominant": "Control through repeatability",
         "secondary": [
@@ -128,14 +128,14 @@
       "letting_go_to_progress": [
         "The belief that automation must be deterministic to be useful."
       ],
-      "example": "CI/CD-heavy teams before AI adoption."
+      "example": "Netflix's Spinnaker pipelines circa 2018: fully automated deployment with canary analysis, automated rollback, and zero-touch releases—but every pipeline step was explicitly scripted by humans."
     },
     {
       "id": "A1.1",
       "name": "Mechanical Leverage",
       "keystone_behavior_markdown": "AI is used for autocomplete and snippet generation.",
       "agency_allocation_markdown": "Human commands; AI accelerates execution.",
-      "example_markdown": "Using Copilot to write boilerplate code.",
+      "example_markdown": "A developer types `function fetchUserById(id: string)` and GitHub Copilot autocompletes the entire function with try/catch, fetch call, error handling, and TypeScript types. They tab through suggestions while building a CRUD API, accepting about 40% of completions.",
       "emotional_state": {
         "dominant": "Speed through assistance",
         "secondary": [
@@ -164,14 +164,14 @@
       "letting_go_to_progress": [
         "The belief that writing code equals designing software."
       ],
-      "example": "Individual developers using Copilot."
+      "example": "A developer writes a comment `// parse ISO date string to Date object` and Copilot generates the implementation. Another types `describe('UserService',` and Copilot scaffolds the entire test suite structure."
     },
     {
       "id": "A1.2",
       "name": "Cognitive Mirror",
       "keystone_behavior_markdown": "AI is used to explain, critique, and question human thinking.",
       "agency_allocation_markdown": "Human decides; AI reflects and challenges.",
-      "example_markdown": "Asking AI to review code or find missed edge cases.",
+      "example_markdown": "A developer pastes a validation function into ChatGPT and asks 'What edge cases am I missing?' The AI identifies that the code doesn't handle empty strings, unicode whitespace, or null inputs. The developer adds test cases for each and updates the implementation.",
       "emotional_state": {
         "dominant": "Reflection through dialogue",
         "secondary": [
@@ -200,7 +200,7 @@
       "letting_go_to_progress": [
         "The belief that insight must originate from humans."
       ],
-      "example": "Developers using AI as reviewer."
+      "example": "An architect asks Claude to critique their database schema design. Claude points out a missing index on a frequently-queried foreign key and suggests denormalizing a junction table that would cause N+1 query problems."
     },
     {
       "id": "A2.1",
@@ -212,7 +212,7 @@
         "Human remains available for clarifying questions"
       ],
       "agency_allocation_markdown": "Human selects task; AI executes.",
-      "example_markdown": "Asking an agent to fix a bug or write a module.",
+      "example_markdown": "A developer tells Claude Code: 'Add cursor-based pagination to the /users endpoint. Use a default limit of 20 and encode the cursor as base64.' Claude Code reads the existing code, implements the pagination, updates the tests, and presents the changes for review.",
       "emotional_state": {
         "dominant": "Relief through delegation",
         "secondary": [
@@ -240,14 +240,14 @@
       "letting_go_to_progress": [
         "The belief that quality requires human execution."
       ],
-      "example": "Using Cline or Claude Code for single tasks."
+      "example": "A Cursor user selects a failing test, opens Agent mode, and says 'Fix this test—the API response format changed.' The agent traces the failure, updates the test expectations, and verifies the fix passes."
     },
     {
       "id": "A2.2",
       "name": "Repeatable Delegation",
       "keystone_behavior_markdown": "Delegation is standardized via scripts, templates, and prompts.",
       "agency_allocation_markdown": "Human defines pattern; AI executes repeatedly.",
-      "example_markdown": "Slash commands for common workflows.",
+      "example_markdown": "A team creates a `/generate-api-endpoint` slash command in Claude Code stored in `.claude/commands/`. New developers type `/generate-api-endpoint users` and get a consistent implementation following team patterns: route, controller, service, repository, and tests—all matching the established architecture.",
       "emotional_state": {
         "dominant": "Stability through patterns",
         "secondary": [
@@ -275,7 +275,7 @@
       "letting_go_to_progress": [
         "The belief that humans must adapt every time."
       ],
-      "example": "Teams with standardized AI workflows."
+      "example": "A Cursor team maintains a `.cursorrules` file that encodes their React patterns, testing conventions, and code style. Every agent interaction inherits these rules, ensuring consistent output across the team without per-prompt instruction."
     },
     {
       "id": "A2.3",
@@ -287,7 +287,7 @@
         "Human reviews final outcome when conditions are satisfied"
       ],
       "agency_allocation_markdown": "AI iterates locally; human reviews outcome.",
-      "example_markdown": "Run until tests pass.",
+      "example_markdown": "Claude Code enters a fix loop: attempt a change → run `npm test` → read the failure output → try a different approach. After four iterations, the tests pass. The developer returns to find a green build and a commit ready for review—they never saw the intermediate failures.",
       "emotional_state": {
         "dominant": "Trust through feedback",
         "secondary": [
@@ -315,7 +315,7 @@
       "letting_go_to_progress": [
         "The need to watch every loop."
       ],
-      "example": "Agentic TDD systems."
+      "example": "Devin works on a bug fix, running the reproduction script after each change. It tries three different approaches, each time checking if the script passes. On success, it runs the full test suite to check for regressions, then commits."
     },
     {
       "id": "A3.1",
@@ -328,7 +328,7 @@
         "Human sees every commit, every task boundary, every small decision"
       ],
       "agency_allocation_markdown": "AI executes the process; human supervises at step granularity and fixes process definitions.",
-      "example_markdown": "AI follows the defined workflow—commits when tests pass, branches per task, runs CI automatically. Human watches each task complete, reviews each commit, and adjusts the process rules when steps produce unexpected results. Human decomposes features into the task list.",
+      "example_markdown": "A developer uses Claude Code to build a feature. They break 'add user search' into tasks: add search endpoint, add search UI, add tests. After each commit, they review the diff in VS Code, check that tests pass, then give the next instruction. When Claude's commit message is unclear, they update the commit template in CLAUDE.md.",
       "emotional_state": {
         "dominant": "Control through fine-grained visibility",
         "secondary": [
@@ -365,7 +365,7 @@
       "letting_go_to_progress": [
         "The need to observe every step of the process."
       ],
-      "example": "Human defines task breakdown for each feature. AI executes tasks following the workflow. Human reviews each completed task and commit, adjusting process rules when individual steps go wrong."
+      "example": "Rakuten's ML team uses Claude Code with a defined process. An engineer decomposes 'implement activation vector extraction in vLLM' into steps, reviews each commit Claude makes, and occasionally adjusts the workflow when Claude's approach doesn't match team conventions."
     },
     {
       "id": "A3.2",
@@ -377,7 +377,7 @@
         "Human improves the process at the iteration level"
       ],
       "agency_allocation_markdown": "AI executes steps and decomposes within loops; human supervises at iteration boundaries and fixes process cycles.",
-      "example_markdown": "AI breaks down goals into tasks, executes them, and presents completed work at iteration end. Human attends every demo, reviews what was accomplished, defines goals for the next iteration, and adjusts the process when cycles produce unexpected results.",
+      "example_markdown": "A startup runs weekly AI sprints. Monday: the PM defines goals like 'users can reset passwords' and 'add Stripe integration.' By Friday, the AI system has decomposed these into tasks and completed them. At the Friday demo, the PM reviews working software, gives feedback, and sets next week's goals.",
       "emotional_state": {
         "dominant": "Trust through rhythm",
         "secondary": [
@@ -414,7 +414,7 @@
       "letting_go_to_progress": [
         "The need to participate in every iteration cycle."
       ],
-      "example": "Human sets goals for each iteration and attends demos when cycles complete. AI decomposes goals, executes, and presents. Human improves the process based on what each cycle reveals."
+      "example": "GitHub Copilot coding agent works on assigned issues throughout the week. At daily standup, the tech lead reviews completed PRs, leaves comments for revisions, and assigns new issues. They don't watch individual commits but engage at the PR boundary."
     },
     {
       "id": "A3.3",
@@ -427,7 +427,7 @@
         "Human handles exceptions when they arise"
       ],
       "agency_allocation_markdown": "AI executes loops and defines iteration goals; human supervises flow, provides direction, and fixes the overall process structure.",
-      "example_markdown": "AI runs continuous iterations, selecting goals from the product vision and executing cycles. Human monitors overall progress, checks in periodically (not every loop), provides strategic direction when needed, and adjusts the meta-process when the overall flow shows dysfunction.",
+      "example_markdown": "A product owner reviews their AI development system monthly. They look at a dashboard showing velocity trends, feature completion rates, and test coverage. When they notice the system is building features that don't align with the quarterly roadmap, they update the product vision document and adjust the goal-selection criteria.",
       "emotional_state": {
         "dominant": "Stewardship of flow",
         "secondary": [
@@ -464,7 +464,7 @@
       "letting_go_to_progress": [
         "The need to understand and tune the development process."
       ],
-      "example": "Human provides product direction and periodically reviews flow health. AI runs iterations autonomously, selecting goals and executing cycles. Human intervenes when flow metrics indicate dysfunction or when strategic direction needs adjustment."
+      "example": "A CTO oversees an AI-driven development org. They don't attend sprint demos but review quarterly OKR progress. When they see the 'mobile app' objective stalling, they investigate, find a recurring API compatibility issue, and adjust the system's browser-testing infrastructure."
     },
     {
       "id": "A4.1",
@@ -476,7 +476,7 @@
         "Human refines escalation rules based on experience"
       ],
       "agency_allocation_markdown": "AI runs; humans handle exceptions.",
-      "example_markdown": "Ask human if tests fail repeatedly.",
+      "example_markdown": "Dependabot opens a PR to update lodash from 4.17.20 to 4.17.21. CI runs automatically. Tests pass, so the PR sits awaiting human merge. On another repo, the same update breaks a test—after three failed CI runs, Dependabot sends a Slack alert to the on-call developer.",
       "emotional_state": {
         "dominant": "Cautious trust",
         "secondary": [
@@ -504,7 +504,7 @@
       "letting_go_to_progress": [
         "The belief that humans must be the first line of defense."
       ],
-      "example": "Early autonomous CI agents."
+      "example": "GitHub Copilot coding agent works on an issue but hits a compile error it can't resolve after 5 attempts. It stops, marks the PR as 'needs human input', and adds a comment explaining where it got stuck. A developer picks it up the next morning."
     },
     {
       "id": "A4.2",
@@ -516,7 +516,7 @@
         "Human authorizes continuation or can halt/redirect"
       ],
       "agency_allocation_markdown": "AI leads; humans validate checkpoints.",
-      "example_markdown": "Daily review of agent commits.",
+      "example_markdown": "GitHub Copilot coding agent works overnight on five assigned issues. By 9am, there are five draft PRs waiting. The developer spends 30 minutes reviewing diffs, approves three, leaves comments on one, and closes one that misunderstood the issue. The agent resumes work on the commented PR.",
       "emotional_state": {
         "dominant": "Trust with distance",
         "secondary": [
@@ -544,14 +544,14 @@
       "letting_go_to_progress": [
         "The belief that understanding requires observation."
       ],
-      "example": "Long-running autonomous refactoring systems."
+      "example": "Nubank uses Devin for a multi-month migration of their ETL monolith to sub-modules. Engineers review Devin's PRs weekly, validating that migration patterns are correct. They achieved 12x efficiency improvement with human review only at weekly checkpoints, not per-commit."
     },
     {
       "id": "A4.3",
       "name": "Ralph Wiggum Mode",
       "keystone_behavior_markdown": "Simple loop, back-pressure, and a law that all durable state lives in source control.",
       "agency_allocation_markdown": "AI runs continuously; humans are consulted only on demand.",
-      "example_markdown": "An agent repeatedly pulls tasks from git, works, commits, and waits.",
+      "example_markdown": "A 'minion' agent runs in a simple loop: poll GitHub issues labeled 'ai-ready' → clone repo → work on issue → run tests → commit and open PR → poll again. It has no memory between tasks. All context comes from the repo and issue; all output goes to git. Humans interact only through GitHub.",
       "emotional_state": {
         "dominant": "Letting go",
         "secondary": [
@@ -580,14 +580,14 @@
       "letting_go_to_progress": [
         "The need to know what is happening."
       ],
-      "example": "Minimal-agent orchestration systems."
+      "example": "A company runs 50 identical 'worker' agents, each with no state beyond the current task. When an agent finishes or fails, it resets completely. The backlog in git is the only coordination mechanism. Humans add issues; agents consume them. No orchestrator, no memory, no complexity—just a loop."
     },
     {
       "id": "A4.4",
       "name": "Event-Driven Autonomous Systems",
       "keystone_behavior_markdown": "Agents respond to events rather than running a loop; flows are non-deterministic but grounded by source control.",
       "agency_allocation_markdown": "System reacts; humans are normative anchors.",
-      "example_markdown": "Agents trigger on repo changes, test failures, or signals.",
+      "example_markdown": "A GitHub App ecosystem: when a PR is opened, one agent runs security scans, another generates documentation diffs, a third suggests test coverage improvements, and a fourth checks for API breaking changes. Each agent fires independently on the webhook event. Their outputs appear as separate PR comments within minutes.",
       "emotional_state": {
         "dominant": "Detachment",
         "secondary": [
@@ -615,14 +615,14 @@
       "letting_go_to_progress": [
         "The need for predictability."
       ],
-      "example": "Reactive multi-agent systems."
+      "example": "When a production alert fires, an agent investigates logs and opens a diagnostic issue. That issue triggers another agent to attempt a fix. If the fix PR passes CI, yet another agent auto-merges it. The human sees: alert → investigation → fix → deploy, all in their Slack timeline."
     },
     {
       "id": "A5.1",
       "name": "Personalized Autonomous Software",
       "keystone_behavior_markdown": "Software is generated and evolved per human reality; no shared product.",
       "agency_allocation_markdown": "System serves an individual; human provides grounding.",
-      "example_markdown": "Each person has a continuously adapting software companion.",
+      "example_markdown": "In 2035: your personal AI maintains software tailored to your life. Your fitness app knows your injury history and adjusts workouts. Your budgeting tool learned your spending patterns and handles recurring bills. Your home automation anticipates your routines. None of this was downloaded from an app store—it was generated and evolved by your AI.",
       "emotional_state": {
         "dominant": "Empowerment",
         "secondary": [
@@ -651,7 +651,7 @@
       "letting_go_to_progress": [
         "The idea of software as a product."
       ],
-      "example": "Speculative end-state."
+      "example": "A small business owner describes their workflow problems to their AI. Over the next week, the AI builds a custom inventory management system, a customer notification tool, and integrations with their existing accounting software—all bespoke, all maintained by the AI, none available to any other business."
     }
   ]
 }
