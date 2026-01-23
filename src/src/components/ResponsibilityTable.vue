@@ -302,7 +302,7 @@ function getTooltipText(respIndex: number, substageIndex: number): string {
   text-align: center;
 }
 
-.substage-header {
+.responsibility-table .substage-header {
   text-align: right;
   background-color: var(--color-surface);
   font-weight: 600;
@@ -337,7 +337,7 @@ function getTooltipText(respIndex: number, substageIndex: number): string {
   padding-left: 4px;
 }
 
-.substage-name {
+.responsibility-table .substage-name {
   text-align: right;
   font-weight: 500;
   white-space: nowrap;
