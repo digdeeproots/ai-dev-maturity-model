@@ -61,17 +61,13 @@ function getOwnershipInfo(code: OwnershipCode): OwnershipCodeInfo {
   return matrixData.value.ownershipCodes[code]
 }
 
-function hasTransition(respIndex: number): boolean {
-  const codes = matrixData.value.matrix.map(row => row[respIndex])
-  return new Set(codes).size > 1
-}
-
 function getOwnershipCode(substageIndex: number, respIndex: number): OwnershipCode {
   return matrixData.value.matrix[substageIndex]?.[respIndex] || 'H'
 }
 
-function getSubstageName(id: string): string {
-  return props.substageNames?.[id] || id
+function getSubstageLabel(id: string): string {
+  const name = props.substageNames?.[id]
+  return name ? `${id}: ${name}` : id
 }
 
 function toggleExpanded() {
@@ -131,10 +127,9 @@ function getTooltipText(respIndex: number, substageIndex: number): string {
           <tr>
             <th class="substage-header">Substage</th>
             <th
-              v-for="(responsibility, respIndex) in matrixData.responsibilities"
+              v-for="responsibility in matrixData.responsibilities"
               :key="responsibility"
               class="responsibility-header"
-              :class="{ 'has-transition': hasTransition(respIndex) }"
             >
               <div class="rotated-header">
                 <span :title="responsibility">{{ getShortName(responsibility) }}</span>
@@ -147,12 +142,12 @@ function getTooltipText(respIndex: number, substageIndex: number): string {
             v-for="(substageId, substageIndex) in substageIds"
             :key="substageId"
           >
-            <td class="substage-name">{{ getSubstageName(substageId) }}</td>
+            <td class="substage-name">{{ getSubstageLabel(substageId) }}</td>
             <td
               v-for="(responsibility, respIndex) in matrixData.responsibilities"
               :key="responsibility"
               class="ownership-cell"
-              :class="[getOwnershipClass(getOwnershipCode(substageIndex, respIndex)), { 'has-transition': hasTransition(respIndex) }]"
+              :class="getOwnershipClass(getOwnershipCode(substageIndex, respIndex))"
             >
               <span class="cell-content">
                 {{ getOwnershipInfo(getOwnershipCode(substageIndex, respIndex)).label }}
@@ -325,10 +320,6 @@ function getTooltipText(respIndex: number, substageIndex: number): string {
   vertical-align: bottom;
 }
 
-.responsibility-header.has-transition {
-  background-color: #fef3c7;
-}
-
 .rotated-header {
   width: 100%;
   height: 100%;
@@ -350,10 +341,6 @@ function getTooltipText(respIndex: number, substageIndex: number): string {
   text-align: left;
   font-weight: 500;
   white-space: nowrap;
-}
-
-.has-transition {
-  background-color: #fffbeb;
 }
 
 .ownership-cell {
