@@ -289,7 +289,7 @@ function goBack() {
 }
 
 .stage-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-md);
 }
 
 .stage-card.expanded {
