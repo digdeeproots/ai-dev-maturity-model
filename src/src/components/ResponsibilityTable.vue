@@ -303,7 +303,7 @@ function getTooltipText(respIndex: number, substageIndex: number): string {
 }
 
 .substage-header {
-  text-align: left;
+  text-align: right;
   background-color: var(--color-surface);
   font-weight: 600;
   min-width: 80px;
