@@ -350,28 +350,28 @@ function getTooltipText(respIndex: number, substageIndex: number): string {
 
 /* Ownership colors - gradient from Human (blue) to AI (green) */
 .ownership-h {
-  background-color: #dbeafe;
-  color: #1e40af;
+  background-color: #3b82f6;
+  color: #ffffff;
 }
 
 .ownership-ag {
-  background-color: #a5d8ff;
-  color: #1864ab;
+  background-color: #8b5cf6;
+  color: #ffffff;
 }
 
 .ownership-ao {
-  background-color: #99e9f2;
-  color: #0b7285;
+  background-color: #06b6d4;
+  color: #ffffff;
 }
 
 .ownership-s {
-  background-color: #96f2d7;
-  color: #087f5b;
+  background-color: #f59e0b;
+  color: #ffffff;
 }
 
 .ownership-a {
-  background-color: #b2f2bb;
-  color: #2b8a3e;
+  background-color: #22c55e;
+  color: #ffffff;
 }
 
 /* Tooltip for expanded view */
