@@ -123,18 +123,18 @@ function goBack() {
 }
 
 .fate-column.success {
-  background-color: #f0fdf4;
-  border: 1px solid #bbf7d0;
+  background-color: var(--color-success-light);
+  border: 1px solid var(--color-success-border);
 }
 
 .fate-column.failure {
-  background-color: #fef2f2;
-  border: 1px solid #fecaca;
+  background-color: var(--color-error-light);
+  border: 1px solid var(--color-error-border);
 }
 
 .fate-column.warning {
-  background-color: #fffbeb;
-  border: 1px solid #fde68a;
+  background-color: var(--color-warning-light);
+  border: 1px solid var(--color-warning-border);
 }
 
 .fate-column.rationalization {
@@ -143,10 +143,10 @@ function goBack() {
 }
 
 .what-breaks {
-  background-color: #fef2f2;
+  background-color: var(--color-error-light);
   padding: var(--spacing-md);
   border-radius: 6px;
-  border: 1px solid #fecaca;
+  border: 1px solid var(--color-error-border);
 }
 
 .loading,
@@ -156,6 +156,6 @@ function goBack() {
 }
 
 .error {
-  color: #dc3545;
+  color: var(--color-error);
 }
 </style>

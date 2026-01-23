@@ -382,10 +382,10 @@ function goBack() {
 }
 
 .sacred-cows {
-  background-color: #fffbeb;
+  background-color: var(--color-warning-light);
   padding: var(--spacing-md);
   border-radius: 6px;
-  border: 1px solid #fde68a;
+  border: 1px solid var(--color-warning-border);
 }
 
 /* Substages */
@@ -514,10 +514,10 @@ function goBack() {
 }
 
 .substage-detail.example {
-  background-color: #f0f9ff;
+  background-color: var(--color-info-light);
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: 4px;
-  border-left: 3px solid var(--color-primary);
+  border-left: 3px solid var(--color-info);
 }
 
 .substage-detail.enabling-investments ul {
