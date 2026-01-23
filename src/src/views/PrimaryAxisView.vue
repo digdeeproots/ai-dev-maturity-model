@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { useModelData, getSubstagesForStage } from '../composables/useModelData'
 import { useMarkdown } from '../composables/useMarkdown'
 import ResponsibilityTable from '../components/ResponsibilityTable.vue'
+import MiniSparkline from '../components/MiniSparkline.vue'
 
 const router = useRouter()
 const { model, agencyStages } = useModelData()
@@ -105,8 +106,14 @@ function goBack() {
               <span class="stage-id">{{ stage.id }}</span>
               <h3>{{ stage.name }}</h3>
             </div>
-            <div class="stage-summary text-muted" v-if="!isExpanded(stage.id)">
-              {{ stage.core_agency_statement }}
+            <div class="stage-header-right" v-if="!isExpanded(stage.id)">
+              <MiniSparkline
+                v-if="getSubstageIds(stage.id).length > 0"
+                :substage-ids="getSubstageIds(stage.id)"
+              />
+              <div class="stage-summary text-muted">
+                {{ stage.core_agency_statement }}
+              </div>
             </div>
             <span class="expand-icon" :class="{ expanded: isExpanded(stage.id) }">›</span>
           </button>
@@ -348,10 +355,18 @@ function goBack() {
   font-size: var(--font-size-lg);
 }
 
-.stage-summary {
+.stage-header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
   flex: 1;
+  justify-content: flex-end;
+}
+
+.stage-summary {
   font-size: var(--font-size-sm);
   text-align: right;
+  max-width: 300px;
 }
 
 .expand-icon {
