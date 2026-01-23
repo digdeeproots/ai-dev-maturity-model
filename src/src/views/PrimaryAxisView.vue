@@ -15,7 +15,7 @@ function getSubstageIds(stageId: string): string[] {
 
 function getSubstageNames(stageId: string): Record<string, string> {
   const substages = getSubstagesForStage(stageId)
-  return Object.fromEntries(substages.map(s => [s.id, s.id]))
+  return Object.fromEntries(substages.map(s => [s.id, s.name]))
 }
 
 const expandedStageId = ref<string | null>(null)
@@ -42,7 +42,7 @@ const axisOverviewSubstageNames = computed(() => {
   for (const stage of visibleStages.value) {
     const substages = getSubstagesForStage(stage.id)
     for (const substage of substages) {
-      names[substage.id] = substage.id
+      names[substage.id] = substage.name
     }
   }
   return names
@@ -108,7 +108,7 @@ function goBack() {
             <div class="stage-summary text-muted" v-if="!isExpanded(stage.id)">
               {{ stage.core_agency_statement }}
             </div>
-            <span class="expand-icon">{{ isExpanded(stage.id) ? '−' : '+' }}</span>
+            <span class="expand-icon" :class="{ expanded: isExpanded(stage.id) }">›</span>
           </button>
 
           <div v-if="isExpanded(stage.id)" class="stage-content">
@@ -159,13 +159,25 @@ function goBack() {
                     <div v-if="!isSubstageExpanded(substage.id)" class="substage-summary">
                       {{ substage.keystone_behavior_markdown || substage.agency_allocation_markdown || '' }}
                     </div>
-                    <span class="expand-icon">{{ isSubstageExpanded(substage.id) ? '−' : '+' }}</span>
+                    <span class="expand-icon" :class="{ expanded: isSubstageExpanded(substage.id) }">›</span>
                   </button>
 
                   <div v-if="isSubstageExpanded(substage.id)" class="substage-content">
+                    <div v-if="substage.example_markdown" class="substage-detail example">
+                      <strong>Examples:</strong>
+                      <div class="markdown-content" v-html="md(substage.example_markdown)"></div>
+                    </div>
+
                     <div v-if="substage.keystone_behavior_markdown" class="substage-detail">
                       <strong>Keystone Behavior:</strong>
                       <div class="markdown-content" v-html="md(substage.keystone_behavior_markdown)"></div>
+                    </div>
+
+                    <div v-if="substage.secondary_behaviors_markdown?.length" class="substage-detail">
+                      <strong>Secondary Behaviors:</strong>
+                      <ul>
+                        <li v-for="(behavior, i) in substage.secondary_behaviors_markdown" :key="i">{{ behavior }}</li>
+                      </ul>
                     </div>
 
                     <div v-if="substage.agency_allocation_markdown" class="substage-detail">
@@ -193,24 +205,26 @@ function goBack() {
                       </ul>
                     </div>
 
+                    <div v-if="substage.enabling_investments_markdown?.length" class="substage-detail">
+                      <strong>Example Enabling Investments:</strong>
+                      <ul>
+                        <li v-for="(investment, i) in substage.enabling_investments_markdown" :key="i">{{ investment }}</li>
+                      </ul>
+                    </div>
+
                     <div v-if="substage.readiness" class="substage-detail readiness">
                       <strong>Readiness:</strong>
                       <div class="readiness-details">
                         <div v-if="substage.readiness.ready_to_experiment_markdown">
-                          <em>Ready to experiment:</em> {{ substage.readiness.ready_to_experiment_markdown }}
+                          <em>You may be ready to experiment with this substage if:</em> {{ substage.readiness.ready_to_experiment_markdown }}
                         </div>
                         <div v-if="substage.readiness.effectiveness_metric_markdown">
-                          <em>Effectiveness metric:</em> {{ substage.readiness.effectiveness_metric_markdown }}
+                          <em>Effectiveness metric for progress within this substage:</em> {{ substage.readiness.effectiveness_metric_markdown }}
                         </div>
                         <div v-if="substage.readiness.let_go_focus_markdown">
                           <em>Let go focus:</em> {{ substage.readiness.let_go_focus_markdown }}
                         </div>
                       </div>
-                    </div>
-
-                    <div v-if="substage.example_markdown" class="substage-detail example">
-                      <strong>Example:</strong>
-                      <div class="markdown-content" v-html="md(substage.example_markdown)"></div>
                     </div>
                   </div>
                 </div>
@@ -337,6 +351,12 @@ function goBack() {
   flex-shrink: 0;
   width: 1.5rem;
   text-align: center;
+  transition: transform var(--transition-normal);
+  display: inline-block;
+}
+
+.expand-icon.expanded {
+  transform: rotate(90deg);
 }
 
 .stage-content {
@@ -498,6 +518,10 @@ function goBack() {
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: 4px;
   border-left: 3px solid var(--color-primary);
+}
+
+.substage-detail.enabling-investments ul {
+  margin: var(--spacing-xs) 0 0 var(--spacing-md);
 }
 
 .readiness-details {

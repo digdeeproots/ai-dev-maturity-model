@@ -65,6 +65,8 @@ export interface Substage {
   id: string
   name: string
   keystone_behavior_markdown?: string
+  secondary_behaviors_markdown?: string[]
+  enabling_investments_markdown?: string[]
   agency_allocation_markdown?: string
   example_markdown?: string
   emotional_state?: SubstageEmotionalState
@@ -74,7 +76,6 @@ export interface Substage {
   effectiveness_measures?: string[]
   failure_modes?: string[]
   letting_go_to_progress?: string[]
-  example?: string
   stability?: string
   implication?: string
 }
@@ -91,8 +92,15 @@ export interface OwnershipCodeInfo {
   description: string
 }
 
+export interface Responsibility {
+  id: string
+  short: string
+  full: string
+  description: string
+}
+
 export interface ResponsibilityOwnershipData {
-  responsibilities: string[]
+  responsibilities: Responsibility[]
   ownership_codes: Record<OwnershipCode, OwnershipCodeInfo>
   matrix: Record<string, OwnershipCode[]>
 }

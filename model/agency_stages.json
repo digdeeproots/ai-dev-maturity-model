@@ -5,7 +5,7 @@
       "id": "A0",
       "name": "Human-Only Development",
       "summary_markdown": "All observation, decision-making, execution, and evaluation are performed by humans.",
-      "core_agency_statement": "Humans decide everything.",
+      "core_agency_statement": "Humans do everything.",
       "emotional_shift_markdown": "Identity is tightly coupled to typing, recall, and direct control.",
       "sacred_cows_markdown": "- Code literacy equals competence\n- Architecture is a human-only activity",
       "substage_ids": ["A0.1", "A0.2", "A0.3"]

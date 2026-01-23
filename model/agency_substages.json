@@ -15,7 +15,7 @@
       "name": "Manual Coding",
       "keystone_behavior_markdown": "Human manually writes all code, tests, and designs. No AI involvement.",
       "agency_allocation_markdown": "Human commands and executes the entire loop.",
-      "example_markdown": "A developer writes code in a text editor, runs tests manually, and debugs by inspection.",
+      "example_markdown": "A COBOL team at a regional bank writes mainframe code in vim, submits batch jobs to compile, runs test jobs manually, and debugs by reading JCL output and core dumps. Every change requires understanding the full execution path.\n\nEarly 2000s Java shops: developers run `javac` manually, execute tests one class at a time, and deploy by copying WAR files to servers via FTP.",
       "emotional_state": {
         "dominant": "Control through effort",
         "secondary": [
@@ -51,15 +51,14 @@
       ],
       "letting_go_to_progress": [
         "The belief that understanding everything is required to act."
-      ],
-      "example": "A traditional enterprise software team with manual CI and human-driven releases."
+      ]
     },
     {
       "id": "A0.2",
       "name": "Heavy Tooling",
       "keystone_behavior_markdown": "Humans rely on IDEs, linters, static analysis, and CI to catch errors early.",
       "agency_allocation_markdown": "Human commands the loop; tools provide guardrails.",
-      "example_markdown": "A developer uses an IDE with autocomplete, linting, and CI checks on every commit.",
+      "example_markdown": "A React team uses VS Code with ESLint, Prettier, and TypeScript. Red squiggles appear instantly for type errors. Every PR triggers GitHub Actions running tests, type checks, and linting. The IDE catches most syntax errors before the developer even saves.\n\nA 2019 startup using JetBrains IDEs with real-time inspections, SonarQube for code quality, and CircleCI pipelines—comprehensive tooling, but no AI assistance.",
       "emotional_state": {
         "dominant": "Safety through structure",
         "secondary": [
@@ -89,15 +88,14 @@
       ],
       "letting_go_to_progress": [
         "The belief that tools replace thinking."
-      ],
-      "example": "A modern dev team with strong IDEs and CI but no AI."
+      ]
     },
     {
       "id": "A0.3",
       "name": "Scripted Automation",
       "keystone_behavior_markdown": "Humans encode repeatable steps into scripts and pipelines.",
       "agency_allocation_markdown": "Human decides; scripts execute deterministically.",
-      "example_markdown": "Makefiles, CI pipelines, release scripts automate known workflows.",
+      "example_markdown": "A team uses a Makefile with targets like `make build`, `make test`, `make deploy`. Their Jenkins pipeline runs on every merge to main: build → test → staging deploy → smoke tests → production deploy. Known workflows are captured in scripts; novel work is still manual.\n\nNetflix's Spinnaker pipelines circa 2018: fully automated deployment with canary analysis, automated rollback, and zero-touch releases—but every pipeline step was explicitly scripted by humans.",
       "emotional_state": {
         "dominant": "Control through repeatability",
         "secondary": [
@@ -127,15 +125,14 @@
       ],
       "letting_go_to_progress": [
         "The belief that automation must be deterministic to be useful."
-      ],
-      "example": "CI/CD-heavy teams before AI adoption."
+      ]
     },
     {
       "id": "A1.1",
       "name": "Mechanical Leverage",
       "keystone_behavior_markdown": "AI is used for autocomplete and snippet generation.",
       "agency_allocation_markdown": "Human commands; AI accelerates execution.",
-      "example_markdown": "Using Copilot to write boilerplate code.",
+      "example_markdown": "A developer types `function fetchUserById(id: string)` and GitHub Copilot autocompletes the entire function with try/catch, fetch call, error handling, and TypeScript types. They tab through suggestions while building a CRUD API, accepting about 40% of completions.\n\nA developer writes a comment `// parse ISO date string to Date object` and Copilot generates the implementation. Another types `describe('UserService',` and Copilot scaffolds the entire test suite structure.",
       "emotional_state": {
         "dominant": "Speed through assistance",
         "secondary": [
@@ -163,15 +160,14 @@
       ],
       "letting_go_to_progress": [
         "The belief that writing code equals designing software."
-      ],
-      "example": "Individual developers using Copilot."
+      ]
     },
     {
       "id": "A1.2",
       "name": "Cognitive Mirror",
       "keystone_behavior_markdown": "AI is used to explain, critique, and question human thinking.",
       "agency_allocation_markdown": "Human decides; AI reflects and challenges.",
-      "example_markdown": "Asking AI to review code or find missed edge cases.",
+      "example_markdown": "A developer pastes a validation function into ChatGPT and asks 'What edge cases am I missing?' The AI identifies that the code doesn't handle empty strings, unicode whitespace, or null inputs. The developer adds test cases for each and updates the implementation.\n\nAn architect asks Claude to critique their database schema design. Claude points out a missing index on a frequently-queried foreign key and suggests denormalizing a junction table that would cause N+1 query problems.",
       "emotional_state": {
         "dominant": "Reflection through dialogue",
         "secondary": [
@@ -199,15 +195,24 @@
       ],
       "letting_go_to_progress": [
         "The belief that insight must originate from humans."
-      ],
-      "example": "Developers using AI as reviewer."
+      ]
     },
     {
       "id": "A2.1",
       "name": "Delegated Execution",
       "keystone_behavior_markdown": "Agents perform bounded tasks under human direction.",
+      "secondary_behaviors_markdown": [
+        "Human selects and scopes each task",
+        "Human reviews output before accepting",
+        "Human remains available for clarifying questions"
+      ],
+      "enabling_investments_markdown": [
+        "MCP tools for domain operations (query database, call internal APIs, access documentation)",
+        "Reference examples in CLAUDE.md showing preferred patterns for common tasks",
+        "Prompt templates that encode task scope and acceptance criteria"
+      ],
       "agency_allocation_markdown": "Human selects task; AI executes.",
-      "example_markdown": "Asking an agent to fix a bug or write a module.",
+      "example_markdown": "A developer tells Claude Code: 'Add cursor-based pagination to the /users endpoint. Use a default limit of 20 and encode the cursor as base64.' Claude Code reads the existing code, implements the pagination, updates the tests, and presents the changes for review.\n\nA Cursor user selects a failing test, opens Agent mode, and says 'Fix this test—the API response format changed.' The agent traces the failure, updates the test expectations, and verifies the fix passes.",
       "emotional_state": {
         "dominant": "Relief through delegation",
         "secondary": [
@@ -234,15 +239,20 @@
       ],
       "letting_go_to_progress": [
         "The belief that quality requires human execution."
-      ],
-      "example": "Using Cline or Claude Code for single tasks."
+      ]
     },
     {
       "id": "A2.2",
       "name": "Repeatable Delegation",
       "keystone_behavior_markdown": "Delegation is standardized via scripts, templates, and prompts.",
+      "enabling_investments_markdown": [
+        "Slash commands in .claude/commands/ for repeated workflows (/generate-endpoint, /add-test, /refactor)",
+        ".cursorrules or CLAUDE.md encoding team patterns, naming conventions, architecture decisions",
+        "Code generation scaffolds that produce consistent structure (hexagonal architecture templates, CRUD generators)",
+        "Skills that encapsulate multi-step processes (create PR with tests, deploy to staging)"
+      ],
       "agency_allocation_markdown": "Human defines pattern; AI executes repeatedly.",
-      "example_markdown": "Slash commands for common workflows.",
+      "example_markdown": "A team creates a `/generate-api-endpoint` slash command in Claude Code stored in `.claude/commands/`. New developers type `/generate-api-endpoint users` and get a consistent implementation following team patterns: route, controller, service, repository, and tests—all matching the established architecture.\n\nA Cursor team maintains a `.cursorrules` file that encodes their React patterns, testing conventions, and code style. Every agent interaction inherits these rules, ensuring consistent output across the team without per-prompt instruction.",
       "emotional_state": {
         "dominant": "Stability through patterns",
         "secondary": [
@@ -269,15 +279,25 @@
       ],
       "letting_go_to_progress": [
         "The belief that humans must adapt every time."
-      ],
-      "example": "Teams with standardized AI workflows."
+      ]
     },
     {
       "id": "A2.3",
       "name": "Closed Local Loops",
       "keystone_behavior_markdown": "Agents run until local correctness conditions are met.",
+      "secondary_behaviors_markdown": [
+        "Human defines correctness conditions (tests, linting, type checks)",
+        "Human trusts the loop to iterate without watching each attempt",
+        "Human reviews final outcome when conditions are satisfied"
+      ],
+      "enabling_investments_markdown": [
+        "Test harnesses with clear pass/fail and actionable error messages",
+        "Strict linting configs that catch AI-common mistakes (unused imports, missing error handling)",
+        "Type definitions that prevent entire error classes (branded types, exhaustive switches)",
+        "Verification scripts the AI can run: build, test, lint, type-check in one command"
+      ],
       "agency_allocation_markdown": "AI iterates locally; human reviews outcome.",
-      "example_markdown": "Run until tests pass.",
+      "example_markdown": "Claude Code enters a fix loop: attempt a change → run `npm test` → read the failure output → try a different approach. After four iterations, the tests pass. The developer returns to find a green build and a commit ready for review—they never saw the intermediate failures.\n\nDevin works on a bug fix, running the reproduction script after each change. It tries three different approaches, each time checking if the script passes. On success, it runs the full test suite to check for regressions, then commits.",
       "emotional_state": {
         "dominant": "Trust through feedback",
         "secondary": [
@@ -304,146 +324,189 @@
       ],
       "letting_go_to_progress": [
         "The need to watch every loop."
-      ],
-      "example": "Agentic TDD systems."
+      ]
     },
     {
       "id": "A3.1",
-      "name": "Task-Level Supervision",
-      "keystone_behavior_markdown": "Human maintains prioritized backlog; system pulls tasks and executes. Human sees every task that flows through the process.",
-      "agency_allocation_markdown": "Human owns backlog and process visibility; AI executes tasks within the process.",
-      "example_markdown": "Human reviews the task queue daily, reprioritizes based on learnings, and watches tasks complete. They know what's being worked on at any moment.",
+      "name": "Step-Level Process Supervision",
+      "keystone_behavior_markdown": "AI runs the defined process; human observes every step.",
+      "secondary_behaviors_markdown": [
+        "Human decomposes work into tasks",
+        "Human defines how each step should flow",
+        "Human fixes the process definition when steps go wrong",
+        "Human sees every commit, every task boundary, every small decision"
+      ],
+      "enabling_investments_markdown": [
+        "MCP tools for movement-based commits that enforce risk notation and small-step discipline",
+        "Pre-commit hooks verifying process adherence (test files exist, message format, lint passes)",
+        "Step templates in CLAUDE.md defining the expected sequence for common operations",
+        "Diff review tools that highlight process violations, not just code issues"
+      ],
+      "agency_allocation_markdown": "AI executes the process; human supervises at step granularity and fixes process definitions.",
+      "example_markdown": "A team's CLAUDE.md encodes their process: 'Write failing tests first. Implement to make tests pass. Run linter and type-check before committing. Commit messages must reference issue numbers.' A developer gives Claude Code a task. After each commit, they review the diff—not to check the code, but to verify Claude followed the process. When Claude starts writing implementations before tests, they add to CLAUDE.md: 'You MUST create test files before implementation files. I will reject commits that don't follow this order.'\n\nAt Anthropic, engineers maintain team CLAUDE.md files encoding their conventions. When reviewing Claude's commits, an engineer notices commit messages consistently lack context. Rather than editing messages manually, they update CLAUDE.md: 'Commit messages must explain WHY the change was made, not just WHAT changed. Include the problem being solved.' The next commits include context. The engineer's job has shifted from writing code to supervising and refining the encoded process.",
       "emotional_state": {
-        "dominant": "Control through visibility",
+        "dominant": "Control through fine-grained visibility",
         "secondary": [
-          "Relief",
-          "Vigilance"
+          "Vigilance",
+          "Confidence"
         ],
-        "discomfort": "I'm not doing the work, but I still need to see it all."
+        "discomfort": "I see everything, but I'm not doing it anymore."
       },
       "failure_modes_markdown": [
-        "Micromanaging task order",
-        "Bottlenecking on prioritization",
-        "Information overload from task-level visibility"
+        "Overwhelmed by step-level detail",
+        "Process fixes are too reactive and local",
+        "Human becomes a bottleneck for decomposition"
       ],
       "readiness": {
-        "ready_to_experiment_markdown": "Stable task execution exists; human is confident in per-task quality.",
-        "effectiveness_metric_markdown": "Backlog throughput; task completion rate.",
-        "let_go_focus_markdown": "Let go of needing to see every task; trust goal-level outcomes."
+        "ready_to_experiment_markdown": "Step-level process is stable; human notices they're rarely intervening at step boundaries.",
+        "effectiveness_metric_markdown": "Step-level intervention rate; decomposition accuracy.",
+        "let_go_focus_markdown": "Let go of step-level visibility; trust loop-level observation."
       },
       "readiness_to_enter_signals": [
-        "Per-task execution is reliable.",
-        "Human feels overwhelmed by task-level detail.",
-        "Goals are clear enough to trust decomposition."
+        "Process runs smoothly at step level.",
+        "Human interventions at step boundaries are rare.",
+        "AI decomposition is trustworthy within goals."
       ],
       "effectiveness_measures": [
-        "Backlog velocity",
-        "Prioritization latency",
-        "Task-level defect rate"
+        "Step-level defect rate",
+        "Decomposition rework",
+        "Human attention per step"
       ],
       "failure_modes": [
-        "Backlog grooming becomes full-time job",
-        "Lost in task details, missing strategic drift"
+        "Step-watching becomes full-time job",
+        "Missing patterns across steps",
+        "Local fixes that don't address systemic issues"
       ],
       "letting_go_to_progress": [
-        "The need to see every task that flows through the system."
-      ],
-      "example": "Human manages a Kanban board; AI agents pull and complete tasks. Human reviews completed tasks and adjusts priorities."
+        "The need to observe every step of the process."
+      ]
     },
     {
       "id": "A3.2",
-      "name": "Goal-Level Supervision",
-      "keystone_behavior_markdown": "Human defines goals; system decomposes into tasks and executes. Human engages at goal boundaries, not task boundaries.",
-      "agency_allocation_markdown": "Human owns objectives; AI owns task decomposition and execution within goals.",
-      "example_markdown": "Human says 'implement user authentication'; system breaks this into tasks, executes them, and reports when the goal is complete. Human reviews at goal completion.",
+      "name": "Loop-Level Process Supervision",
+      "keystone_behavior_markdown": "AI runs the process; human observes every iteration cycle.",
+      "secondary_behaviors_markdown": [
+        "Human defines goals for each loop",
+        "Human participates in demos and reviews at cycle boundaries",
+        "Human improves the process at the iteration level"
+      ],
+      "enabling_investments_markdown": [
+        "Iteration tracking tools that surface goal completion and blockers",
+        "Demo automation that generates summaries of what was built",
+        "PR review dashboards aggregating iteration output for batch review",
+        "Process rule checkers that validate iteration artifacts (design docs for large PRs, migration notes for API changes)"
+      ],
+      "agency_allocation_markdown": "AI executes steps and decomposes within loops; human supervises at iteration boundaries and fixes process cycles.",
+      "example_markdown": "A startup's process doc defines their AI sprint structure: 'Monday: PM tags issues as sprint-ready with acceptance criteria. Throughout week: Droids pull from sprint backlog, implement, create PRs. Each PR must include tests and update docs. Friday: Demo completed features to PM.' The PM doesn't watch commits—they attend Friday demos. When demos consistently show features missing error handling, they update the process: 'Acceptance criteria must include error states. Demo must show both happy path and failure modes.'\n\nA team uses Devin in two-week sprints. Their encoded process specifies: PRs over 200 lines need a design doc, API changes need migration notes, each sprint ends with a retrospective. The tech lead reviews PRs at the sprint boundary, not mid-sprint. After several sprints where large PRs cause merge conflicts, they adjust the process: 'PRs must be under 100 lines. Larger changes must be split into stacked PRs.' They're tuning the iteration process itself, not fixing individual PRs.",
       "emotional_state": {
-        "dominant": "Trust through outcomes",
+        "dominant": "Trust through rhythm",
         "secondary": [
-          "Distance",
-          "Anticipation"
+          "Anticipation",
+          "Engagement"
         ],
-        "discomfort": "I don't know exactly what tasks are happening, only that progress is being made."
+        "discomfort": "I don't see every step, but I see every cycle complete."
       },
       "failure_modes_markdown": [
-        "Goals too vague to verify",
-        "Misaligned decomposition",
-        "Surprise at goal completion review"
+        "Demos become perfunctory",
+        "Goal definition too vague for AI decomposition",
+        "Process improvements lag behind cycle feedback"
       ],
       "readiness": {
-        "ready_to_experiment_markdown": "Task-level execution is trustworthy; goals are well-defined.",
-        "effectiveness_metric_markdown": "Goal completion rate; rework after goal review.",
-        "let_go_focus_markdown": "Let go of defining goals; trust flow-level rhythm and demos."
+        "ready_to_experiment_markdown": "Loop-level process is stable; human notices cycles are predictable and demos rarely surface surprises.",
+        "effectiveness_metric_markdown": "Iteration success rate; goal achievement accuracy.",
+        "let_go_focus_markdown": "Let go of loop-level engagement; trust flow-level observation."
       },
       "readiness_to_enter_signals": [
-        "Goal decomposition is reliable.",
-        "Human trusts system's architectural choices within goals.",
-        "Review at goal boundaries feels sufficient."
+        "Iterations consistently deliver expected value.",
+        "Demos rarely require significant course correction.",
+        "AI goal decomposition is reliable."
       ],
       "effectiveness_measures": [
-        "Goals completed per period",
-        "Rework rate at goal review",
-        "Goal definition clarity"
+        "Goals completed per iteration",
+        "Rework rate at demo",
+        "Process improvement cycle time"
       ],
       "failure_modes": [
-        "Goal scope creep",
-        "Decomposition drift from intent",
-        "Review fatigue at goal boundaries"
+        "Demo fatigue",
+        "Goals drift from strategic intent",
+        "Over-optimizing individual cycles vs. overall flow"
       ],
       "letting_go_to_progress": [
-        "The need to define and track individual goals."
-      ],
-      "example": "Human sets quarterly objectives; system continuously works toward them, reporting at objective milestones. Human reviews working software at each milestone."
+        "The need to participate in every iteration cycle."
+      ]
     },
     {
       "id": "A3.3",
-      "name": "Flow-Level Supervision",
-      "keystone_behavior_markdown": "Human watches overall development rhythm; engages at demos and checkpoints. Trusts goal selection; monitors process health.",
-      "agency_allocation_markdown": "Human owns process health and demo engagement; AI owns goal selection, decomposition, and execution.",
-      "example_markdown": "System continuously pulls from product vision, works in slices, and presents working software at regular demos. Human attends demos, provides feedback, and watches for process dysfunction.",
+      "name": "Flow-Level Process Supervision",
+      "keystone_behavior_markdown": "AI runs the process; human observes overall flow and approach.",
+      "secondary_behaviors_markdown": [
+        "Human provides strategic direction",
+        "Human monitors process health",
+        "Human tunes the cycle structure itself",
+        "Human handles exceptions when they arise"
+      ],
+      "enabling_investments_markdown": [
+        "Flow health dashboards showing velocity, quality, and strategic alignment trends",
+        "Drift detection tools that alert when output diverges from roadmap intent",
+        "Feedback systems detecting code duplication and missing abstractions, providing backpressure",
+        "Goal-selection algorithms that balance feature velocity against technical health metrics"
+      ],
+      "agency_allocation_markdown": "AI executes loops and defines iteration goals; human supervises flow, provides direction, and fixes the overall process structure.",
+      "example_markdown": "A VP of Engineering manages an AI development org on Factory. The layered process includes: product roadmap (quarterly objectives), sprint templates (iteration structure), and quality gates (merge criteria). Droids run weekly sprints autonomously. The VP reviews a monthly dashboard: velocity trends, feature completion, tech debt metrics. When the dashboard shows code review quality declining, they investigate and find PRs are being rubber-stamped. They adjust the process by adding a rule: 'Changes touching more than 3 files require architecture review before merge.'\n\nA CTO oversees 50 Droids at an AI-native company. The encoded process includes: issue triage rules, sprint cadence, escalation triggers, and OKR tracking. The CTO doesn't attend sprint demos—they review quarterly progress. When Q2 shows 'improve performance' objectives consistently miss while 'add features' exceeds targets, they recognize a process bias. They update the goal-selection criteria: 'Performance objectives get 1.5x weight in sprint planning.' The fix is to the process, not to any individual sprint.",
       "emotional_state": {
-        "dominant": "Stewardship of rhythm",
+        "dominant": "Stewardship of flow",
         "secondary": [
-          "Detachment",
+          "Distance",
           "Watchfulness"
         ],
-        "discomfort": "I don't know what goals are being pursued right now, only that slices keep appearing."
+        "discomfort": "I don't see every loop, but I understand the rhythm and can intervene when needed."
       },
       "failure_modes_markdown": [
-        "Demos become rubber stamps",
-        "Process dysfunction goes unnoticed",
-        "Strategic drift between demos"
+        "Strategic drift goes unnoticed between check-ins",
+        "Process dysfunction visible only in aggregate",
+        "Losing touch with what's actually being built"
       ],
       "readiness": {
-        "ready_to_experiment_markdown": "Goal-level execution is trustworthy; demos consistently produce valuable slices.",
-        "effectiveness_metric_markdown": "Demo value; process health indicators; time between meaningful slices.",
-        "let_go_focus_markdown": "Let go of process supervision; trust system to escalate when judgment is needed."
+        "ready_to_experiment_markdown": "Flow is stable; human notices their process interventions are rare and the system self-corrects.",
+        "effectiveness_metric_markdown": "Flow health indicators; exception frequency; strategic alignment.",
+        "let_go_focus_markdown": "Let go of flow supervision; trust escalation-based engagement."
       },
       "readiness_to_enter_signals": [
-        "Demos consistently deliver valuable increments.",
-        "Human trusts system's goal selection.",
-        "Process interventions are rare."
+        "Process runs smoothly without regular human check-ins.",
+        "Exceptions are rare and well-handled.",
+        "Strategic direction holds across multiple cycles."
       ],
       "effectiveness_measures": [
-        "Demo cadence and value",
-        "Process intervention frequency",
+        "Time between human interventions",
+        "Exception rate",
         "Strategic alignment over time"
       ],
       "failure_modes": [
-        "Passive demo attendance",
-        "Missing early signs of process decay",
-        "Losing touch with product direction"
+        "Passive monitoring misses slow drift",
+        "Intervention skills atrophy",
+        "Meta-process changes have unexpected cascade effects"
       ],
       "letting_go_to_progress": [
-        "The need to understand the development process itself."
-      ],
-      "example": "Weekly demo meetings where system presents completed slices. Human provides direction and feedback but doesn't know what's being worked on between demos."
+        "The need to understand and tune the development process."
+      ]
     },
     {
       "id": "A4.1",
       "name": "Hard-Coded Escalation",
       "keystone_behavior_markdown": "System escalates to humans on predefined conditions.",
+      "secondary_behaviors_markdown": [
+        "Human defines escalation triggers upfront",
+        "Human handles escalated exceptions when they arise",
+        "Human refines escalation rules based on experience"
+      ],
+      "enabling_investments_markdown": [
+        "Escalation trigger configs (retry limits, error patterns, confidence thresholds)",
+        "Alert routing rules directing exceptions to appropriate humans",
+        "Exception dashboards showing escalation patterns and resolution times",
+        "Automated retry policies with exponential backoff before human escalation"
+      ],
       "agency_allocation_markdown": "AI runs; humans handle exceptions.",
-      "example_markdown": "Ask human if tests fail repeatedly.",
+      "example_markdown": "Dependabot opens a PR to update lodash from 4.17.20 to 4.17.21. CI runs automatically. Tests pass, so the PR sits awaiting human merge. On another repo, the same update breaks a test—after three failed CI runs, Dependabot sends a Slack alert to the on-call developer.\n\nGitHub Copilot coding agent works on an issue but hits a compile error it can't resolve after 5 attempts. It stops, marks the PR as 'needs human input', and adds a comment explaining where it got stuck. A developer picks it up the next morning.",
       "emotional_state": {
         "dominant": "Cautious trust",
         "secondary": [
@@ -470,15 +533,25 @@
       ],
       "letting_go_to_progress": [
         "The belief that humans must be the first line of defense."
-      ],
-      "example": "Early autonomous CI agents."
+      ]
     },
     {
       "id": "A4.2",
       "name": "Review-Gated Autonomy",
       "keystone_behavior_markdown": "Long autonomous runs with periodic human review.",
+      "secondary_behaviors_markdown": [
+        "Human reviews accumulated work at defined intervals",
+        "Human validates direction and quality",
+        "Human authorizes continuation or can halt/redirect"
+      ],
+      "enabling_investments_markdown": [
+        "Review queue systems aggregating PRs for batch approval",
+        "Checkpoint summary generators (what changed, what's next, known risks)",
+        "Quality gate dashboards showing accumulated work since last review",
+        "Batch approval tools for efficient human review of multiple outputs"
+      ],
       "agency_allocation_markdown": "AI leads; humans validate checkpoints.",
-      "example_markdown": "Daily review of agent commits.",
+      "example_markdown": "GitHub Copilot coding agent works overnight on five assigned issues. By 9am, there are five draft PRs waiting. The developer spends 30 minutes reviewing diffs, approves three, leaves comments on one, and closes one that misunderstood the issue. The agent resumes work on the commented PR.\n\nNubank uses Devin for a multi-month migration of their ETL monolith to sub-modules. Engineers review Devin's PRs weekly, validating that migration patterns are correct. They achieved 12x efficiency improvement with human review only at weekly checkpoints, not per-commit.",
       "emotional_state": {
         "dominant": "Trust with distance",
         "secondary": [
@@ -505,15 +578,20 @@
       ],
       "letting_go_to_progress": [
         "The belief that understanding requires observation."
-      ],
-      "example": "Long-running autonomous refactoring systems."
+      ]
     },
     {
       "id": "A4.3",
       "name": "Ralph Wiggum Mode",
       "keystone_behavior_markdown": "Simple loop, back-pressure, and a law that all durable state lives in source control.",
+      "enabling_investments_markdown": [
+        "Loop orchestrators with backpressure (ralphy, smart-ralph, anthropic's ralph-wiggum plugin)",
+        "Completion detection heuristics (task done signals, convergence patterns)",
+        "Struggle detection that resets or escalates when the loop isn't converging",
+        "State-in-git enforcement ensuring all context comes from the repo, all output goes to commits"
+      ],
       "agency_allocation_markdown": "AI runs continuously; humans are consulted only on demand.",
-      "example_markdown": "An agent repeatedly pulls tasks from git, works, commits, and waits.",
+      "example_markdown": "Geoffrey Huntley ran Claude in a `while true` loop for three months with a single prompt: 'Make me a programming language like Go but with Gen Z slang keywords.' The result was CURSED—a complete language with lexer, parser, LLVM compiler backend, interpreter mode, partial standard library, and editor extensions. Keywords include `slay` (func), `sus` (var), `bestie` (for), and `ඞ` for pointers. Total cost: $14,000 across three implementation attempts. The AI worked autonomously; Huntley provided direction but didn't supervise iterations.\n\nAt a Y Combinator hackathon, teams ran Ralph loops overnight: define a PRD, start the loop, go to sleep. By morning: 6 complete repositories, working code, passing tests—$297 in API costs for work estimated at $50k in contractor time. The prompt never changed, but the world did: each iteration saw the modified files and git history from previous runs.",
       "emotional_state": {
         "dominant": "Letting go",
         "secondary": [
@@ -541,15 +619,20 @@
       ],
       "letting_go_to_progress": [
         "The need to know what is happening."
-      ],
-      "example": "Minimal-agent orchestration systems."
+      ]
     },
     {
       "id": "A4.4",
       "name": "Event-Driven Autonomous Systems",
       "keystone_behavior_markdown": "Agents respond to events rather than running a loop; flows are non-deterministic but grounded by source control.",
+      "enabling_investments_markdown": [
+        "Event routing infrastructure (webhooks, message queues, agent triggers)",
+        "Multi-agent coordination protocols preventing conflicts and races",
+        "Circuit breakers preventing runaway reaction chains",
+        "System health monitors detecting emergent dysfunction across agent interactions"
+      ],
       "agency_allocation_markdown": "System reacts; humans are normative anchors.",
-      "example_markdown": "Agents trigger on repo changes, test failures, or signals.",
+      "example_markdown": "A GitHub App ecosystem: when a PR is opened, one agent runs security scans, another generates documentation diffs, a third suggests test coverage improvements, and a fourth checks for API breaking changes. Each agent fires independently on the webhook event. Their outputs appear as separate PR comments within minutes.\n\nWhen a production alert fires, an agent investigates logs and opens a diagnostic issue. That issue triggers another agent to attempt a fix. If the fix PR passes CI, yet another agent auto-merges it. The human sees: alert → investigation → fix → deploy, all in their Slack timeline.",
       "emotional_state": {
         "dominant": "Detachment",
         "secondary": [
@@ -576,15 +659,14 @@
       ],
       "letting_go_to_progress": [
         "The need for predictability."
-      ],
-      "example": "Reactive multi-agent systems."
+      ]
     },
     {
       "id": "A5.1",
       "name": "Personalized Autonomous Software",
       "keystone_behavior_markdown": "Software is generated and evolved per human reality; no shared product.",
       "agency_allocation_markdown": "System serves an individual; human provides grounding.",
-      "example_markdown": "Each person has a continuously adapting software companion.",
+      "example_markdown": "In 2035: your personal AI maintains software tailored to your life. Your fitness app knows your injury history and adjusts workouts. Your budgeting tool learned your spending patterns and handles recurring bills. Your home automation anticipates your routines. None of this was downloaded from an app store—it was generated and evolved by your AI.\n\nA small business owner describes their workflow problems to their AI. Over the next week, the AI builds a custom inventory management system, a customer notification tool, and integrations with their existing accounting software—all bespoke, all maintained by the AI, none available to any other business.",
       "emotional_state": {
         "dominant": "Empowerment",
         "secondary": [
@@ -612,8 +694,7 @@
       ],
       "letting_go_to_progress": [
         "The idea of software as a product."
-      ],
-      "example": "Speculative end-state."
+      ]
     }
   ]
 }

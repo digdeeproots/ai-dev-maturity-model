@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import type { ModelOverview, FateDeterminingChoiceDetail, AgencyStage, Substage, ResponsibilityOwnershipData, OwnershipCode } from '../types'
+import type { ModelOverview, FateDeterminingChoiceDetail, AgencyStage, Substage, ResponsibilityOwnershipData, OwnershipCode, Responsibility } from '../types'
 import overviewData from '@model/overview.json'
 import fateChoicesData from '@model/fate-determining-choices.json'
 import agencyStagesData from '@model/agency_stages.json'
@@ -48,7 +48,7 @@ export function getSubstagesForStage(stageId: string): Substage[] {
 }
 
 export function getResponsibilityMatrixForSubstages(substageIds: string[]): {
-  responsibilities: string[]
+  responsibilities: Responsibility[]
   substageIds: string[]
   matrix: OwnershipCode[][]
   ownershipCodes: ResponsibilityOwnershipData['ownership_codes']
