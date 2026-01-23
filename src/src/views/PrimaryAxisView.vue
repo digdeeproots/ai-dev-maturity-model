@@ -15,7 +15,7 @@ function getSubstageIds(stageId: string): string[] {
 
 function getSubstageNames(stageId: string): Record<string, string> {
   const substages = getSubstagesForStage(stageId)
-  return Object.fromEntries(substages.map(s => [s.id, s.id]))
+  return Object.fromEntries(substages.map(s => [s.id, s.name]))
 }
 
 const expandedStageId = ref<string | null>(null)
@@ -42,7 +42,7 @@ const axisOverviewSubstageNames = computed(() => {
   for (const stage of visibleStages.value) {
     const substages = getSubstagesForStage(stage.id)
     for (const substage of substages) {
-      names[substage.id] = substage.id
+      names[substage.id] = substage.name
     }
   }
   return names
