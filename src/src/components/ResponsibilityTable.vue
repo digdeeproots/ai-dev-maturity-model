@@ -43,7 +43,10 @@ function getTooltipText(responsibility: Responsibility, substageIndex: number, r
   <div class="responsibility-table-container" :class="{ expanded }">
     <!-- Clickable header with chevron -->
     <button class="responsibility-header" @click="toggleExpanded">
-      <span class="header-label">Responsibilities</span>
+      <div class="header-content">
+        <span class="header-label">Responsibility Matrix</span>
+        <span class="header-hint">{{ expanded ? 'Click to collapse' : 'Click for details' }}</span>
+      </div>
       <span class="expand-icon" :class="{ expanded }">›</span>
     </button>
 
@@ -248,9 +251,21 @@ function getTooltipText(responsibility: Responsibility, substageIndex: number, r
   border-color: var(--color-primary);
 }
 
+.header-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
 .header-label {
-  color: var(--color-text-light);
+  color: var(--color-text);
   font-weight: 500;
+}
+
+.header-hint {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-light);
 }
 
 .expand-icon {
