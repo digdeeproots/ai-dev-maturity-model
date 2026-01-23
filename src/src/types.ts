@@ -66,6 +66,7 @@ export interface Substage {
   name: string
   keystone_behavior_markdown?: string
   secondary_behaviors_markdown?: string[]
+  enabling_investments_markdown?: string[]
   agency_allocation_markdown?: string
   example_markdown?: string
   emotional_state?: SubstageEmotionalState

@@ -180,6 +180,13 @@ function goBack() {
                       </ul>
                     </div>
 
+                    <div v-if="substage.enabling_investments_markdown?.length" class="substage-detail enabling-investments">
+                      <strong>Enabling Investments:</strong>
+                      <ul>
+                        <li v-for="(investment, i) in substage.enabling_investments_markdown" :key="i">{{ investment }}</li>
+                      </ul>
+                    </div>
+
                     <div v-if="substage.agency_allocation_markdown" class="substage-detail">
                       <strong>Agency Allocation:</strong>
                       <div class="markdown-content" v-html="md(substage.agency_allocation_markdown)"></div>
@@ -511,6 +518,17 @@ function goBack() {
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: 4px;
   border-left: 3px solid var(--color-primary);
+}
+
+.substage-detail.enabling-investments {
+  background-color: #f0fdf4;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: 4px;
+  border-left: 3px solid #22c55e;
+}
+
+.substage-detail.enabling-investments ul {
+  margin: var(--spacing-xs) 0 0 var(--spacing-md);
 }
 
 .readiness-details {
