@@ -314,6 +314,14 @@ function goBack() {
   background-color: var(--color-background);
 }
 
+.stage-header:hover .expand-icon {
+  transform: translateX(2px);
+}
+
+.stage-card.expanded .stage-header:hover .expand-icon {
+  transform: rotate(90deg) translateX(2px);
+}
+
 .stage-title {
   display: flex;
   align-items: center;
@@ -434,6 +442,14 @@ function goBack() {
 
 .substage-header:hover {
   background-color: var(--color-background);
+}
+
+.substage-header:hover .expand-icon {
+  transform: translateX(2px);
+}
+
+.substage-card.expanded .substage-header:hover .expand-icon {
+  transform: rotate(90deg) translateX(2px);
 }
 
 .substage-title {

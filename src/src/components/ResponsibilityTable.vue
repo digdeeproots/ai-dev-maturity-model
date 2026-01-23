@@ -247,6 +247,14 @@ function getTooltipText(responsibility: Responsibility, substageIndex: number, r
   box-shadow: var(--shadow-sm);
 }
 
+.responsibility-header:hover .expand-icon {
+  transform: translateX(2px);
+}
+
+.expanded .responsibility-header:hover .expand-icon {
+  transform: rotate(90deg) translateX(2px);
+}
+
 .expanded .responsibility-header {
   border-color: var(--color-primary);
 }
