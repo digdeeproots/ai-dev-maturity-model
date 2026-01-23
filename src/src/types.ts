@@ -75,7 +75,6 @@ export interface Substage {
   effectiveness_measures?: string[]
   failure_modes?: string[]
   letting_go_to_progress?: string[]
-  example?: string
   stability?: string
   implication?: string
 }

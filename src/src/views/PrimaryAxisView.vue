@@ -164,7 +164,7 @@ function goBack() {
 
                   <div v-if="isSubstageExpanded(substage.id)" class="substage-content">
                     <div v-if="substage.example_markdown" class="substage-detail example">
-                      <strong>Example:</strong>
+                      <strong>Examples:</strong>
                       <div class="markdown-content" v-html="md(substage.example_markdown)"></div>
                     </div>
 
