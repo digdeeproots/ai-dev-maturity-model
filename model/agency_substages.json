@@ -206,6 +206,11 @@
       "id": "A2.1",
       "name": "Delegated Execution",
       "keystone_behavior_markdown": "Agents perform bounded tasks under human direction.",
+      "secondary_behaviors_markdown": [
+        "Human selects and scopes each task",
+        "Human reviews output before accepting",
+        "Human remains available for clarifying questions"
+      ],
       "agency_allocation_markdown": "Human selects task; AI executes.",
       "example_markdown": "Asking an agent to fix a bug or write a module.",
       "emotional_state": {
@@ -276,6 +281,11 @@
       "id": "A2.3",
       "name": "Closed Local Loops",
       "keystone_behavior_markdown": "Agents run until local correctness conditions are met.",
+      "secondary_behaviors_markdown": [
+        "Human defines correctness conditions (tests, linting, type checks)",
+        "Human trusts the loop to iterate without watching each attempt",
+        "Human reviews final outcome when conditions are satisfied"
+      ],
       "agency_allocation_markdown": "AI iterates locally; human reviews outcome.",
       "example_markdown": "Run until tests pass.",
       "emotional_state": {
@@ -460,6 +470,11 @@
       "id": "A4.1",
       "name": "Hard-Coded Escalation",
       "keystone_behavior_markdown": "System escalates to humans on predefined conditions.",
+      "secondary_behaviors_markdown": [
+        "Human defines escalation triggers upfront",
+        "Human handles escalated exceptions when they arise",
+        "Human refines escalation rules based on experience"
+      ],
       "agency_allocation_markdown": "AI runs; humans handle exceptions.",
       "example_markdown": "Ask human if tests fail repeatedly.",
       "emotional_state": {
@@ -495,6 +510,11 @@
       "id": "A4.2",
       "name": "Review-Gated Autonomy",
       "keystone_behavior_markdown": "Long autonomous runs with periodic human review.",
+      "secondary_behaviors_markdown": [
+        "Human reviews accumulated work at defined intervals",
+        "Human validates direction and quality",
+        "Human authorizes continuation or can halt/redirect"
+      ],
       "agency_allocation_markdown": "AI leads; humans validate checkpoints.",
       "example_markdown": "Daily review of agent commits.",
       "emotional_state": {
