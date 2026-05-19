@@ -169,6 +169,14 @@ button.primary-axis:hover {
   color: var(--color-primary);
 }
 
+.section-header:hover .expand-icon {
+  transform: translateX(2px);
+}
+
+.collapsible-section.expanded .section-header:hover .expand-icon {
+  transform: rotate(90deg) translateX(2px);
+}
+
 .section-header h3 {
   margin: 0;
   font-size: var(--font-size-lg);

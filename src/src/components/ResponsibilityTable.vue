@@ -41,6 +41,14 @@ function getTooltipText(responsibility: Responsibility, substageIndex: number, r
 
 <template>
   <div class="responsibility-table-container" :class="{ expanded }">
+    <button class="matrix-header" @click="toggleExpanded">
+      <div class="header-content">
+        <span class="header-label">Who Owns What Responsibilities?</span>
+        <span class="header-hint">{{ expanded ? 'Click to collapse' : 'Click for details' }}</span>
+      </div>
+      <span class="expand-icon" :class="{ expanded }">›</span>
+    </button>
+
     <!-- Compact sparkline view -->
     <div v-if="!expanded" class="sparkline" @click="toggleExpanded">
       <div class="sparkline-grid">
@@ -73,12 +81,10 @@ function getTooltipText(responsibility: Responsibility, substageIndex: number, r
           </div>
         </div>
       </div>
-      <div class="sparkline-hint">Click to expand</div>
     </div>
 
     <!-- Expanded table view -->
     <div v-else class="expanded-view">
-      <button class="collapse-btn" @click="toggleExpanded">Collapse</button>
       <table class="responsibility-table">
         <thead>
           <tr>
@@ -135,7 +141,7 @@ function getTooltipText(responsibility: Responsibility, substageIndex: number, r
 }
 
 .sparkline:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
 }
 
 .sparkline-grid {
@@ -218,32 +224,74 @@ function getTooltipText(responsibility: Responsibility, substageIndex: number, r
   opacity: 1;
 }
 
-.sparkline-hint {
-  font-size: 10px;
+/* Clickable header with chevron */
+.matrix-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font: inherit;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  text-align: left;
+  margin-bottom: var(--spacing-sm);
+  transition: box-shadow 0.15s ease;
+}
+
+.matrix-header:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+.matrix-header:hover .expand-icon {
+  transform: translateX(2px);
+}
+
+.expanded .matrix-header:hover .expand-icon {
+  transform: rotate(90deg) translateX(2px);
+}
+
+.expanded .matrix-header {
+  border-color: var(--color-primary);
+}
+
+.header-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.header-label {
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.header-hint {
+  font-size: var(--font-size-xs);
   color: var(--color-text-light);
+}
+
+.expand-icon {
+  font-size: var(--font-size-xl);
+  color: var(--color-primary);
+  flex-shrink: 0;
+  width: 1.5rem;
   text-align: center;
-  margin-top: var(--spacing-xs);
+  transition: transform var(--transition-normal);
+  display: inline-block;
+}
+
+.expand-icon.expanded {
+  transform: rotate(90deg);
 }
 
 /* Expanded view */
 .expanded-view {
   overflow-x: auto;
-}
-
-.collapse-btn {
-  background: none;
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  padding: 4px 12px;
-  font-size: var(--font-size-sm);
-  color: var(--color-text-light);
-  cursor: pointer;
-  margin-bottom: var(--spacing-sm);
-}
-
-.collapse-btn:hover {
-  background-color: var(--color-surface);
-  color: var(--color-text);
 }
 
 .responsibility-table {

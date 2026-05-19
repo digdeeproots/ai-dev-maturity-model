@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { useModelData, getSubstagesForStage } from '../composables/useModelData'
 import { useMarkdown } from '../composables/useMarkdown'
 import ResponsibilityTable from '../components/ResponsibilityTable.vue'
+import MiniSparkline from '../components/MiniSparkline.vue'
 
 const router = useRouter()
 const { model, agencyStages } = useModelData()
@@ -83,8 +84,6 @@ function goBack() {
 
       <!-- Axis-level responsibility overview -->
       <div class="axis-responsibility-section mt-xl">
-        <h2>Responsibility Overview</h2>
-        <p class="section-desc">How responsibilities shift across all substages</p>
         <ResponsibilityTable
           :substage-ids="axisOverviewSubstageIds"
           :substage-names="axisOverviewSubstageNames"
@@ -105,8 +104,14 @@ function goBack() {
               <span class="stage-id">{{ stage.id }}</span>
               <h3>{{ stage.name }}</h3>
             </div>
-            <div class="stage-summary text-muted" v-if="!isExpanded(stage.id)">
-              {{ stage.core_agency_statement }}
+            <div class="stage-header-right" v-if="!isExpanded(stage.id)">
+              <MiniSparkline
+                v-if="getSubstageIds(stage.id).length > 0"
+                :substage-ids="getSubstageIds(stage.id)"
+              />
+              <div class="stage-summary text-muted">
+                {{ stage.core_agency_statement }}
+              </div>
             </div>
             <span class="expand-icon" :class="{ expanded: isExpanded(stage.id) }">›</span>
           </button>
@@ -134,7 +139,6 @@ function goBack() {
 
             <!-- Responsibility Transitions -->
             <div v-if="getSubstageIds(stage.id).length > 0" class="responsibility-section">
-              <h4>Responsibility Transitions</h4>
               <ResponsibilityTable
                 :substage-ids="getSubstageIds(stage.id)"
                 :substage-names="getSubstageNames(stage.id)"
@@ -289,7 +293,7 @@ function goBack() {
 }
 
 .stage-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-md);
 }
 
 .stage-card.expanded {
@@ -314,6 +318,14 @@ function goBack() {
   background-color: var(--color-background);
 }
 
+.stage-header:hover .expand-icon {
+  transform: translateX(2px);
+}
+
+.stage-card.expanded .stage-header:hover .expand-icon {
+  transform: rotate(90deg) translateX(2px);
+}
+
 .stage-title {
   display: flex;
   align-items: center;
@@ -325,11 +337,12 @@ function goBack() {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
+  min-width: 2.5rem;
+  height: 2rem;
+  padding: 0 var(--spacing-sm);
   background-color: var(--color-primary);
   color: white;
-  border-radius: 50%;
+  border-radius: 6px;
   font-weight: 600;
   font-size: var(--font-size-sm);
 }
@@ -339,10 +352,18 @@ function goBack() {
   font-size: var(--font-size-lg);
 }
 
-.stage-summary {
+.stage-header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
   flex: 1;
+  justify-content: flex-end;
+}
+
+.stage-summary {
   font-size: var(--font-size-sm);
   text-align: right;
+  max-width: 300px;
 }
 
 .expand-icon {
@@ -382,10 +403,10 @@ function goBack() {
 }
 
 .sacred-cows {
-  background-color: #fffbeb;
+  background-color: var(--color-warning-light);
   padding: var(--spacing-md);
   border-radius: 6px;
-  border: 1px solid #fde68a;
+  border: 1px solid var(--color-warning-border);
 }
 
 /* Substages */
@@ -408,7 +429,7 @@ function goBack() {
 }
 
 .substage-card {
-  background: var(--color-background);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 6px;
   overflow: hidden;
@@ -416,7 +437,6 @@ function goBack() {
 
 .substage-card.expanded {
   border-color: var(--color-primary);
-  background: var(--color-surface);
 }
 
 .substage-header {
@@ -433,11 +453,15 @@ function goBack() {
 }
 
 .substage-header:hover {
-  background-color: var(--color-surface);
+  background-color: var(--color-background);
 }
 
-.substage-card.expanded .substage-header:hover {
-  background-color: var(--color-background);
+.substage-header:hover .expand-icon {
+  transform: translateX(2px);
+}
+
+.substage-card.expanded .substage-header:hover .expand-icon {
+  transform: rotate(90deg) translateX(2px);
 }
 
 .substage-title {
@@ -456,7 +480,7 @@ function goBack() {
   padding: 0 var(--spacing-sm);
   background-color: var(--color-text-light);
   color: white;
-  border-radius: 4px;
+  border-radius: 6px;
   font-weight: 600;
   font-size: var(--font-size-xs);
 }
@@ -514,10 +538,10 @@ function goBack() {
 }
 
 .substage-detail.example {
-  background-color: #f0f9ff;
+  background-color: var(--color-info-light);
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: 4px;
-  border-left: 3px solid var(--color-primary);
+  border-left: 3px solid var(--color-info);
 }
 
 .substage-detail.enabling-investments ul {
