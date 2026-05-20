@@ -33,6 +33,8 @@ The trap therefore has two triggers, not one: delegating work without improving 
 
 The key criterion for placing a mechanism on the spectrum: **at what point does an error become visible to anyone other than the originator?**
 
+@ai: and actually, add a level 5: originator is prevented from making the error / is guided by the environment to the right solution, and it is *easy*. These are the class of things that make it easier to work - tools that trivialize large efforts, while ensuring correctness as you go. A refactoring tool, for example. Or a language server that correctly finds all references every time (by using the compiler).
+
 - Level 4: never propagates past the originator — it is impossible to produce visible output with that class of error
 - Level 3: propagates past the originator, then is deterministically caught for known error classes
 - Level 2: propagates past the originator, then is probabilistically detected
@@ -46,11 +48,13 @@ The key criterion for placing a mechanism on the spectrum: **at what point does 
 | 1 | Human review — human inspects and judges | At review (if reviewer catches it) | Full; decays as attention lapses | Decays |
 | 0 | None | At consequences | Full + blind | None |
 
-**Why type systems and theorem provers are level 4, not level 3:** Even though they run after code is written, a type checker that runs immediately — before any other agent or human sees the output, enforced by deterministic workflow code — prevents the error from ever propagating. As long as the worker cannot bypass the system (casting to `any`, disabling the check), they cannot produce visible output with a type error. The error class is completely prevented within scope. The distinction is propagation, not timing.
+**Why type systems and theorem provers are level 4, not level 3:** Even though they run after code is written, a type checker will find every type error, every time. As long as the worker cannot bypass the system (casting to `any`, disabling the check), they cannot produce visible output with a type error. The error class is completely prevented within scope. This is different from unit tests, which only find the errors that you think to write tests for. You can't "fail to imagine" a type comparison the way that you can a test case.
 
-**Why levels 2 and 3 are more similar than they appear:** Both are probabilistic in coverage. Level 3 is deterministic about what it covers — for errors it checks for, it always catches them. But it cannot check for errors no one has thought to look for. Novel problems are blind spots for both levels 2 and 3. Level 3's advantage over level 2 is precision and reliability for known classes, not breadth.
+**Why levels 2 and 3 are more similar than they appear:** Both are probabilistic in coverage. Level 3 is deterministic about what it covers — for errors it checks for, it always catches them. But it cannot check for errors no one has thought to look for. Novel problems are blind spots for both levels 2 and 3. Level 3's advantage over level 2 is precision and reliability for known classes, not breadth. In fact, level 3 can often be broader than level 3. A truly non-deterministic system will find different errors each time that it runs, so multiple runs can be used to improve the catch rate. Never to 100%, but often better than a deterministic system (which has deterministic gaps). The big difference: you can predict the gaps in a level 3 system, but not in a level 2 system. Level 2 misses some things everywhere, while level 3 entirely misses some categories while doing consistently well at other categories.
 
 **The scope qualifier on level 4:** Every level-4 mechanism has a scope. A type system prevents type errors within the type system's scope, not logic errors. AST refactoring tools prevent behavior changes within refactoring operations, not design mistakes. Level-4 guarantees are always scoped; they cannot be universal. The goal is to accumulate scoped guarantees until the remaining uncovered area is small and well-understood.
+
+@ai: there is a scope qualifier on every level. At higher levels we can describe it more precisely. Low levels have tend to miss things more randomly, so we can't define the scope. It is more like "catches 70% of everything, with no pattern", where high levels are "100% guaranteed for this class; no false positives for anything else".
 
 **Note on the recovery vs. prevention ceiling:** Prevention (level 4) can reach zero vigilance within its scope. Detection mechanisms (levels 2–3) cannot — they require vigilance over whatever they miss. This is a fundamental ceiling difference between prevention-based and detection-based assurance strategies.
 
