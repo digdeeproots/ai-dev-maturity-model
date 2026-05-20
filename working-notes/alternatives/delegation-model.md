@@ -17,6 +17,8 @@ A delegation region is a named scope of work that has both a work side and an as
 
 The vigilance trap is what you get when work is delegated without corresponding assurance delegation. The region exists; one side moved; the other didn't.
 
+@ai: no, the vigilance trap is what you get when the assurance side is weak. It becomes more visible when more work is done - either via delegation or scale (increase in staff or increase in lines of code). This is partly because assurance has to maintain that all existing work is not corrupted by the new work. Thus, it is a function of the product of new work and existing body of past work. This suggests that one critical element to assessing the amount of vigilance toil required is the volume of already-completed work - it is not sufficient to look even at the amount of work that is currently being done. And that's why this isn't just a problem when delegating to AI. AI will increase the rate of new work, but it doesn't impact the amount that is already there. So a sudden increase in the rate of new work for a greenfield project has low maint / vigilance cost, as we are multiplying by near-zero. Reverse is true on a brownfield one. This is the only way in which AI actually increases vigilance toil, and why it hits disporportionately on brownfield products.
+
 ### The Assurance Spectrum
 
 The same spectrum applies in both variants:
@@ -24,16 +26,18 @@ The same spectrum applies in both variants:
 | Level | Mechanism | Vigilance residual | Ceiling |
 |-------|-----------|-------------------|---------|
 | 4 | Structural prevention — mistake is impossible by universe design | Zero | Absolute |
-| 3 | Deterministic evaluation — code catches it reliably after the fact | Near-zero | Absolute |
+| 3 | Deterministic evaluation — code catches it reliably after the fact | Near-zero for known unknowns | Fairly low |
 | 2 | Non-deterministic guardian — AI/probabilistic detection; inherently imperfect | Reduced, not eliminated | Probabilistic cap |
 | 1 | Human review — human inspects and judges | Full; decays over time | Decays |
 | 0 | None — mistake goes undetected until consequences arrive | Full + blind | None |
 
 Note: Level 2 (non-deterministic) cannot reach zero vigilance burden. It reduces the burden and can bootstrap level 3/4 mechanisms, but is not a permanent endpoint. Recovery-based mechanisms (levels 1-3) all leave residual vigilance; prevention-based (level 4) does not.
 
+@ai: the problem with level 3 is that it is also probabilistic - it can only check for the things that we think to look for. We can't prevent novel problems. It isn't, of itself, a learning solution. And it isn't a constraint that prevents defect insertion. It simply finds a portion of those defects that have been been injected, and then guarnatees that it will eliminate those that it finds (while doing nothing about htose that it fails to detect). In that sense, level 2 & 3 are very similar. This is why I would categorize things like theorem provers and type systems as level 4, not level 3. Even though they happen after the code has been written/changed, and are thus "after the fact", they are 100% within a scope - they completely prevent errors in that scope. As long as we prevent the worker (AI or human) from disabling the system (casting a type to any, etc), then they are prevented from ever injecting a visible error. I think that it is useful to distinguish the point of error visibility as "as soon as anyone other than the originator could see it". So if we have a theorem prover or type checker that runs immediately, before we even let another AI look at the output, and that workflow is driven by deterministic code, then we are in level 4 territory, not level 3. Adjust the spectrum accordingly, and pull this out as another example (for the general case - it is not model-style-specific).
+
 ### What a Gap Looks Like
 
-A gap is any region where the work side is further along the delegation spectrum than the assurance side can support. Gaps produce vigilance toil in direct proportion to the volume of work flowing through the region.
+A gap is any region where the work side is further along the delegation spectrum than the assurance side can support. Gaps produce vigilance toil in direct proportion to the volume of work flowing through the region times the total volume of the body of work that must be protected against disruption by the new work.
 
 **Gaps exist even without AI.** Teams in chronic "maintenance mode" or "keeping the lights on" have gaps in their human-work delegation regions — usually code changes, architecture decisions, or test coverage. The foot-guns they fight daily are the symptom. The gap is the cause.
 
