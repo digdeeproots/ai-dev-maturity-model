@@ -4,6 +4,8 @@
 
 Purpose: map all types of product work to their vigilance requirements. Organized by what facet is being improved, since improving one facet always risks degrading others.
 
+@ai: everywhere (all documents), change from using assurance to using "safety". That's what we're really talking about. Then label the levels based on how we get safety. 0: hope. 1: vigilance. 2: probability. 3: deterministic checks. 4: prevention. 5: carefree & guided. Our systems make us carefree (that's what a high score on the careless safety ladder looks like).
+
 ---
 
 ## How to Read This Document
@@ -24,7 +26,7 @@ Both tables use a 0-5 scale where level 5 means zero vigilance remaining within 
 
 **Tests are vigilance mechanisms, not work types.** Their quality (structure, coverage, duplication, environment coupling) determines their effective assurance level.
 
-**Reversibility**: investments that make errors cheaper to correct. These don't prevent or detect errors but reduce the cost when one slips through.
+@ai: we can now remove reversibility; these are just one case of reducing the worry surface.
 
 **Product facets and work types**: work is organized by what facet is being improved. Improving one facet always risks degrading others. Error classes are many-to-many: the same error class (e.g., capability regression) appears in multiple work types.
 
@@ -47,6 +49,8 @@ Both tables use a 0-5 scale where level 5 means zero vigilance remaining within 
 ## Domain: Product Work
 
 ### Work type: Adding new behavior
+
+@ai: weave in the agency levels at each work type. This is where we can be specific about how we can incrementally delegate agency, per work type. Then instead of a single agency axis, we now have a portfolio of work types, each with its own agency axis. And a team can choose to advance agency on the ones where their vigilance toil cost is affordable.
 
 *Adding new behavior, fixing defects, implementing requirements.*
 
