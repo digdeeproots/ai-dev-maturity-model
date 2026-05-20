@@ -14,9 +14,7 @@
 
 4. **`work/local/working-notes/alternatives/delegation-model.md`** — the main model prototype. The assurance spectrum (levels 0–5) lives here. Read before doing any model work.
 
-5. **`work/local/working-notes/alternatives/fluency-dag.md`** — the DAG target. Read for the node/edge structure and the vigilance-toil-as-missing-assurance-nodes insight.
-
-6. **`work/local/model/`** — the existing maturity model JSON files (overview.json, agency_stages.json, agency_substages.json, fate-determining-choices.json, responsibility_ownership.json). These are the source being extended. Skim them; refer back as needed.
+5. **`work/local/model/`** — the existing maturity model JSON files (overview.json, agency_stages.json, agency_substages.json, fate-determining-choices.json, responsibility_ownership.json). These are the source being extended. Skim them; refer back as needed.
 
 ### Background (read if you need context on where ideas came from)
 
@@ -86,6 +84,8 @@ Extend the existing responsibility matrix into a full behavioral matrix:
 This is the structured delegation map variant of the delegation model, applied to the existing responsibility matrix.
 
 ### Step 2: Fluency DAG (version after that)
+
+**`work/local/working-notes/alternatives/fluency-dag.md`** — the DAG target. Read for the node/edge structure and the vigilance-toil-as-missing-assurance-nodes insight.
 
 Convert the behavioral matrix into a DAG:
 - Each responsibility × assurance-investment = one node
