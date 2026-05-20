@@ -65,9 +65,13 @@ No known level-4 mechanism for design quality in the general case. Human judgmen
 
 **Gap condition**: Less multiplicative than behavior change — regressions don't proliferate automatically but accumulate, each making future design work harder. Expensive when throughput is high and no design review exists.
 
+@ai: On this one, a big vigilance cost factor arises from the difficulty of reversing the change or going a new direction. I'm not sure how to represent that. But having a good refactoring tool makes it a lot safer to be wrong, which reduces the required vigilance. That may be an element to include everywhere: ways to make it safe to be wrong, so the required vigilance is reduced, thus reducing the cost. And those techniques can be similarly systemic (like the refactoring tool is). Apply this insight generally - there may be many others where we can make it safer to be wrong.
+
 ---
 
 #### Error class: Structural/type breakage
+
+@ai: extend this to include any structural change - updating one structure without updating the expectations of others. Be clearer on the distinction betwheen this and a behavior change. This one is also addressed by refactoring tools, as long as the dependencies are also in the tool's scope.
 
 **Body at risk**: All typed consumers of the changed interface. Systemic for widely-used modules.
 
@@ -88,9 +92,9 @@ No known level-4 mechanism for design quality in the general case. Human judgmen
 
 *Writing code that adds new functionality: new features, new services, new integrations. The existing codebase grows.*
 
-Total vigilance cost = throughput × (logic error cost + testability reduction cost + design contamination cost)
+Total vigilance cost = throughput × (logic error cost + testability reduction cost + design regression cost + structural breakage cost)
 
-Note: structural/type errors also apply here — same assurance options as above.
+@ai: I made direct references to vigilance categories that were identified in a different segment. Apply that throughout the document to all other cases. It is OK for this to be a many-to-many mapping.
 
 #### Error class: Logic errors
 
@@ -109,6 +113,8 @@ Note: structural/type errors also apply here — same assurance options as above
 
 No general level-5 mechanism. Ceiling is level 4 for formally-specified properties, level 3 for test-covered behaviors.
 
+@ai: add a couple more options that use AI: automated exploratory testing, AI analysis of the change to identify untested behaviors, invariants, and negative cases to then write as tests.
+
 **Gap condition**: Expensive when throughput is high or new behavior interacts with a large existing body. Recipe-based tests move the gap to predictable known-class misses.
 
 ---
@@ -123,20 +129,14 @@ No general level-5 mechanism. Ceiling is level 4 for formally-specified properti
 |--------|------|-------|-------|
 | No mechanism | — | 0 | — |
 | Human review for testability | Human review | 1 | Whatever reviewer noticed |
+| Nullables test pattern enforcement | Deterministic detection | 3 | Dependency direction rules |
 | Hexagonal architecture enforcement | Deterministic detection | 3 | Dependency direction rules |
-| Testability workflow gate | Prevention | 4 | All code through the gate |
 
 Key: AI defaults to mock-based coupling and will not reach for Nullables, Simulators, or Hexagonal ports unless the orchestration layer injects these patterns into context on every invocation.
 
+@ai: is there a level 5 here, where we intentionally set up patterns for testability? Eg, any of the pure functional systems (React through Erlang), formalizing the Nullables pattern and pre-defining the standard template for a new class, etc.
+
 **Gap condition**: Cumulative; individually small but compounding. Expensive when a large fraction of the codebase lacks clean test seams. The cost becomes visible only after it is severe.
-
----
-
-#### Error class: Design contamination
-
-**Body at risk**: Architectural coherence of the affected module and its dependents.
-
-Same as design regression under evolving the design. Same assurance options apply.
 
 ---
 
@@ -145,6 +145,8 @@ Same as design regression under evolving the design. Same assurance options appl
 *Creating unit and integration tests that verify behavior. The test suite is itself part of the existing product body.*
 
 Total vigilance cost = test volume × (wrong structure cost + coverage gap cost + environment coupling cost)
+
+@ai: duplication is a much bigger cost than gaps. This includes tests that fail together, tests that all have similar duplicate code setup, mocks (which duplicate the product code), and more. Identify these as one or more new error classes.
 
 #### Error class: Wrong test structure
 
@@ -159,6 +161,8 @@ Total vigilance cost = test volume × (wrong structure cost + coverage gap cost 
 | Test recipe documentation | Human review | 1 | Written; discipline-based; decays |
 | Recipe compliance tool | Prevention | 4 | All structural compliance rules |
 
+@ai: add test recipe workflow documentation. These are docs that are specifically passed to the coder at the time they are about to write a test, and tells them exactly how to write that kind of test - steps to follow, how to choose what to verify and what to leave open, how to structure data, etc. This tool isn't about compliance; it is about making the right path easier. So I think that it is level 5, even though it is not deterministic by itself? If you don't think it should be level 5, then please argue your case using an @human comment, rather than erasing this @ai comment and enacting it.
+
 Key: AI writes mocks where Nullables apply, misses business-level assertions, leaves snapshot output as raw JSON. These defaults produce test suites that grow in line count but decay in assurance quality. The recipe compliance tool gates all test output against structural rules before commit — AI cannot produce structurally non-compliant tests if the workflow blocks them.
 
 **Gap condition**: Expensive when AI writes tests at high volume. Without the recipe tool, the test suite degrades in utility even as it appears to grow.
@@ -168,6 +172,8 @@ Key: AI writes mocks where Nullables apply, misses business-level assertions, le
 #### Error class: Coverage gaps
 
 **Body at risk**: All untested behaviors in the existing codebase. Each gap is a silent assurance hole that grows as the product grows.
+
+@ai: not the right body at risk. I think we may be using slightly different definitions. I think the body at risk is the set of all the things that could interact with an error of this kind. I'm not sure what a coverage gap interacts with. It is an unspecified behavior. Perhaps the body at risk is the number of customers? What is the thing that we multiply by the number of coverage gaps? What is the thing that we have to iterate across for each coverage gap once we discover it? Give me a good, clear definition for body at risk which aligns with our formula. Once we agree to that, then I'll have you apply it to this document.
 
 **Rate**: Cumulative; each test either addresses a gap or doesn't.
 
@@ -185,6 +191,8 @@ No level-4 mechanism in the general case. Level 2 discovery bootstraps to level 
 **Gap condition**: Expensive when the codebase is large and coverage is thin. Gap cost grows with codebase size even at constant throughput — each test added addresses a shrinking fraction of the total gap.
 
 ---
+
+@ai: I think the problem I'm having with all of these test ones is that tests are a vigilance mechanism, not a piece of work. And thus they don't have second levels; these are just different strategies for addressing certain kinds of vigilance for other changes. This whole category shouldn't exist - but the risks and error classes should, just in the right places. Also, we do have work products like explanability, transparency, and consistency. Those are properties that we want to ensure, and will do work to improve - just like design. Yes: that's the way to go. Let's consider the product as having facets: capability, extensibility, explanability, abstractability, transparency, consistency, security. Work can be done to improve each of these, and when improving one we have to be vigilant that we don't degrade any of them - the one we're improving (for other parts of the code), or any of the others (for any of the code). Please restructure the document to align with this perspective. Some of my prior @ai commands might not apply to the new thinking; consider each and incorporate them when they apply.
 
 #### Error class: Environment coupling (integration tests)
 
