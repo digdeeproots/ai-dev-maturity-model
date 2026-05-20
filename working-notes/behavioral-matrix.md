@@ -66,10 +66,10 @@ Total vigilance cost = throughput x (capability regression cost + adaptability r
 | Unit tests (recipe-based, comprehensive coverage) | Deterministic detection | 3 | Recipe-defined coverage; predictable gaps remain |
 | Property-based / mutation testing | Deterministic detection | 3 | Structural properties |
 | Theorem provers | Prevention | 4 | Formally specified invariants only |
+| Decoupled architecture (no shared state, pure interfaces between components) | Prevention | 4 | Capability regression cannot propagate beyond the changed component's direct consumers |
+| Functional / decoupled architecture style (isolation and pure functions are the easy default; coupling requires deliberate effort) | Guided correctness | 5 | Errors are naturally scoped to their origin; cross-component propagation is structurally hard |
 
-No general level-5 mechanism for logic correctness.
-
-@ai: decoupling is a key level 5 mechanism. Cohesion is too.
+Level-5 mechanisms exist for limiting the scope of capability regression (decoupling, cohesion) but not for preventing logic errors within a component. A fully decoupled architecture prevents cross-component propagation; a functional style makes this isolation the easy default rather than the exceptional case.
 
 **Reversibility**: feature flags and canary deployments make capability additions reversible. When a regression can be rolled back in minutes, the required vigilance per capability change is lower.
 
