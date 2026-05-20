@@ -33,30 +33,37 @@ The trap therefore has two triggers, not one: delegating work without improving 
 
 The key criterion for placing a mechanism on the spectrum: **at what point does an error become visible to anyone other than the originator?**
 
-@ai: and actually, add a level 5: originator is prevented from making the error / is guided by the environment to the right solution, and it is *easy*. These are the class of things that make it easier to work - tools that trivialize large efforts, while ensuring correctness as you go. A refactoring tool, for example. Or a language server that correctly finds all references every time (by using the compiler).
-
-- Level 4: never propagates past the originator — it is impossible to produce visible output with that class of error
+- Level 5: the originator is guided to the right answer; the error is never even attempted
+- Level 4: the error is attempted but cannot propagate past the originator
 - Level 3: propagates past the originator, then is deterministically caught for known error classes
 - Level 2: propagates past the originator, then is probabilistically detected
 - Levels 0–1: propagates until someone notices, or never
 
-| Level | Mechanism | When error becomes visible | Vigilance residual | Ceiling |
-|-------|-----------|---------------------------|-------------------|---------|
-| 4 | Prevention — mistake cannot propagate past originator within scope | Never (to others) | Zero within scope | Absolute within scope |
-| 3 | Deterministic detection — catches known error classes reliably after injection | At the check | Near-zero for known classes; zero for novel ones | Fixed to known classes |
-| 2 | Non-deterministic guardian — probabilistic detection after injection | Probabilistically at detection | Reduced; cannot be eliminated | Probabilistic cap |
-| 1 | Human review — human inspects and judges | At review (if reviewer catches it) | Full; decays as attention lapses | Decays |
+| Level | Mechanism | When error becomes visible | Vigilance residual | Scope precision |
+|-------|-----------|---------------------------|-------------------|-----------------|
+| 5 | Guided correctness — environment makes the right action easy and incorrect action hard; correctness verified as you go | Never attempted | Zero within scope | "Right thing is the easy thing for this class" |
+| 4 | Prevention — mistake cannot propagate past originator | Never (to others) | Zero within scope | "100% guaranteed for this class; no false positives for anything else" |
+| 3 | Deterministic detection — catches known error classes reliably | At the check | Near-zero for known classes; blind to novel ones | Predictable gaps: entirely misses some categories, consistent elsewhere |
+| 2 | Non-deterministic guardian — probabilistic detection | Probabilistically at detection | Reduced; cannot reach zero | Unpredictable gaps: misses things everywhere, no pattern |
+| 1 | Human review | At review, if caught | Full; decays over time | "Catches what someone happened to notice" |
 | 0 | None | At consequences | Full + blind | None |
 
-**Why type systems and theorem provers are level 4, not level 3:** Even though they run after code is written, a type checker will find every type error, every time. As long as the worker cannot bypass the system (casting to `any`, disabling the check), they cannot produce visible output with a type error. The error class is completely prevented within scope. This is different from unit tests, which only find the errors that you think to write tests for. You can't "fail to imagine" a type comparison the way that you can a test case.
+**Level 5 — guided correctness:** The originator is steered toward correct behavior by the environment itself; the wrong action is made harder or impossible to attempt. Examples: a refactoring tool that trivializes extract-method while ensuring behavioral safety as you go — you don't try to do an unsafe refactoring and get caught, you use the tool and the correct action is the easy action. A language server that finds all references using the compiler — you don't search and miss some, you ask and get all of them. The distinction from level 4: level 4 catches a mistake after it is attempted; level 5 makes the mistake unlikely to be attempted at all because the correct path is easier. Both reach zero vigilance within scope; level 5 also improves the quality of work and reduces effort.
 
-**Why levels 2 and 3 are more similar than they appear:** Both are probabilistic in coverage. Level 3 is deterministic about what it covers — for errors it checks for, it always catches them. But it cannot check for errors no one has thought to look for. Novel problems are blind spots for both levels 2 and 3. Level 3's advantage over level 2 is precision and reliability for known classes, not breadth. In fact, level 3 can often be broader than level 3. A truly non-deterministic system will find different errors each time that it runs, so multiple runs can be used to improve the catch rate. Never to 100%, but often better than a deterministic system (which has deterministic gaps). The big difference: you can predict the gaps in a level 3 system, but not in a level 2 system. Level 2 misses some things everywhere, while level 3 entirely misses some categories while doing consistently well at other categories.
+**Why type systems and theorem provers are level 4, not level 3:** Even though they run after code is written, a type checker will find every type error, every time. As long as the worker cannot bypass the system (casting to `any`, disabling the check), they cannot produce visible output with a type error. The error class is completely prevented within scope. This is different from unit tests, which only find the errors that you think to write tests for. You can't "fail to imagine" a type comparison the way you can a test case.
 
-**The scope qualifier on level 4:** Every level-4 mechanism has a scope. A type system prevents type errors within the type system's scope, not logic errors. AST refactoring tools prevent behavior changes within refactoring operations, not design mistakes. Level-4 guarantees are always scoped; they cannot be universal. The goal is to accumulate scoped guarantees until the remaining uncovered area is small and well-understood.
+**Why levels 2 and 3 are more similar than they appear — and how 2 can be broader than 3:** Both are probabilistic in coverage overall. Level 3 is deterministic about what it covers — for errors it checks for, it always catches them — but it cannot check for errors no one has thought to look for. Level 2 finds different errors on different runs, so multiple runs accumulate catch rate. Never to 100%, but potentially broader than any fixed deterministic check. The key distinction is predictability of gaps: level 3 has predictable gaps (you know which categories it entirely misses; it does consistently well at others), while level 2 has unpredictable gaps (misses things everywhere with no pattern). Level 3 misses categories; level 2 misses instances. Use level 2 to discover new categories, then encode those discoveries as level 3 or level 4 mechanisms.
 
-@ai: there is a scope qualifier on every level. At higher levels we can describe it more precisely. Low levels have tend to miss things more randomly, so we can't define the scope. It is more like "catches 70% of everything, with no pattern", where high levels are "100% guaranteed for this class; no false positives for anything else".
+**Scope precision scales with level:** Every assurance level has a scope, but higher levels allow more precise scope description. Lower levels tend to miss things more randomly — the scope is something like "catches roughly 70% of everything, with no predictable pattern." Higher levels are "100% guaranteed for this specific class; no false positives for anything outside it." This means:
+- Level 5/4: scope is definable and guaranteeable — you can say exactly what is and isn't covered
+- Level 3: scope is the set of known error classes — gaps are identifiable even if not yet addressed
+- Level 2: scope is statistical — you can estimate coverage but not specify it
+- Level 1: scope is "whatever the reviewer noticed today" — unpredictable and decaying
+- Level 0: no scope
 
-**Note on the recovery vs. prevention ceiling:** Prevention (level 4) can reach zero vigilance within its scope. Detection mechanisms (levels 2–3) cannot — they require vigilance over whatever they miss. This is a fundamental ceiling difference between prevention-based and detection-based assurance strategies.
+The goal of moving up the spectrum is not just fewer errors — it is increasing the precision with which you can describe what is and isn't covered. That precision is what makes assurance trustworthy rather than merely hopeful.
+
+**Note on the recovery vs. prevention ceiling:** Levels 4 and 5 can reach zero vigilance within their scope. Levels 0–3 cannot — they require vigilance over whatever they miss. This is a fundamental ceiling difference between the top two levels and the rest.
 
 ### What a Gap Looks Like
 
@@ -73,7 +80,7 @@ For any delegation region:
 | Measurement | Question | Scale |
 |-------------|----------|-------|
 | Work delegation | Who performs this? | Human → AI (maps to agency levels) |
-| Assurance level | What ensures correctness? | 0–4 (spectrum above) |
+| Assurance level | What ensures correctness? | 0–5 (spectrum above) |
 
 Safe delegation: work delegation level and assurance level are matched. Moving work delegation without moving assurance widens the gap.
 
@@ -92,7 +99,7 @@ Safe delegation: work delegation level and assurance level are matched. Moving w
 | Zone name | Behavioral safety of refactorings |
 | Mistake class covered | Refactorings that change behavior |
 | Work delegation | AI executes refactoring steps (A3) |
-| Assurance level | 4 — prevention (AST tools only; no edit-file access; enforced by workflow) |
+| Assurance level | 5 — guided correctness (AST tool makes correct refactoring the easy path; incorrect path unavailable) |
 | What it does NOT cover | Whether the refactoring was the right design choice |
 | Agency unlock | Agent can execute refactoring without per-step human review |
 | Decay risk | Low — mechanism is tooling and workflow enforcement, not discipline |
@@ -101,10 +108,10 @@ Safe delegation: work delegation level and assurance level are matched. Moving w
 
 | Zone | Work | Assurance | Gap? |
 |------|------|-----------|------|
-| Behavioral safety of refactorings | AI | Prevention (4) — AST tools | No |
+| Behavioral safety of refactorings | AI | Guided correctness (5) — AST tool | No |
 | Test structure | AI | Prevention (4) — recipe tool in workflow | No |
 | Migration data safety | AI | Prevention (4) — migration framework | No |
-| Type safety of new code | AI | Prevention (4) — strict TS enforced before commit | No |
+| Type safety of new code | AI | Prevention (4) — strict TS before commit | No |
 | Migration semantic correctness | AI | Human review (1) | **Yes** |
 | Architecture decisions | Human | None (0) | **Yes — even at human agency** |
 | Test coverage selection | AI | Non-det guardian (2) — coverage scanner | Partial |

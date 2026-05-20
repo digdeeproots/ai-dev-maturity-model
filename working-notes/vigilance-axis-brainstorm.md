@@ -100,6 +100,30 @@ Consequences:
 
 This also explains the "maintenance trap" precisely: teams with large codebases and weak assurance end up in a steady state where most capacity is consumed by vigilance toil (maintenance, defect response) rather than new work. AI doesn't solve this — it makes it worse unless assurance is addressed first.
 
+### Level 5: Guided Correctness (Above Prevention)
+
+There is a level above prevention: the environment guides the originator toward the correct action, making the incorrect action harder to attempt in the first place. Level 4 catches a mistake after it is attempted; level 5 makes the mistake unlikely to be attempted because the correct path is easier.
+
+Examples:
+- A refactoring tool that trivializes extract-method while ensuring behavioral safety as you go. You don't try to do an unsafe refactoring and get caught — you use the tool and the correct action is the easy action.
+- A language server that finds all references using the compiler. You don't search and miss some — you ask and get all of them, every time.
+
+Level 5 reaches zero vigilance within scope AND improves the quality and ease of work simultaneously. It is the "careless engineering" ideal: the right thing is the easiest thing.
+
+### Scope Precision Scales with Assurance Level
+
+Every assurance level has a scope, but the precision with which you can describe that scope increases at higher levels.
+
+- Level 5/4: scope is fully definable — "100% guaranteed for this class; no false positives for anything else"
+- Level 3: gaps are predictable — you know which categories are entirely missed; coverage is consistent within covered categories
+- Level 2: coverage is statistical — you can estimate it but not specify it; gaps are unpredictable
+- Level 1: scope is "whatever the reviewer happened to notice today"
+- Level 0: no scope
+
+The goal of moving up the spectrum is not just fewer errors — it is increasing the precision with which you can describe what is and is not covered. Precise scope description is what makes assurance trustworthy rather than merely hopeful.
+
+**Level 2 can be broader than level 3:** A non-deterministic system finds different things on different runs; multiple runs accumulate catch rate, potentially exceeding any fixed deterministic check. The trade-off: level 3 has predictable gaps (you know which categories it misses entirely), while level 2 has unpredictable gaps (misses things everywhere, no pattern). Use level 2 to discover new categories, then encode those discoveries as level 3 or 4 mechanisms.
+
 ### The Error Visibility Criterion for Prevention (Level 4)
 
 The key criterion for whether a mechanism is level 4 (prevention) is: **does the error propagate past the originator?** Not: does it happen before or after code is written.
