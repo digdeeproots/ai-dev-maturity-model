@@ -37,17 +37,37 @@ And then we need to start exploring what does the delegation of vigilance look l
 
 ---
 
+## Transcript — Corrections and Additions (2026-05-20, second pass)
+
+On non-determinism doing vigilance: non-determinism can do vigilance when combined with abstraction extraction. For example, AI is very good at being given a pattern and then being asked what matches the pattern and what exceptions there are. Especially if you run it twice with slightly different prompts, you can get a good union set of exceptions. And then deterministic code can operate on those. And humans can also watch them.
+
+It can also be very effective to have non-deterministic guardians do verifications that are probabilistic anyway. For example, session-based exploratory testing is a great human technique, best done asynchronously from feature delivery. And when it finds something, then we engineer a deterministic way to prevent errors of that category again. This is a perfect use for non-determinism: it can continually scan for such things, then collaborate with us to abstract the error into a category of error, then collaborate with us to create the deterministic guard to detect it — plus an environment change to make it safer for the implementing AI to be careless and still get it right.
+
+We should definitely bring in the concept of Careless Engineering. We need to be all about creating systems where careless implementors can thrive.
+
+We need a good name for the new second-order thing. It isn't just correctness. Assurance is closer. It is all about sustainability, maintainability. Where the work axis is about doing the one thing we want to do, the other axis is about making it as easy as possible to not do any of the myriad of other unintended things we might do at the same time. The key measure is the degree of ease with which you get extremely high safety — not the degree of safety alone.
+
+Narrow deterministic tools won't always split correctness into those specific domains — execution vs. design. That's just the domain split that refactoring tools provide. As another example, a deterministic planning tool (done well) can ensure consistency in what questions get thought through and how. For example, that you explicitly define points of variation for downstream discovery, or that you explicitly ground it with interview data, or with metrics, or with verification by the right stakeholder. It doesn't verify that the content is fully thought through or that the thinking and grounding for any content item is sufficient — just that you gave an intentional think on each of the elements. Common to both of these examples: the tool gives you a guarantee within a scope, but not a universal guarantee. And this is exactly what we were saying: you decrease vigilance by layering these guarantees to create large vigilance-free zones. Unit tests, linters, compilers with good type systems, and many other tools are also described similarly.
+
+We also want to mention strong ways to use the other elements of the agent's universe to create safety zones. For example, we can command the agent to make specific tests, verify they are failing for the right reason, and then mark each of them as `.skip.until(feature_x_is_done)`. With that command, it won't go off and try to implement. And then we can also give it tools that only allow writes in test files.
+
+Another example is careful memory control. We can have an agent read all the info about a story we're implementing, and then fork it. Now we can have one fork do the work, another fork assess the design, another fork define the correctness criteria, etc. — and we can pit these against each other. We selectively ensure they all share some common memory and past, but are also blind to later individual thinking.
+
+---
+
 ## Interpretations and Findings
 
 ### The Second Axis
 
-The existing model has one primary axis: agency (who acts / who decides what happens next). Arlo is proposing a second primary axis whose domain is **how correctness is assured** — specifically, who or what bears the burden of catching and preventing mistakes. Working name needed. Candidates: "correctness assurance," "verification delegation," "safety delegation." The axis runs from "human vigilance bears all correctness burden" to "deterministic systems bear all correctness burden (within bounded scopes)."
+The existing model has one primary axis: agency (who acts / who decides what happens next). Arlo is proposing a second primary axis. Working name still needed — "assurance" is the closest candidate so far.
+
+The second axis is not about degree of safety. It is about **ease of achieving safety**: how hard must an implementor try in order to avoid doing unintended things while doing the intended thing? At one end: every mistake is easy to make and hard to detect. At the other: careless implementors thrive because the environment makes unintended actions structurally difficult or impossible.
 
 The second axis is not the same as the first:
 - Agency axis: who performs the work
-- Second axis: who/what catches mistakes in that work
+- Assurance axis: how easily does the environment prevent unintended side-effects of that work
 
-You can transfer work without transferring correctness assurance. That's the vigilance trap: agency transferred, vigilance not.
+You can transfer work without transferring assurance. That's the vigilance trap: agency transferred, assurance not. The human still has to watch, because the environment doesn't prevent mistakes.
 
 ### The 2D Grid and the Safe Path
 
@@ -74,13 +94,21 @@ The things you can control to create zero-risk zones:
 
 Verification after the fact is insufficient for zero risk. The focus is on upstream universe design.
 
-### Narrow Deterministic Tools as the Primary Safety Mechanism
+### Layered Scoped Guarantees (Not Universal Correctness)
 
-The refactoring tool example is precise: a refactoring tool can make extract-method incorrect in design terms (wrong choice) but never incorrect in behavior terms (the code still works, reversibly). This separates two correctness domains:
-- **Execution correctness** (does it do what it attempts safely): can be made zero-risk via deterministic tools
-- **Design correctness** (is this the right thing to attempt): requires human judgment or different mechanism
+The refactoring tool example shows one pattern: the tool guarantees execution correctness (behavioral safety, reversibility) within its scope, but says nothing about design correctness (whether this was the right move). Two named domains.
 
-This distinction is important: you cannot make all correctness zero-risk at once. You stack zero-risk zones by domain. The goal is to bound the remaining non-zero-risk area to where human judgment actually applies.
+But the general pattern is broader: **each deterministic tool gives a guarantee within its scope, not a universal guarantee.** The scope and domain of the guarantee varies by tool type:
+
+- **Refactoring tools**: guarantee behavioral safety of the transformation; don't guarantee design quality
+- **Deterministic planning tools** (done well): guarantee that each required element of thought was addressed (variation points named, grounding source identified, stakeholder named); don't guarantee the content is sufficient or correct
+- **Type systems / compilers**: guarantee type-level consistency; don't guarantee behavioral correctness
+- **Linters**: guarantee style or structural rules; don't guarantee logic correctness
+- **Unit tests**: guarantee the tested behavior at the tested inputs; don't guarantee coverage or design
+
+The move is to stack these scoped guarantees so they cover large areas of the mistake space. Each tool eliminates a class of mistakes. Stacked, they create large vigilance-free zones. The remaining gap — where no tool gives a guarantee — is where human attention is required and can actually be afforded.
+
+This is the mechanism for moving along the assurance axis: not one magic tool, but progressive accumulation of scoped guarantees that shrink the vigilance-required zone.
 
 ### Human/AI Complementarity as a Structural Property
 
@@ -117,12 +145,56 @@ The existing responsibility matrix has ~21 items. Arlo's hypothesis: most of the
 - A **work item** missing a corresponding **correctness-assurance item**
 - A **correctness-assurance item** missing a corresponding **work item**
 
-The matrix needs to be audited with this lens and missing items added. The "correctness-assurance" side of each pair is what needs to be transferred from human vigilance to a system — and identifying where it transfers to (deterministic code, non-deterministic AI with a checker, automated evaluation, etc.) is the core of the second axis.
+The matrix needs to be audited with this lens and missing items added. The "correctness-assurance" side of each pair is what needs to be transferred from human vigilance to a system — and identifying where it transfers to (deterministic code, non-deterministic AI with a checker, automated evaluation, etc.) is the core of the second axis.Expe
 
-### Delegating Vigilance to Non-Deterministic Code
+### Non-Deterministic Vigilance: When It Works and How
 
-Possible but limited. Delegating vigilance to a non-deterministic system (an AI evaluator) reduces vigilance load but does not eliminate it — you still need to check the checker. This is only viable when:
-1. The domain being supervised is small (so human spot-checks are tractable)
-2. There is a way to guard the guardian (some form of meta-evaluation)
+Non-determinism can carry vigilance load, but not in all cases. It works in two patterns:
 
-The fully stable state is deterministic correctness assurance, not AI-evaluated correctness assurance.
+**Pattern 1: Pattern-matching + exception enumeration.** Give the AI a pattern, ask what matches and what doesn't. Run it twice with different prompts; take the union of exceptions found. Deterministic code acts on the exception set. Humans review the abstracted exceptions, not the raw detail. This works because: (a) pattern-matching in detail space is where AI is strong, (b) the output is translated to abstraction space before humans see it, (c) false positives are manageable at the abstract level.
+
+**Pattern 2: Probabilistic verification + escalation cycle.** Some verification is inherently probabilistic anyway (exploratory testing, anomaly detection). A non-deterministic agent continually scans. When it finds something, the cycle is: detect → abstract the error into a category → collaborate to design a deterministic guard → create an environment change that prevents the category of mistake. The non-deterministic agent's output bootstraps a deterministic improvement. Over time, the vigilance-free zone expands.
+
+**When non-deterministic vigilance doesn't work:** when the domain requires precise, universal guarantees. A non-deterministic checker can miss things; it reduces vigilance load but doesn't eliminate it. This is only stable when the supervised domain is small enough that residual risk is acceptable.
+
+The general principle: non-deterministic vigilance is a **bootstrap mechanism** for creating deterministic guards, not a permanent substitute for them.
+
+### Careless Engineering
+
+"Careless Engineering" names the discipline: designing systems — tools, environments, workflows, agent worlds — so that careless implementors (human or AI) can thrive. Not making implementors more careful. Making carelessness safe.
+
+This applies identically to:
+- Human developers (safeguarding, zero-bugs practices)
+- AI agents (orchestration design, tool narrowness, universe control)
+- AI agents supervising AI agents (non-deterministic vigilance + abstraction extraction)
+
+The measure of success is not "how safe is this?" but "how careless can the implementor be and still succeed?"
+
+### Universe Design Mechanisms — Detailed
+
+For each element of the agent's universe, at least two mechanisms for creating safety zones (both correct-action and guardian patterns):
+
+**Tooling**
+1. *Restrict write access by file type* (only test files, only plan files, not production code). Makes it structurally impossible to corrupt production code while doing test work. Correct-action pattern.
+2. *AST-based refactoring tools only* (no edit-file). Every code change is behaviorally safe by construction. Correct-action pattern.
+3. *Planning tool that enforces thought structure*. Guarantees variation points named, grounding identified — without judging content quality. Correct-action pattern for thought discipline.
+
+**Context (what information is surfaced)**
+1. *Inject the canonical reuse target explicitly*. If a Nullables implementation exists, include a reference to it and its interface in every test-writing invocation. AI will use it; it won't discover it on its own.
+2. *Scope to only relevant files*. Reduces the space of things the agent can accidentally affect or be distracted by.
+3. *Include prior forks' outputs as read-only context*. A design-critique fork's findings can be surfaced to the implementation fork without merging their thinking processes.
+
+**Memory (what the agent can recall)**
+1. *Fork at a known stable point*. Have the agent read the full story brief, then fork. Each fork specializes: one implements, one assesses design, one defines correctness criteria. They share the pre-fork memory but are blind to each other's subsequent thinking.
+2. *Inject reference implementations into memory before invocation*. The deterministic layer deposits a generated artifact (e.g., a Nullables stub) into a standard location; subsequent invocations reference it in context so AI "knows" it exists.
+3. *Selective amnesia*. Two forks see the same starting memory; after forking, each is blind to the other's discoveries. Pit their independent outputs against each other for disagreement detection.
+
+**Goals / Invocation Timing**
+1. *Narrow goal + skip markers*. Command the agent to write specific tests, verify each is failing for the right reason, and mark each `.skip.until(feature_x_is_done)`. The skip prevents premature implementation attempts; the failing-for-right-reason check guards against accidentally-passing tests.
+2. *Invoke after deterministic pre-processing*. Don't invoke the AI until deterministic code has prepared the scaffold, selected the reuse target, and scoped the context. The AI's task is smaller and better-defined.
+3. *Sequence forks by role*. Invoke the criteria-fork before the implementation-fork; pass criteria as read-only context to implementation. Implementation is constrained by what criteria-fork decided.
+
+**Result Handling**
+1. *Deterministic expansion*. AI produces a seed (a migration definition, a test skeleton, a plan node). Deterministic code expands it into the full artifact following known patterns. AI's surface area is small; the expansion is guaranteed correct.
+2. *Union from multiple runs*. Run the same analysis twice with slightly different prompts; take the union of outputs. Guards against single-run blind spots. Still non-deterministic, but higher coverage with bounded effort.
+3. *Normalize into standard location before next invocation*. Whatever the AI produces goes through a deterministic normalization step before it becomes part of the context for the next invocation. This prevents garbage-in propagation across turns.
