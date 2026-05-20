@@ -52,7 +52,7 @@ Total vigilance cost = throughput x (capability regression cost + adaptability r
 
 #### Error class: Capability regression in existing code
 
-**Body at risk**: all code, tests, and systems that depend on the behavior accidentally broken, AND all customers who depend on that behavior. Narrow for leaf components; systemic for widely-used utilities.
+**Body at risk**: all code, tests, and systems that depend on the behavior accidentally broken, AND all customers who depend on that behavior. Narrow for leaf components used by few users; systemic for widely-used utilities or core functionality.
 
 **Rate**: one opportunity per change to shared code.
 
@@ -60,14 +60,16 @@ Total vigilance cost = throughput x (capability regression cost + adaptability r
 |--------|------|-------|-------|
 | No mechanism | -- | 0 | -- |
 | Human code review | Human review | 1 | Whatever reviewer noticed |
-| Unit tests (ad hoc) | Deterministic detection | 3 | Tested behaviors; effective level drops with coverage gaps |
-| Unit tests (recipe-based, comprehensive coverage) | Deterministic detection | 3 | Recipe-defined coverage; predictable gaps remain |
 | AI exploratory testing (generates edge-case tests after change) | Non-deterministic guardian | 2 | Probabilistic; finds novel cases; bootstraps to level 3 |
 | AI change-impact analysis (identifies untested behaviors, invariants, negative cases) | Non-deterministic guardian | 2 | Probabilistic; targets specific change surface |
+| Unit tests (ad hoc) | Deterministic detection | 3 | Tested behaviors; effective level drops with coverage gaps |
+| Unit tests (recipe-based, comprehensive coverage) | Deterministic detection | 3 | Recipe-defined coverage; predictable gaps remain |
 | Property-based / mutation testing | Deterministic detection | 3 | Structural properties |
 | Theorem provers | Prevention | 4 | Formally specified invariants only |
 
 No general level-5 mechanism for logic correctness.
+
+@ai: decoupling is a key level 5 mechanism. Cohesion is too.
 
 **Reversibility**: feature flags and canary deployments make capability additions reversible. When a regression can be rolled back in minutes, the required vigilance per capability change is lower.
 
@@ -91,7 +93,7 @@ No general level-5 mechanism for logic correctness.
 | Functional architecture style (pure functions, explicit state separation) | Guided correctness | 5 | Code written in functional style |
 | Nullables template (formalized, auto-generated alongside each new class) | Guided correctness | 5 | Classes using the template |
 
-Level-5 explanation: when the correct pattern is the default starting point -- a scaffold or template presented at the moment of creation -- careless implementors land in the correct structure without trying. For AI, injecting the pattern into context at invocation achieves the same effect.
+Level-5 explanation: when the correct pattern is the default starting point -- a scaffold or template presented at the moment of creation -- careless implementors land in the correct structure without trying. For AI, injecting the pattern into context at invocation or giving them a "create new class" (etc) deterministic tool achieves the same effect.
 
 Key: AI defaults to mock-based coupling and will not reach for Nullables, Simulators, or Hexagonal ports unless the orchestration layer injects these patterns on every invocation.
 
@@ -183,6 +185,8 @@ No known level-4 mechanism for design quality in the general case. Human judgmen
 | Strict type system enforced pre-commit | Prevention | 4 | All type interactions in covered code |
 | AST refactoring tools (rename/move with full dependency awareness) | Guided correctness | 5 | All dependents within tool scope |
 
+@ai: add language-server based reference tracking. Even without AST refactoring tools, it can be used to get level 4 for edits.
+
 **Gap condition**: expensive at any scale where more than one system depends on the changed interface.
 
 ---
@@ -190,6 +194,10 @@ No known level-4 mechanism for design quality in the general case. Human judgmen
 #### Error class: Adaptability reduction in vigilance mechanisms (test duplication)
 
 **Body at risk**: future change effort whenever associated code is modified. Each test that duplicates code setup, uses mocks (which mirror the production interface), or fails alongside sibling tests adds to this body. When code changes, all these tests must change too.
+
+@ai: add to the template for every error class: "the worry". This should speak to a developer; it is the thing we worry about. Each error class should correspond 1:1 to a worry we all feel - at least, with experience. This should help readers "get" what we're talking about at each one. In this case, for example, most of what you have in "body at risk" is the worry.
+
+@ai: after doing the above, get body at risk to be something quantifiable. Something we can easily count to see if it is large for our product. That will be key to identifying which vigilance categories are most important to us. Same with rate. Rate should be an event. This worry happens, and we need to pay the toil cost, every time the event happens. Yes, that's the way to think about it: rate is the even that makes us pay the toil cost. body at risk (which might need a rename) is the total amount of stuff we have to worry about - the scope of the vigilance required. And the mechanisms are either ways to reduce the body at risk, or to make it easier to verify / protect it (reduced or eliminated toil cost per body at risk). Use that to also split the options table. Identify options that reduce the size of the worry surface, and other options that let us worry more efficiently. (and that gives the better name - body at risk becomes worry surface)
 
 **Rate**: cumulative; each test written with duplication adds to the body.
 
@@ -220,6 +228,8 @@ Total vigilance cost = frequency x (capability regression cost + consistency vio
 #### Error class: Capability regression (renames that change behavior)
 
 Rare but real: renaming a function called via string reflection, or a symbol with unusual semantics. Same assurance options as capability regression under adding new behavior. AST refactoring tools with rename awareness eliminate this class within tool scope (level 5).
+
+@ai: if a node, like this, is the same as somewhere else, then just reference the one over there. Don't duplicate it with a stub link.
 
 ---
 
