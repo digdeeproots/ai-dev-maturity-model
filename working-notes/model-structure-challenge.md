@@ -92,6 +92,20 @@ The model as a static grid misses this. What would work better: something that f
 
 ---
 
+## Systemic Insights (Independent of Model Structure)
+
+These are true regardless of which model structure is chosen. They belong in any version of the model.
+
+**The immune system metaphor (root).** Software developers are the company's immune system; product people are the brain. The brain wants to move forward and try new things — survive the tiger, avoid starvation right now. The immune system wants to ensure health sufficient to handle whatever threats arise. "It's only a little salmonella; the immune system can handle it" is how the brain talks. The immune system sees a categorical difference between "you'll probably fight it off" and "actually clean food." Vigilance toil is the immune system perpetually fighting preventable infections — which leaves it less able to handle novel threats. This reframes the stakes: high vigilance cost is not a productivity problem; it's an immune suppression problem.
+
+**The "no human to blame" dynamic.** At low agency, failures are attributed to individual humans. The systemic gap is hidden behind "Bob made a mistake." As AI agency increases, that fiction disappears. Expectations rise. The same failure rate becomes intolerable. The gap that was always there becomes undeniable — not because it got worse, but because the scapegoat disappeared.
+
+**Brakes, not engine.** Your speed is not limited by your engine; it is limited by your brakes — how easily you can get to safety. AI capability is the engine. Sustainability is the brakes. Teams focus on the engine (more capable AI, better prompts) while neglecting brakes. The bottleneck is never where they're looking.
+
+**The maintenance trap (vigilance toil without AI).** Teams in "100% maintenance mode" or "keeping the lights on" are already in the vigilance trap, with no AI involved. Chronic maintenance is mostly responding to foot-guns, not a genuinely changing world. The same investment path applies — prevention, recovery, detection, abstraction — using human-universe levers. A team that escapes the maintenance trap via human-universe sustainability work is already partially equipped for AI agency delegation. The brakes were always the problem; AI just makes it visible faster.
+
+---
+
 ## Alternative Models
 
 *(See `alternatives/` subdirectory for prototype elaborations of each.)*
@@ -102,35 +116,21 @@ Agency × Prevention × Recovery, where prevention and recovery are explicitly s
 
 ### Alternative B: Safety Cone
 
-The safe zone is a cone in the agency × sustainability plane: at low agency, any sustainability is fine; as agency increases, the minimum required sustainability increases. The cone makes the dependency visible without implying a single path. Challenge: still uses a single sustainability axis.
+The safe zone is a cone in the agency × sustainability plane: at low agency, any sustainability is acceptable; as agency increases, the minimum required sustainability grows. The cone makes the dependency visible without implying a single path. Challenge: still uses a single sustainability axis.
 
-### Alternative C: Portfolio Model (preferred)
+### Alternative C: Delegation Model — Portfolio and Structured variants
 
-Track a portfolio of named zero-risk zones, each scoped to a class of mistakes. Sustainability is the aggregate coverage of the mistake space. Agency unlocks are tied to specific portfolio items. Progress is discrete and visible. The 2D grid can still be used as a summary, calculated from portfolio state.
+Two flavors of the same underlying model. Both use the same assurance spectrum and gap measurement.
 
-What it makes visible: which specific mistake classes are covered vs. uncovered; what to invest in next; whether a team is actually advancing or just feeling like they are.
+**Portfolio (open-world):** You define your own regions — unbounded, inventive. You pick which zones to invest in based on where it hurts. Your portfolio is your own. Works best when your domain is unusual or when you want freedom to invent.
 
-### Alternative D: Responsibility-Pair Matrix
+**Structured delegation map (closed-world):** All regions identified from the responsibility matrix, with consistent measurement applied to each. Drill-down per region lists specific options to improve work delegation or assurance level. Works best when you want to find what you don't know you're missing.
 
-Make the responsibility matrix the center. Each row has: the responsibility, who does the work (agency axis position), what provides assurance (assurance mechanism type and quality). Gaps are directly visible. More actionable than the grid; less visually compact.
+Use the structured map to discover gaps; use the portfolio to track investments.
 
-### Alternative E: Transfer-Target Spectrum
+### Alternative D: Fluency DAG (worth elaborating)
 
-For each responsibility, show separately where the work transferred to and where the assurance transferred to. The vigilance trap becomes structurally visible as the gap between those two placements. Strong conceptual clarity; hard to summarize compactly.
-
-### Alternative F: Subway Diagram (worth elaborating)
-
-Specific investments as stations. Lines show enabling relationships — achieving this station unlocks that one, which makes this agency delegation safe. The vigilance toil focus becomes the starting point: "where does it hurt?" finds your current station; the diagram shows what to tackle next.
-
-Inspired by the Agile Engineering Fluency map. Challenges: implies a single path; requires careful ordering decisions.
-
----
-
-## Brakes, Not Engine
-
-A metaphor that applies across all alternatives: in driving, your speed is not limited by your engine — it's limited by your brakes. How easily can you get to safety (stopped)? Teams focus on AI capability (engine) when the real constraint is sustainability (brakes). You can only safely go as fast as your brakes allow.
-
-This reframes the model: sustainability isn't a constraint on ambition. It's the thing that *enables* higher velocity safely.
+Nodes are practices (work delegation or assurance delegation). Edges are prerequisite relationships. The vigilance trap is visible as missing assurance nodes before work nodes. Multiple valid traversal orders — different teams start different places, follow different paths. Inspired by the Agile Engineering Fluency map; should be a DAG, not subway lines.
 
 ---
 
@@ -138,13 +138,13 @@ This reframes the model: sustainability isn't a constraint on ambition. It's the
 
 **Agency may not be primary** — sustainability comes first; agency is the reward. This inverts the existing model's framing and may be the most important structural change.
 
-**The immune system framing** — software developers as the organization's immune system; vigilance toil as immune suppression. Not just a metaphor — it reframes the stakes.
-
 **Human/AI complementarity needs a home** — which kinds of work are safe to transfer, and which assurance mechanisms fail in which domains, should be structural parts of the model, not notes in a brainstorm doc.
 
-**Careless Engineering as a named practice** — the model should distinguish the goal (high sustainability) from the discipline that achieves it (Careless Engineering). The grid shows destination, not path.
+**Careless Engineering as a named practice** — the model should distinguish the goal (high sustainability) from the discipline that achieves it. The grid shows destination, not path.
 
 **Prevention vs. recovery ceiling** — prevention can reach zero vigilance; recovery cannot. This is a fundamental ceiling difference that the model should make visible.
+
+**The maintenance trap is in scope** — the model applies to teams without AI. Human-universe sustainability investments and AI-universe investments are the same category, different levers.
 
 The following are real but belong in drill-down, not in the core view:
 - The translation layer (abstract → detail → execute → abstract → verify)

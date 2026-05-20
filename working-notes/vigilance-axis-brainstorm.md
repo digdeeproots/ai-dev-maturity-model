@@ -55,6 +55,20 @@ Another example is careful memory control. We can have an agent read all the inf
 
 ---
 
+## Transcript — Systemic Insights (2026-05-20, third pass)
+
+Several things are true regardless of which model structure we choose. They belong in the general case.
+
+**The immune system metaphor.** Software developers are the company's immune system. Product people are the brain. The brain wants to move forward and try new things — survive the tiger attack, avoid starvation. The immune system wants to ensure health is sufficient to handle whatever tigers may or may not arise. The brain is worried about surviving starvation right now; the immune system is worried about ensuring we don't die of disease. So "it's only a little bit of salmonella; that's why we hired the immune system and continue to feed it" makes sense to the brain. But the immune system sees a big difference between "only a little salmonella; you can probably fight it off" and "actually clean food." Vigilance toil is the immune system spending all its energy fighting preventable infections — which means it has less capacity for novel threats.
+
+**The "no human to blame" dynamic.** At low agency, failures get attributed to individual human error. That fiction is available — you can tell yourself Bob will improve, and fool yourself into believing it. As AI agency increases, the fiction disappears. You can't ask AI to be more careful. External stakeholders raise expectations because the human excuse is gone. Systemic sustainability gaps that were always present become undeniable. The vigilance cost required to meet rising expectations increases.
+
+**The brakes metaphor.** Your speed is not limited by your engine. It's limited by your brakes — how easily you can get to safety. AI capability is the engine. Sustainability is the brakes. You can only go as fast as your brakes allow. Teams obsess over engine (more capable AI, better prompts) while neglecting brakes (sustainability investments). The bottleneck is never where they're looking.
+
+**Vigilance toil without AI — the maintenance trap.** Teams in "100% maintenance mode" or "keeping the lights on" are already in the vigilance trap, with no AI involved. Chronic maintenance is mostly responding to foot-guns — defects, regressions, debt fires — not to a genuinely changing world. The investment in human-universe sustainability (testing recipes, type systems, deterministic builds, planning discipline) is the same solution as AI-universe sustainability. The principle is identical: design for carelessness. There are fewer available levers in a human universe, but the same categories apply: prevention, recovery, detection, abstraction. A team that escapes the maintenance trap via human-universe investment is already partially equipped for AI agency delegation — they've built the brakes.
+
+---
+
 ## Interpretations and Findings
 
 ### The Second Axis
