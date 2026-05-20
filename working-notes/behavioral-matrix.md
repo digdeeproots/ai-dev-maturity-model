@@ -55,7 +55,7 @@ How careless can an implementor be and still achieve safety? Higher levels mean 
 
 ## Domain: Product Work
 
-*Work that directly improves or delivers the product. Includes improving the seven product facets and deploying the product to users.*
+*Work that directly improves the product across its seven facets.*
 
 ### Work type: Adding new behavior
 
@@ -510,67 +510,6 @@ Business stake: security failures are catastrophic and irreversible. One success
 
 ---
 
-### Work type: Deploying and operating infrastructure
-
-**Agency delegation path:**
-
-| Agency level | What it looks like | Safety required |
-|---|---|---|
-| A1 | Human runs deployment with AI assistance | No minimum |
-| A2 | AI orchestrates deployment; human approves | Deployment failure: Deterministic (CI/CD) |
-| A3 | AI deploys autonomously | Deployment failure: Prevention; configuration drift: Prevention |
-
----
-
-#### Error class: Deployment failure
-
-**The worry**: "Did the deployment break something in production? How many users are affected?"
-
-**Worry surface**: number of customers affected during the failure window.
-
-**Rate event**: every deployment without automated verification.
-
-**Scope-shrinking options:**
-
-| Option | Effect | Safety level |
-|--------|--------|-------------|
-| Canary deployments / blue-green + automated rollback | Failure affects small cohort; rollback restores good state within minutes | Prevention |
-
-**Efficiency options:**
-
-| Option | Safety level | Scope |
-|--------|-------------|-------|
-| Manual deployment with review | Vigilance | Whatever human checked |
-| CI/CD pipeline | Deterministic | What pipeline checks |
-| Idempotent declarative deployments | Prevention | All deployments through the system |
-
----
-
-#### Error class: Configuration drift
-
-**The worry**: "Is the environment still what we think it is?"
-
-**Worry surface**: number of environment differences from desired state. Countable with IaC diff.
-
-**Rate event**: every environment change made outside declarative management.
-
-**Scope-shrinking options:**
-
-| Option | Effect | Safety level |
-|--------|--------|-------------|
-| Immutable infrastructure | Environments cannot drift; they are replaced, not modified | Prevention |
-
-**Efficiency options:**
-
-| Option | Safety level | Scope |
-|--------|-------------|-------|
-| Manual audits | Vigilance | Occasional |
-| Infrastructure as Code | Deterministic | Declared infrastructure |
-
----
-
-
-
 ## Domain: System Design
 
 ### Work type: Making architectural decisions
@@ -789,6 +728,71 @@ Business stake: architectural decisions constrain all future decisions. The wron
 | Outcome-based planning with measurement gates | Prevention | All work with defined outcome gates |
 
 ---
+
+## Domain: Operations
+
+*All the work required to keep the product running: provisioning and managing systems infrastructure, deploying new versions, operating the product in production, and maintaining the environments that support it. Unlike the product facets (which improve properties of the product code) or Work on the system (which builds the development and safety apparatus), Operations keeps everything alive and available.*
+
+### Work type: Deploying and operating infrastructure
+
+**Agency delegation path:**
+
+| Agency level | What it looks like | Safety required |
+|---|---|---|
+| A1 | Human runs deployment with AI assistance | No minimum |
+| A2 | AI orchestrates deployment; human approves | Deployment failure: Deterministic (CI/CD) |
+| A3 | AI deploys autonomously | Deployment failure: Prevention; configuration drift: Prevention |
+
+---
+
+#### Error class: Deployment failure
+
+**The worry**: "Did the deployment break something in production? How many users are affected?"
+
+**Worry surface**: number of customers affected during the failure window.
+
+**Rate event**: every deployment without automated verification.
+
+**Scope-shrinking options:**
+
+| Option | Effect | Safety level |
+|--------|--------|-------------|
+| Canary deployments / blue-green + automated rollback | Failure affects small cohort; rollback restores good state within minutes | Prevention |
+
+**Efficiency options:**
+
+| Option | Safety level | Scope |
+|--------|-------------|-------|
+| Manual deployment with review | Vigilance | Whatever human checked |
+| CI/CD pipeline | Deterministic | What pipeline checks |
+| Idempotent declarative deployments | Prevention | All deployments through the system |
+
+---
+
+#### Error class: Configuration drift
+
+**The worry**: "Is the environment still what we think it is?"
+
+**Worry surface**: number of environment differences from desired state. Countable with IaC diff.
+
+**Rate event**: every environment change made outside declarative management.
+
+**Scope-shrinking options:**
+
+| Option | Effect | Safety level |
+|--------|--------|-------------|
+| Immutable infrastructure | Environments cannot drift; they are replaced, not modified | Prevention |
+
+**Efficiency options:**
+
+| Option | Safety level | Scope |
+|--------|-------------|-------|
+| Manual audits | Vigilance | Occasional |
+| Infrastructure as Code | Deterministic | Declared infrastructure |
+
+---
+
+
 
 ## Domain: Work on the system
 
@@ -1049,6 +1053,7 @@ Business stake: architectural decisions constrain all future decisions. The wron
 | Deploying | Configuration drift | Environment differences from desired | Deterministic (IaC) | Prevention (immutable) |
 | Designing and enforcing process | Process enforcement gap | Decision types without gates | Deterministic (CI gates) | Prevention (workflow code) |
 | Defining and enforcing boundaries | Scope enforcement gap | Agent capabilities beyond scope | Prevention (tooling) | Prevention |
+
 
 
 
