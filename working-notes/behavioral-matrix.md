@@ -1,54 +1,77 @@
-# Behavioral Matrix — Responsibilities with Assurance Dimension
+# Behavioral Matrix — Work Types and Assurance Dimension
 
-*Draft v1 for review. Maps all 21 responsibilities to their assurance dimension.*
+*Draft v2 — restructured by work type.*
 
-Purpose: extend the existing responsibility matrix to show both work delegation (who performs this) and assurance delegation (what ensures correctness). This is the structured delegation map variant applied to the full responsibility set.
+Purpose: extend the existing responsibility matrix to show both work delegation (who performs this) and assurance delegation (what ensures correctness). Organized by what people are trying to do, with error classes as the second level.
 
 ---
 
 ## How to Read This Document
 
-Each responsibility entry shows:
-- **Mistake classes**: the specific types of errors this work can introduce
-- **Assurance options**: investments that provide assurance, ordered by level (0–5)
-- **Gap trigger**: the agency transition where missing assurance becomes expensive
+Each **work type** entry shows:
+- What people are trying to accomplish
+- The **error classes** that work can introduce — each is an independent vigilance problem
+- For each error class: **body at risk** (what existing work a single error can corrupt), **rate** (how often this kind of error occurs relative to the work rate), **assurance options** (investments ordered by level), and **gap condition** (the combination of rate and body size that makes the unaddressed cost unsustainable)
 
-@ai: the gap trigger will not be an agency transition, but a result of the vigilance toil function. If it is applied per entry, then we need to determine how to measure the scope of existing work and the rate of new work, and to describe when the gap trigger is reached.
+**Total vigilance cost for a work type** = rate of this work × Σ(body at risk × assurance deficit per error class)
 
-The work delegation column (who performs this at each stage) comes from responsibility_ownership.json. This document adds the assurance column.
+Error classes within a work type have independent costs that sum. Addressing one does not reduce the cost of another.
 
-Some existing responsibilities are themselves assurance mechanisms (step_oversight, evaluation, drift, escalation). For these, the relevant question is: what level of assurance does the mechanism provide, and what investments move it to higher levels?
+The work delegation column (who performs this at each stage) comes from responsibility_ownership.json. This document adds the assurance dimension.
 
-Some responsibilities need to split: `code` covers three distinct mistake classes with different optimal mechanisms.
+Note: some existing responsibilities in the model are themselves assurance mechanisms (step_oversight, evaluation, drift, escalation). They appear in the Evaluation and Oversight domain, where the question is: what level does the mechanism operate at, and what investments move it higher?
 
 ---
 
-@ai: rethink these domains. Organize them by work that the coder is trying to accomplish. Eg, it isn't "refactoring safely", it is "evolving the design". That kind of work then has at least 2 error classes (accidental behavior change, making the design worse). Each of those is an independent vigilance problem. So this is probably a multi-level set of behaviors now. One for what people are trying to do, a second for kinds of vigilance that requires in a brownfield codebase. So the vigilance cost for an action is the sum of the vigilance costs for each error kind. And this whole thing is multipled by the frequency of the kind of work * the size of the total body of existing product that could be impacted.
+## Domain: Code Work
 
-## Domain: Code Changes
+### Work type: Evolving the design
 
-### Code — Refactoring Safety
-*Split from: `code`*
+*Restructuring code to change its structure without (intended) change in observable behavior. Includes extract method, rename, move module, change interface, restructure data flow.*
 
-**Mistake class**: Behavioral change during a refactoring — the code is restructured but its behavior changes unintentionally.
+Total vigilance cost = frequency of design changes × (accidental behavior change cost + design regression cost + structural breakage cost)
+
+#### Error class: Accidental behavior change
+
+**Body at risk**: Every test and every downstream system depending on the behavior of the changed component. Narrow for leaf components; systemic for widely-used utilities.
+
+**Rate**: One opportunity per structural change.
 
 | Option | Type | Level | Scope |
 |--------|------|-------|-------|
 | No mechanism | — | 0 | — |
 | Human review of diff | Human review | 1 | Whatever reviewer noticed |
 | Test suite run after refactoring | Deterministic detection | 3 | Tested behaviors only |
-| AST-based refactoring tools only (no edit-file) | Guided correctness | 5 | All structural refactoring operations |
+| AST-based refactoring tools only | Guided correctness | 5 | All structural refactoring operations |
 
-Level 5 is achievable here. AST tools make behavioral safety the easy path; hand-editing during refactoring is made deliberately harder.
-
-**Gap trigger**: A2.2. When AI writes code with human review, manually-caught behavioral changes are high cost. At A3+, human review is no longer continuous — level 3 minimum, level 5 preferred.
+**Gap condition**: Expensive in any codebase where components have more than a few callers. Cost grows with codebase size and interconnection. In a large brownfield codebase at any sustained change rate, assurance level 0–1 produces unsustainable toil.
 
 ---
 
-### Code — Type/Structural Correctness
-*Split from: `code`*
+#### Error class: Design regression
 
-**Mistake class**: Type errors, structural violations, API contract breaches.
+**Body at risk**: Architectural coherence of the affected module and its dependents. Cascades if the changed abstraction sets a precedent.
+
+**Rate**: Occurs with every structural change; varies by centrality of the changed abstraction.
+
+| Option | Type | Level | Scope |
+|--------|------|-------|-------|
+| No mechanism | — | 0 | — |
+| Human review for design quality | Human review | 1 | Whatever reviewer noticed |
+| AI design critique fork (adversarial) | Non-deterministic guardian | 2 | Probabilistic; finds common patterns |
+| Architecture linters (dependency rules) | Deterministic detection | 3 | Configured structural rules |
+
+No known level-4 mechanism for design quality in the general case. Human judgment remains essential here.
+
+**Gap condition**: Less multiplicative than behavior change — regressions don't proliferate automatically but accumulate, each making future design work harder. Expensive when throughput is high and no design review exists.
+
+---
+
+#### Error class: Structural/type breakage
+
+**Body at risk**: All typed consumers of the changed interface. Systemic for widely-used modules.
+
+**Rate**: One opportunity per interface change.
 
 | Option | Type | Level | Scope |
 |--------|------|-------|-------|
@@ -57,14 +80,23 @@ Level 5 is achievable here. AST tools make behavioral safety the easy path; hand
 | Linter rules | Deterministic detection | 3 | Configured rules only |
 | Strict type system enforced pre-commit | Prevention | 4 | All type interactions in covered code |
 
-**Gap trigger**: A1.2. The moment AI writes code a human must review, type errors require vigilance unless a type system catches them first. Strict TS config + CI enforcement = level 4 investment.
+**Gap condition**: Expensive at any scale where more than one system depends on the changed interface. Eliminated entirely within scope by level-4 investment.
 
 ---
 
-### Code — Logic Correctness
-*Split from: `code`*
+### Work type: Adding new behavior
 
-**Mistake class**: Logic errors — code with correct types that does the wrong thing.
+*Writing code that adds new functionality: new features, new services, new integrations. The existing codebase grows.*
+
+Total vigilance cost = throughput × (logic error cost + testability reduction cost + design contamination cost)
+
+Note: structural/type errors also apply here — same assurance options as above.
+
+#### Error class: Logic errors
+
+**Body at risk**: The new code paths and every existing behavior sharing state or control flow with them.
+
+**Rate**: Every new code addition introduces potential logic errors; rate scales with throughput.
 
 | Option | Type | Level | Scope |
 |--------|------|-------|-------|
@@ -72,39 +104,72 @@ Level 5 is achievable here. AST tools make behavioral safety the easy path; hand
 | Human code review | Human review | 1 | Whatever reviewer noticed |
 | Unit tests (ad hoc) | Deterministic detection | 3 | Tested behaviors; no coverage guarantee |
 | Unit tests (recipe-based) | Deterministic detection | 3 | Recipe-defined coverage; predictable gaps |
-| Property-based tests / mutation testing | Deterministic detection | 3 | Coverage of structural properties |
-| Theorem provers (formal methods) | Prevention | 4 | Formally specified invariants only |
+| Property-based tests / mutation testing | Deterministic detection | 3 | Structural properties |
+| Theorem provers | Prevention | 4 | Formally specified invariants only |
 
-Logic correctness has no general level-5 mechanism. The ceiling is level 4 for formally-specified properties, level 3 for test-covered behaviors.
+No general level-5 mechanism. Ceiling is level 4 for formally-specified properties, level 3 for test-covered behaviors.
 
-**Gap trigger**: A2.2. Once AI writes code without step-by-step oversight, logic correctness requires test coverage at minimum. At A3+, recipe-based test structure ensures coverage is not ad hoc.
+**Gap condition**: Expensive when throughput is high or new behavior interacts with a large existing body. Recipe-based tests move the gap to predictable known-class misses.
 
 ---
 
-## Domain: Testing
+#### Error class: Testability reduction
 
-### Unit Tests — Structure Compliance
-*Split from: `unit_tests`*
+**Body at risk**: Future test effort for the entire module. Untestable code accumulates; each addition weakens the overall test suite.
 
-**Mistake class**: Tests written in the wrong structure — using mocks where Nullables apply, missing business-level assertions, no snapshot formatting, wrong test boundary.
+**Rate**: Continuous; every code addition has a testability dimension.
+
+| Option | Type | Level | Scope |
+|--------|------|-------|-------|
+| No mechanism | — | 0 | — |
+| Human review for testability | Human review | 1 | Whatever reviewer noticed |
+| Hexagonal architecture enforcement | Deterministic detection | 3 | Dependency direction rules |
+| Testability workflow gate | Prevention | 4 | All code through the gate |
+
+Key: AI defaults to mock-based coupling and will not reach for Nullables, Simulators, or Hexagonal ports unless the orchestration layer injects these patterns into context on every invocation.
+
+**Gap condition**: Cumulative; individually small but compounding. Expensive when a large fraction of the codebase lacks clean test seams. The cost becomes visible only after it is severe.
+
+---
+
+#### Error class: Design contamination
+
+**Body at risk**: Architectural coherence of the affected module and its dependents.
+
+Same as design regression under evolving the design. Same assurance options apply.
+
+---
+
+### Work type: Writing tests
+
+*Creating unit and integration tests that verify behavior. The test suite is itself part of the existing product body.*
+
+Total vigilance cost = test volume × (wrong structure cost + coverage gap cost + environment coupling cost)
+
+#### Error class: Wrong test structure
+
+**Body at risk**: Utility of the test suite over time. Poorly structured tests don't verify what they appear to, require excessive maintenance, and obscure failures.
+
+**Rate**: Every test written. Cumulative.
 
 | Option | Type | Level | Scope |
 |--------|------|-------|-------|
 | No mechanism | — | 0 | — |
 | Human review of tests | Human review | 1 | Whatever reviewer noticed |
 | Test recipe documentation | Human review | 1 | Written; discipline-based; decays |
-| Recipe compliance tool (deterministic check) | Prevention | 4 | All structural compliance rules |
+| Recipe compliance tool | Prevention | 4 | All structural compliance rules |
 
-The recipe compliance tool: deterministic code verifies structure before tests are committed. AI cannot produce structurally non-compliant tests if the workflow gate blocks them.
+Key: AI writes mocks where Nullables apply, misses business-level assertions, leaves snapshot output as raw JSON. These defaults produce test suites that grow in line count but decay in assurance quality. The recipe compliance tool gates all test output against structural rules before commit — AI cannot produce structurally non-compliant tests if the workflow blocks them.
 
-**Gap trigger**: A2.3. When AI writes tests autonomously, structure compliance requires either continuous human review (level 1, unsustainable) or a recipe compliance tool (level 4).
+**Gap condition**: Expensive when AI writes tests at high volume. Without the recipe tool, the test suite degrades in utility even as it appears to grow.
 
 ---
 
-### Unit Tests — Coverage Adequacy
-*Split from: `unit_tests`*
+#### Error class: Coverage gaps
 
-**Mistake class**: Wrong things tested, insufficient coverage, blind spots in test suite.
+**Body at risk**: All untested behaviors in the existing codebase. Each gap is a silent assurance hole that grows as the product grows.
+
+**Rate**: Cumulative; each test either addresses a gap or doesn't.
 
 | Option | Type | Level | Scope |
 |--------|------|-------|-------|
@@ -112,110 +177,107 @@ The recipe compliance tool: deterministic code verifies structure before tests a
 | Human review | Human review | 1 | Whatever reviewer noticed |
 | Coverage scanners (line/branch) | Non-deterministic guardian | 2 | Statistical; misses behavior coverage |
 | Session-based exploratory testing | Non-deterministic guardian | 2 | Human-driven; finds novel classes |
-| Coverage guardian (AI scans for gaps + abstracts) | Non-deterministic guardian | 2 | Broader than line coverage; unpredictable |
-| Test coverage recipes (encodes known blind spots) | Deterministic detection | 3 | Recipe-enumerated blind spot categories |
+| Coverage guardian (AI scans + abstracts gaps) | Non-deterministic guardian | 2 | Broader than line coverage; unpredictable |
+| Coverage recipes (encodes known blind spots) | Deterministic detection | 3 | Recipe-enumerated categories |
 
-There is no known level-4 mechanism for coverage adequacy in the general case. The ceiling is level 3 for known categories.
+No level-4 mechanism in the general case. Level 2 discovery bootstraps to level 3 over time.
 
-**Gap trigger**: A2.3. Once AI writes tests without guidance, coverage adequacy requires at minimum a scanner. The more valuable investment: session exploratory testing that bootstraps to level 3.
+**Gap condition**: Expensive when the codebase is large and coverage is thin. Gap cost grows with codebase size even at constant throughput — each test added addresses a shrinking fraction of the total gap.
 
 ---
 
-### Integration/System Tests
-*Responsibility: `integration_tests`*
+#### Error class: Environment coupling (integration tests)
 
-**Mistake classes**:
-- Wrong system boundary tested (same as unit test structure)
-- Missing interaction coverage (same as unit test coverage)
-- Environment coupling (test depends on external state, producing flaky or false results)
+**Body at risk**: Test reliability across all environments. Coupled tests produce false failures (alarm fatigue) or false passes (missed defects).
+
+**Rate**: Each integration test written. Cumulative.
 
 | Option | Type | Level | Scope |
 |--------|------|-------|-------|
 | No mechanism | — | 0 | — |
 | Human review | Human review | 1 | Whatever reviewer noticed |
 | Contract testing tool | Deterministic detection | 3 | Specified contracts only |
-| In-process infrastructure (Testcontainers, Simulators) | Prevention | 4 | Environment coupling within scope |
+| In-process infrastructure (Simulators, Testcontainers) | Prevention | 4 | Environment coupling within scope |
 
-**Gap trigger**: A2.2. When AI writes integration tests, environment coupling without Simulators or in-process infra produces fragile tests. Patterns (Nullables, Hexagonal ports) must be injected into AI context — AI will not reach for them on its own.
+AI defaults to external dependencies; will not reach for in-process infrastructure without explicit orchestration guidance.
+
+**Gap condition**: Expensive as the integration test suite grows. Flaky tests burn vigilance on false alarms and erode trust in all tests.
 
 ---
 
-## Domain: Architecture
+## Domain: System Design
 
-### Architecture — Decision Consistency
-*Split from: `architecture`*
+### Work type: Making architectural decisions
 
-**Mistake class**: Architectural decisions made without awareness of prior decisions; inconsistency accumulates.
+*Choosing how the system is structured: module boundaries, data flow, service boundaries, technology choices.*
+
+Total vigilance cost = decision frequency × impact-per-decision × (inconsistency cost + drift accumulation rate)
+
+#### Error class: Decision inconsistency
+
+**Body at risk**: Architectural coherence of the system as a whole. Each inconsistent decision makes the next one harder to get right.
+
+**Rate**: Low per decision; high long-term impact. Decisions compound.
 
 | Option | Type | Level | Scope |
 |--------|------|-------|-------|
 | No mechanism | — | 0 | — |
 | Tribal knowledge | Human review | 1 | Whatever team remembers |
-| Architecture Decision Records (ADRs) | Non-deterministic guardian | 2 | Written; requires review to apply |
+| Architecture Decision Records (ADRs) | Non-deterministic guardian | 2 | Written; requires active reference |
 | ADR review in planning workflow | Deterministic detection | 3 | All decisions in planning scope |
-| Deterministic planning tool requiring ADR reference | Prevention | 4 | All decisions made via the tool |
+| Planning tool requiring ADR reference | Prevention | 4 | All decisions via the tool |
 
-**Gap trigger**: A2.1. When AI assists with architecture, inconsistency with prior decisions is a common failure. ADRs are minimum; planning tool enforcement is level 4.
+**Gap condition**: Expensive as system complexity and team size grow. Tribal knowledge degrades as teams change; ADRs decay without a review process.
 
 ---
 
-### Architecture — Drift Detection
-*Split from: `architecture`*
+#### Error class: Architectural drift
 
-**Mistake class**: Code drifts from architectural intent over time; drift compounds silently.
+**Body at risk**: The entire codebase diverges from architectural intent over time.
+
+**Rate**: Continuous; drift accumulates with every change that is not checked against intent.
 
 | Option | Type | Level | Scope |
 |--------|------|-------|-------|
 | No mechanism | — | 0 | — |
 | Ad hoc review | Human review | 1 | Occasional; decays fast |
-| AI drift guardian (regular scan + abstraction) | Non-deterministic guardian | 2 | Broader than rules; unpredictable gaps |
-| Architecture linters (ArchUnit, Dependency Cruiser) | Deterministic detection | 3 | Configured rule set |
-| Drift → ADR pipeline (guardian bootstraps to rules) | Bootstrapped to 3 | Systematic improvement |
+| AI drift guardian (scans + abstracts) | Non-deterministic guardian | 2 | Broader than rules; unpredictable |
+| Architecture linters | Deterministic detection | 3 | Configured rule set |
+| Drift → ADR pipeline | Bootstrapped to 3 | Systematic improvement |
 
-**Gap trigger**: A3+. Autonomous AI work introduces drift; continuous review is impossible. Drift guardian minimum; architecture linters preferred.
+**Gap condition**: Expensive in any codebase with sustained throughput. Drift accumulates multiplicatively — each instance makes future drift more likely and harder to detect.
 
 ---
 
-### Design for Testability
-*Responsibility: `testability`*
+## Domain: Planning
 
-**Mistake class**: Code ships that is difficult to test cleanly — tight coupling, hidden dependencies, mixed concerns.
+### Work type: Planning and scoping work
+
+*Defining goals, decomposing into tasks, setting success criteria, and prioritizing.*
+
+Total vigilance cost = planning frequency × (ungrounded goals cost + decomposition gaps cost + missing criteria cost + priority error cost)
+
+#### Error class: Ungrounded goals
+
+**Body at risk**: All work done on unvalidated goals. Wasted effort scales with work rate × goal size.
+
+**Rate**: Per planning cycle.
 
 | Option | Type | Level | Scope |
 |--------|------|-------|-------|
 | No mechanism | — | 0 | — |
-| Human code review for testability | Human review | 1 | Whatever reviewer noticed |
-| Hexagonal architecture enforcement | Deterministic detection | 3 | Dependency direction rules |
-| AST analysis of dependency graph | Deterministic detection | 3 | All dependencies |
-| Design-for-testability workflow gate | Prevention | 4 | All code through the gate |
-
-The Nullables pattern, Simulators, ports and adapters: once injected into AI context, AI uses them well. The investment is deterministic orchestration that deposits the pattern and references it in every test-writing invocation.
-
-**Gap trigger**: A2.2. When AI writes code and tests together, testability requires active guidance — AI defaults to mocks and will not reach for Nullables or ports on its own.
-
----
-
-## Domain: Planning and Direction
-
-### Goal Definition
-*Responsibility: `goals`*
-
-**Mistake class**: Goals are unmeasurable, ungrounded, or disconnected from reality.
-
-| Option | Type | Level | Scope |
-|--------|------|-------|-------|
-| No mechanism | — | 0 | — |
-| Planning discipline | Human review | 1 | Depends on individual; decays |
+| Planning discipline | Human review | 1 | Individual; decays |
 | Planning tool requiring grounding source | Prevention | 4 | All goals made via the tool |
 
-**Gap trigger**: A2.1. When AI helps define goals, ungrounded AI-generated goals look plausible but aren't. Planning tool enforcement prevents this class.
+**Gap condition**: Expensive when planning cycles are frequent and goals are large. AI-generated goals look plausible but are not grounded in evidence.
 
 ---
 
-### Work Decomposition
-*Responsibility: `decomposition`*
+#### Error class: Decomposition gaps
 
-**Mistake class**: Work decomposed incompletely, inconsistently, or in a way that hides unknowns.
+**Body at risk**: All work that flows from a poorly decomposed item. Hidden unknowns surface as surprises.
+
+**Rate**: Per decomposition cycle.
 
 | Option | Type | Level | Scope |
 |--------|------|-------|-------|
@@ -223,32 +285,15 @@ The Nullables pattern, Simulators, ports and adapters: once injected into AI con
 | Human judgment | Human review | 1 | Individual skill; decays |
 | Planning tool with required fields (variation points, unknowns, dependencies) | Prevention | 4 | All decompositions via the tool |
 
-**Gap trigger**: A2.1. Same pattern as goal definition.
+**Gap condition**: Expensive when decomposition complexity is high. Structural gaps produce systemic downstream surprises.
 
 ---
 
-### Task Prioritization and Selection
-*Responsibilities: `prioritization`, `selection`*
+#### Error class: Missing or wrong success criteria
 
-**Mistake class**: Working on the wrong things in the wrong order.
+**Body at risk**: All evaluation done against wrong criteria. A criteria error corrupts every downstream evaluation that uses it.
 
-| Option | Type | Level | Scope |
-|--------|------|-------|-------|
-| No mechanism | — | 0 | — |
-| Human judgment | Human review | 1 | Situation-dependent |
-| Explicit scoring criteria | Deterministic detection | 3 | Scored dimensions only |
-| Deterministic queue (FIFO or rule-based) | Prevention | 4 | All tasks through the queue |
-
-**Gap trigger**: A3.1. When the system selects tasks, selection logic must be explicit or it defaults to implicit AI judgment.
-
----
-
-### Success Criteria Definition
-*Responsibility: `criteria`*
-
-**Mistake class**: Criteria are missing, unmeasurable, or disconnected from intent.
-
-Note: `criteria` is itself an assurance mechanism for `evaluation` and `code`. What assures that criteria are good?
+**Rate**: Per planning cycle; systemic in impact.
 
 | Option | Type | Level | Scope |
 |--------|------|-------|-------|
@@ -257,152 +302,84 @@ Note: `criteria` is itself an assurance mechanism for `evaluation` and `code`. W
 | Stakeholder review of criteria before work starts | Deterministic detection | 3 | Reviewed criteria |
 | Planning tool requiring criteria fields | Prevention | 4 | All work with criteria via the tool |
 
-**Gap trigger**: A2.1. AI-generated criteria look complete but often omit edge cases.
+**Gap condition**: Systemic — even at low planning frequency, criteria errors are high-cost because every evaluation inherits the error.
 
 ---
 
-### Grounding / Reality Check
-*Responsibility: `grounding`*
+#### Error class: Priority errors
 
-**Mistake class**: System drifts from user needs; AI outputs are plausible but wrong.
+**Body at risk**: Opportunity cost of all work done on wrong-priority items.
+
+**Rate**: Per selection cycle.
 
 | Option | Type | Level | Scope |
 |--------|------|-------|-------|
 | No mechanism | — | 0 | — |
-| Regular demos / user review | Human review | 1 | What demo participants noticed |
-| Metrics / telemetry | Deterministic detection | 3 | Measured behaviors; blind to unmeasured |
-| A/B testing infrastructure | Deterministic detection | 3 | Tested variants; blind to unmeasured |
+| Human judgment | Human review | 1 | Situation-dependent |
+| Explicit scoring criteria | Deterministic detection | 3 | Scored dimensions only |
+| Deterministic queue (rule-based) | Prevention | 4 | All tasks through the queue |
+
+**Gap condition**: Expensive when the backlog is large and throughput is high. Wrong priorities consume capacity that cannot be recovered.
+
+---
+
+### Work type: Grounding in reality
+
+*Connecting the product to actual user needs and outcomes. Validating that what was built achieves its intended effect.*
+
+#### Error class: Reality disconnect
+
+**Body at risk**: Accumulated work that diverges from user needs. Grows with throughput × time without grounding.
+
+**Rate**: Continuous; drift accumulates between grounding events.
+
+| Option | Type | Level | Scope |
+|--------|------|-------|-------|
+| No mechanism | — | 0 | — |
+| Regular demos / user review | Human review | 1 | What participants noticed |
+| Metrics / telemetry | Deterministic detection | 3 | Measured behaviors only |
+| A/B testing infrastructure | Deterministic detection | 3 | Tested variants |
 | Outcome-based planning with measurement gates | Prevention | 4 | All work with defined outcome gates |
 
-**Gap trigger**: A3+. Autonomous AI work that doesn't get user validation produces drift that accumulates silently.
+**Gap condition**: Expensive when autonomous work rate is high and grounding events are infrequent. Drift compounds; recovery cost grows with time-since-last-grounding.
 
 ---
 
-### Product Direction / Vision
-*Responsibility: `direction`*
+## Domain: Evaluation and Oversight
 
-**Mistake class**: Direction is uncommunicated, unstated, or assumed.
+*These responsibilities are themselves assurance mechanisms. The question is what level they operate at and what investments move them higher.*
 
-| Option | Type | Level | Scope |
-|--------|------|-------|-------|
-| No mechanism | — | 0 | — |
-| Written vision document | Human review | 1→2 | Written; requires review to apply |
-| Vision reviewed at each planning cycle | Deterministic detection | 3 | All planning cycles that include review |
+### Work type: Evaluating outputs
 
-Direction remains human-held through A4+. The assurance question is mainly whether direction is written and legible to AI systems.
+*Determining whether a specific output meets its success criteria.*
 
-**Gap trigger**: A3. When AI selects and sequences tasks, unwritten direction becomes a gap.
+#### Error class: Bad output accepted
 
----
+**Body at risk**: Whatever the bad output corrupts downstream. Propagation depends on what the output feeds.
 
-## Domain: Process and Oversight
-
-### Process Design
-*Responsibility: `process_design`*
-
-**Mistake class**: Process is not followed; rules aren't enforced; exceptions accumulate.
-
-| Option | Type | Level | Scope |
-|--------|------|-------|-------|
-| No mechanism | — | 0 | — |
-| Process documentation + peer review | Human review | 1 | Discipline-based; decays |
-| CI/CD gates enforcing process rules | Deterministic detection | 3 | What CI checks cover |
-| Deterministic workflow orchestration (process IS the code) | Prevention | 4 | All work through the workflow |
-
-**Gap trigger**: A2.1. Once AI is in the loop, undocumented process rules are invisible to AI.
-
----
-
-### Step-Level Oversight
-*Responsibility: `step_oversight`*
-
-Note: this IS an assurance mechanism. The question is what level of assurance the oversight provides.
-
-**Mistake class**: Bad step committed or bad output accepted at the step level.
-
-| Option | Type | Level | Scope |
-|--------|------|-------|-------|
-| Human reads every step | Human review | 1 | Whatever human noticed; decays with throughput |
-| Automated checks per step (tests pass, types clean) | Deterministic detection | 3 | What automated checks cover |
-| Deterministic pass/fail gate per step | Prevention | 4 | All work that must pass the gate |
-
-**Gap trigger**: A2.2. When AI executes multi-step work, humans cannot review every step. Level 3 minimum; level 4 preferred.
-
----
-
-### Cycle-Level Oversight
-*Responsibility: `cycle_oversight`*
-
-**Mistake class**: A bad iteration cycle completes without detection before the next cycle starts.
-
-| Option | Type | Level | Scope |
-|--------|------|-------|-------|
-| Human review at cycle boundary | Human review | 1 | What human noticed in demo/review |
-| Automated cycle summary + anomaly detection | Non-deterministic guardian | 2 | Probabilistic; may miss quiet problems |
-| Deterministic health check at cycle boundary | Deterministic detection | 3 | What health check covers |
-
-**Gap trigger**: A3. When the system sequences tasks, explicit cycle-boundary checks must be present.
-
----
-
-### Flow-Level Oversight
-*Responsibility: `flow_oversight`*
-
-**Mistake class**: Development rhythm degrades; strategic drift; process health erodes.
-
-| Option | Type | Level | Scope |
-|--------|------|-------|-------|
-| Human situational awareness | Human review | 1 | What team notices |
-| Guardian agent monitoring trends + alerting | Non-deterministic guardian | 2 | Broader than metrics; probabilistic |
-| Metrics dashboards + alerts | Deterministic detection | 3 | Measured metrics only |
-
-**Gap trigger**: A3+. When the loop runs semi-autonomously, flow health requires active monitoring.
-
----
-
-### Boundary Definition
-*Responsibility: `boundaries`*
-
-**Mistake class**: AI acts outside its delegated scope.
-
-| Option | Type | Level | Scope |
-|--------|------|-------|-------|
-| No mechanism | — | 0 | — |
-| Written boundary documentation | Human review | 1 | Requires AI to read and follow |
-| Tooling restrictions (read-only access, file-type restrictions) | Prevention | 4 | All operations the tools allow |
-| Workflow enforcement of boundary | Prevention | 4 | All work through the workflow |
-
-**Gap trigger**: A2.1. Once AI acts autonomously, tooling-enforced boundaries are qualitatively safer than documentation-only.
-
----
-
-## Domain: Evaluation and Detection
-
-### Output Evaluation
-*Responsibility: `evaluation`*
-
-Note: this IS an assurance mechanism. The question is what level it operates at.
-
-**Mistake class**: Bad output accepted — wrong output, misaligned with criteria.
+**Rate**: Per output produced; scales with throughput.
 
 | Option | Type | Level | Scope |
 |--------|------|-------|-------|
 | Human review of output | Human review | 1 | Whatever human noticed |
-| LLM-as-judge (single run) | Non-deterministic guardian | 2 | Probabilistic; may share AI's biases |
-| LLM-as-judge (multi-run, adversarial prompts) | Non-deterministic guardian | 2→3 | Improves with adversarial variation |
+| LLM-as-judge (single run) | Non-deterministic guardian | 2 | Probabilistic; may share AI biases |
+| LLM-as-judge (multi-run, adversarial) | Non-deterministic guardian | 2→3 | Improves with adversarial variation |
 | Automated eval against defined criteria | Deterministic detection | 3 | Criteria-covered behaviors |
-| Criteria coverage tool (enforces criteria completeness) | Prevention | 4 | All criteria that must pass the tool |
+| Criteria coverage tool | Prevention | 4 | All criteria through the tool |
 
-**Gap trigger**: A2.2. When AI produces outputs for human review, unstructured review is level 1. Eval framework minimum; LLM-judge for novel class discovery.
+**Gap condition**: Expensive at high throughput. Human review cannot scale with AI output rate.
 
 ---
 
-### Drift and Health Detection
-*Responsibility: `drift`*
+### Work type: Monitoring system health
 
-Note: this IS an assurance mechanism. The question is what level it operates at.
+*Detecting drift, degradation, and anomalies before they cause visible failure.*
 
-**Mistake class**: System drift goes undetected; health degrades silently.
+#### Error class: Drift not detected
+
+**Body at risk**: Accumulated drift × time-to-detection. Longer undetected drift means more work to reverse.
+
+**Rate**: Continuous; drift accumulates without active detection.
 
 | Option | Type | Level | Scope |
 |--------|------|-------|-------|
@@ -411,83 +388,152 @@ Note: this IS an assurance mechanism. The question is what level it operates at.
 | Metrics + alerts | Deterministic detection | 3 | Measured metrics only |
 | Drift → deterministic check pipeline | Bootstrapped to 3 | Systematic improvement |
 
-**Gap trigger**: A3+.
+**Gap condition**: Expensive when the system operates with long feedback loops. In autonomous systems, drift can accumulate for many cycles before becoming visible.
 
 ---
 
-### Continue/Stop/Escalate Decision
-*Responsibility: `escalation`*
+### Work type: Overseeing development steps and cycles
 
-Note: this IS an assurance mechanism. The question is what level it operates at.
+*Reviewing individual steps, iteration cycles, and overall flow for correctness and health.*
 
-**Mistake class**: Work continues past a point where human intervention is needed.
+#### Error class: Bad step or cycle accepted
+
+**Body at risk**: Everything built on top of the bad step. Error propagates forward in time.
+
+**Rate**: Per step or cycle.
+
+| Option | Type | Level | Scope |
+|--------|------|-------|-------|
+| Human reads every step | Human review | 1 | Whatever human noticed; decays with throughput |
+| Automated health check at step/cycle boundary | Deterministic detection | 3 | What health check covers |
+| Deterministic pass/fail gate per step | Prevention | 4 | All work through the gate |
+
+**Gap condition**: Expensive when step volume exceeds human review capacity. At high throughput, deterministic gates are the only sustainable path.
+
+---
+
+### Work type: Making escalation decisions
+
+*Deciding whether work should continue, stop, or involve a human.*
+
+#### Error class: Work continues past safe boundary
+
+**Body at risk**: All work done past the point where intervention was needed.
+
+**Rate**: Per autonomous decision point.
 
 | Option | Type | Level | Scope |
 |--------|------|-------|-------|
 | Human checks in | Human review | 1 | Depends on attention |
 | Agent detects uncertainty and flags | Non-deterministic guardian | 2 | Probabilistic; misses confident-but-wrong |
-| Deterministic halt conditions (circuit breakers) | Prevention | 4 | All conditions in circuit breaker rules |
+| Deterministic halt conditions (circuit breakers) | Prevention | 4 | All conditions in the rule set |
 
-**Gap trigger**: A3. Autonomous task sequences need explicit halt conditions.
+**Gap condition**: Even one uncaught escalation event can produce large damage. Probabilistic detection alone is insufficient — deterministic halt conditions are required as the primary mechanism.
 
 ---
 
-## Domain: Infrastructure
+## Domain: Operations
 
-### Infrastructure
-*Responsibility: `infrastructure`*
+### Work type: Deploying and operating infrastructure
 
-**Mistake classes**: Deployment failures; configuration drift; environment inconsistency.
+*Shipping code to production and maintaining the operational environment.*
+
+Total vigilance cost = deployment frequency × (failure cost + drift cost)
+
+#### Error class: Deployment failure
+
+**Body at risk**: Affected service and users during the failure period.
+
+**Rate**: Per deployment.
+
+| Option | Type | Level | Scope |
+|--------|------|-------|-------|
+| Manual deployment with review | Human review | 1 | Whatever human checked |
+| CI/CD pipeline | Deterministic detection | 3 | What pipeline checks |
+| Idempotent declarative deployments | Prevention | 4 | All deployments through the system |
+
+---
+
+#### Error class: Configuration drift
+
+**Body at risk**: Reliability and reproducibility of all environments.
+
+**Rate**: Continuous; environments drift without active prevention.
 
 | Option | Type | Level | Scope |
 |--------|------|-------|-------|
 | No mechanism | — | 0 | — |
-| Manual deployment with review | Human review | 1 | Whatever human checked |
-| CI/CD pipeline | Deterministic detection | 3 | What pipeline checks |
-| Infrastructure as Code (IaC) | Deterministic detection | 3 | Declared infrastructure |
-| Idempotent declarative deployments | Prevention | 4 | All deployments through declarative system |
+| Manual audits | Human review | 1 | Occasional |
+| Infrastructure as Code | Deterministic detection | 3 | Declared infrastructure |
+| Immutable infrastructure | Prevention | 4 | All infrastructure through IaC system |
 
-**Gap trigger**: A2.1. Once AI touches infrastructure config, reproducibility requires IaC at minimum.
-
----
-
-## Summary: Gap Patterns by Domain
-
-| Domain | First expensive gap | Minimum viable assurance | Target assurance |
-|--------|--------------------|--------------------------|--------------------|
-| Code — refactoring | A2.2 | Level 3 (tests) | Level 5 (AST tools) |
-| Code — type safety | A1.2 | Level 4 (strict type system) | Level 4 |
-| Code — logic | A2.2 | Level 3 (tests, recipe) | Level 3 |
-| Test structure | A2.3 | Level 4 (recipe tool) | Level 4 |
-| Test coverage | A2.3 | Level 2 (scanner) | Level 3 (recipe bootstrap) |
-| Integration tests | A2.2 | Level 3 (contract testing) | Level 4 (Simulators) |
-| Architecture decisions | A2.1 | Level 2 (ADRs) | Level 4 (planning tool) |
-| Architecture drift | A3 | Level 2 (guardian) | Level 3 (linters) |
-| Testability | A2.2 | Level 1 (review) | Level 4 (workflow gate) |
-| Goal quality | A2.1 | Level 4 (planning tool) | Level 4 |
-| Decomposition quality | A2.1 | Level 4 (planning tool) | Level 4 |
-| Prioritization/selection | A3.1 | Level 3 (scoring) | Level 4 (queue rules) |
-| Criteria quality | A2.1 | Level 3 (stakeholder review) | Level 4 (planning tool) |
-| Grounding | A3 | Level 3 (metrics) | Level 4 (measurement gates) |
-| Direction | A3 | Level 3 (cycle review) | Level 3 |
-| Process design | A2.1 | Level 3 (CI gates) | Level 4 (workflow code) |
-| Step oversight | A2.2 | Level 3 (automated checks) | Level 4 (gates) |
-| Cycle oversight | A3 | Level 3 (health check) | Level 3 |
-| Flow oversight | A3 | Level 3 (metrics + alerts) | Level 3 |
-| Boundaries | A2.1 | Level 4 (tooling restrictions) | Level 4 |
-| Output evaluation | A2.2 | Level 2 (LLM judge) | Level 3 (eval framework) |
-| Drift detection | A3 | Level 2 (guardian) | Level 3 |
-| Escalation | A3 | Level 4 (circuit breakers) | Level 4 |
-| Infrastructure | A2.1 | Level 3 (IaC + CI/CD) | Level 4 (declarative) |
+**Gap condition**: Expensive as scale and deployment frequency grow. Configuration drift in large environments is a classic maintenance trap independent of AI agency.
 
 ---
 
-## Observations for Discussion
+## Domain: Process Governance
 
-**Items that need to split**: The existing `code` responsibility bundles three distinct mistake classes with different mechanisms. `architecture` bundles decision consistency and drift. `unit_tests` bundles structure compliance and coverage adequacy.
+### Work type: Designing and enforcing process
 
-**Items that are already assurance mechanisms**: `step_oversight`, `cycle_oversight`, `flow_oversight`, `evaluation`, `drift`, `escalation` are all assurance mechanisms. Each has its own level and investment path. The framework applies recursively: what assures the oversight?
+*Defining how development work flows: commit policies, review processes, workflow rules.*
 
-**Missing items in the current list**: No explicit entry for refactoring safety (bundled under `code`), architecture drift (partially in `architecture`), or configuration drift (partially in `infrastructure`).
+#### Error class: Process not followed
 
-**The bypass question**: Several assurance mechanisms at level 4–5 require that AI cannot bypass them. Tooling-enforced restrictions (file-type access, workflow gates, AST-only tools) are qualitatively different from documentation or discipline. The model should distinguish enforced vs. advisory assurance.
+**Body at risk**: Every work product that bypasses process controls.
+
+**Rate**: Continuous; process discipline decays without enforcement.
+
+| Option | Type | Level | Scope |
+|--------|------|-------|-------|
+| Process documentation + peer review | Human review | 1 | Discipline-based; decays |
+| CI/CD gates enforcing process rules | Deterministic detection | 3 | What CI checks cover |
+| Deterministic workflow orchestration (process IS the code) | Prevention | 4 | All work through the workflow |
+
+**Gap condition**: Expensive as team size and throughput increase. Process enforcement cannot rely on discipline at scale.
+
+---
+
+### Work type: Defining and enforcing boundaries
+
+*Deciding what the AI is authorized to do and ensuring it stays within that scope.*
+
+#### Error class: AI acts outside delegated scope
+
+**Body at risk**: Everything the AI touches outside its authorized scope.
+
+**Rate**: Per autonomous action in an insufficiently bounded system.
+
+| Option | Type | Level | Scope |
+|--------|------|-------|-------|
+| Written boundary documentation | Human review | 1 | Requires AI to read and follow |
+| Tooling restrictions (file-type, read-only access) | Prevention | 4 | All operations the tools allow |
+| Workflow enforcement of boundary | Prevention | 4 | All work through the workflow |
+
+**Gap condition**: Expensive at any level of autonomous agency. Documentation-only boundaries are level 1; tooling enforcement is level 4. There is no level 2–3 in between — either the tools enforce it or they don't.
+
+---
+
+## Summary: Total Vigilance Cost Profile
+
+For each work type, total vigilance cost = rate × Σ(body at risk × assurance deficit per error class).
+
+The table below shows the error classes with highest potential cost per instance and the minimum viable assurance level to avoid unsustainable toil in a brownfield codebase:
+
+| Work type | Highest-cost error class | Why costly | Minimum viable | Target |
+|-----------|-------------------------|-----------|----------------|--------|
+| Evolving the design | Accidental behavior change | Systemic scope; continuous rate | Level 3 (tests) | Level 5 (AST tools) |
+| Adding new behavior | Logic errors | Scales with throughput | Level 3 (recipe tests) | Level 3 |
+| Adding new behavior | Testability reduction | Cumulative; invisible until severe | Level 3 (hex arch) | Level 4 (gate) |
+| Writing tests | Wrong structure | Degrades suite utility at volume | Level 4 (recipe tool) | Level 4 |
+| Writing tests | Coverage gaps | Body grows with codebase | Level 2 (scanner) | Level 3 (recipe bootstrap) |
+| Architectural decisions | Decision inconsistency | Systemic; compounds over time | Level 2 (ADRs) | Level 4 (planning tool) |
+| Architectural decisions | Drift | Continuous accumulation | Level 2 (guardian) | Level 3 (linters) |
+| Planning | Ungrounded goals | Multiplies all downstream work | Level 4 (planning tool) | Level 4 |
+| Planning | Missing criteria | Systemic; corrupts all evaluation | Level 3 (stakeholder review) | Level 4 |
+| Grounding | Reality disconnect | Grows with autonomous throughput | Level 3 (metrics) | Level 4 (outcome gates) |
+| Evaluating outputs | Bad output accepted | Scales with AI throughput | Level 2 (LLM judge) | Level 3 (eval framework) |
+| Oversight | Bad step accepted | Forward propagation | Level 3 (health check) | Level 4 (gate) |
+| Escalation | Wrong continue/stop | Even one failure is high-cost | Level 4 (circuit breakers) | Level 4 |
+| Deploying | Configuration drift | Classic maintenance trap | Level 3 (IaC) | Level 4 (immutable) |
+| Process | Process not followed | Decays with scale | Level 3 (CI gates) | Level 4 (workflow code) |
+| Boundaries | AI outside scope | Unpredictable at any agency level | Level 4 (tooling) | Level 4 |
