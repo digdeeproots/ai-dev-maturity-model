@@ -13,6 +13,8 @@ Each responsibility entry shows:
 - **Assurance options**: investments that provide assurance, ordered by level (0–5)
 - **Gap trigger**: the agency transition where missing assurance becomes expensive
 
+@ai: the gap trigger will not be an agency transition, but a result of the vigilance toil function. If it is applied per entry, then we need to determine how to measure the scope of existing work and the rate of new work, and to describe when the gap trigger is reached.
+
 The work delegation column (who performs this at each stage) comes from responsibility_ownership.json. This document adds the assurance column.
 
 Some existing responsibilities are themselves assurance mechanisms (step_oversight, evaluation, drift, escalation). For these, the relevant question is: what level of assurance does the mechanism provide, and what investments move it to higher levels?
@@ -20,6 +22,8 @@ Some existing responsibilities are themselves assurance mechanisms (step_oversig
 Some responsibilities need to split: `code` covers three distinct mistake classes with different optimal mechanisms.
 
 ---
+
+@ai: rethink these domains. Organize them by work that the coder is trying to accomplish. Eg, it isn't "refactoring safely", it is "evolving the design". That kind of work then has at least 2 error classes (accidental behavior change, making the design worse). Each of those is an independent vigilance problem. So this is probably a multi-level set of behaviors now. One for what people are trying to do, a second for kinds of vigilance that requires in a brownfield codebase. So the vigilance cost for an action is the sum of the vigilance costs for each error kind. And this whole thing is multipled by the frequency of the kind of work * the size of the total body of existing product that could be impacted.
 
 ## Domain: Code Changes
 
