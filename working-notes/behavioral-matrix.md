@@ -51,6 +51,8 @@ Total vigilance cost = throughput × (capability regression cost + extensibility
 
 **Body at risk**: all code, tests, and systems that depend on the behavior that was accidentally broken. Narrow for leaf components; systemic for widely-used utilities.
 
+@ai: body at risk is also the set of all customers. They might be depending on the behavior that was accidentally broken.
+
 **Rate**: one opportunity per change to shared code.
 
 | Option | Type | Level | Scope |
