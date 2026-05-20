@@ -731,6 +731,8 @@ Business stake: architectural decisions constrain all future decisions. The wron
 
 *These responsibilities are themselves safety mechanisms. The question is what level they operate at.*
 
+@ai: Actually, these are work on the system, instead of work inside the system (like most of the others). Their work product is the set of orchestration, guardians, tooling, etc that make up our systems - both for safety and work execution. Reframe them accordingly.
+
 ### Work type: Evaluating outputs
 
 **Agency delegation path:**
@@ -943,6 +945,8 @@ Business stake: architectural decisions constrain all future decisions. The wron
 
 ## Domain: Process Governance
 
+@ai: merge this with the other set of work on the system. Governance is one element of the system definition.
+
 ### Work type: Designing and enforcing process
 
 **Agency delegation path:**
@@ -1012,12 +1016,6 @@ Business stake: architectural decisions constrain all future decisions. The wron
 | Workflow enforcement of boundary | Prevention | All work through the workflow |
 
 **Gap condition**: no Probabilistic or Deterministic intermediate exists -- either tools enforce it or they don't.
-
----
-
-## Open Question for Arlo
-
-@human: **Coverage gaps and worry surface.** I removed "coverage gaps" as a standalone error class. My reasoning: a coverage gap reduces the effective safety level of the efficiency mechanism (tests), but does not create its own worry surface. The worry surface belongs to whatever error the gap fails to catch. Coverage quality appears as an effective-level qualifier in efficiency options (e.g., "recipe-based tests with comprehensive coverage: Deterministic effective; ad hoc tests: drops toward Probabilistic"). Does this framing work?
 
 ---
 
