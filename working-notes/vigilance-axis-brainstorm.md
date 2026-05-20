@@ -71,17 +71,17 @@ Several things are true regardless of which model structure we choose. They belo
 
 ## Interpretations and Findings
 
-### The Second Axis
+### The Second Dimension: Assurance (Sustainability)
 
-The existing model has one primary axis: agency (who acts / who decides what happens next). Arlo is proposing a second primary axis. Working name: **Sustainability**. (To be iterated.)
+The existing model tracks one thing per responsibility: agency (who performs the work). The model is being extended to also track **assurance** for each responsibility: what mechanism ensures the work was done correctly, on a 0–5 spectrum. Working name for this dimension: **Sustainability**.
 
-The second axis is not about degree of safety. It is about **ease of achieving safety**: how hard must an implementor try in order to avoid doing unintended things while doing the intended thing? At one end: every mistake is easy to make and hard to detect. At the other: careless implementors thrive because the environment makes unintended actions structurally difficult or impossible.
+Assurance is not about degree of safety. It is about **ease of achieving safety**: how hard must an implementor try in order to avoid doing unintended things while doing the intended thing? At one end: every mistake is easy to make and hard to detect. At the other: careless implementors thrive because the environment makes unintended actions structurally difficult or impossible.
 
-The second axis is not the same as the first:
-- Agency axis: who performs the work
-- Assurance axis: how easily does the environment prevent unintended side-effects of that work
+The two dimensions are independent:
+- Agency: who performs the work
+- Assurance: how easily does the environment prevent unintended side-effects of that work
 
-You can transfer work without transferring assurance. That's the vigilance trap: agency transferred, assurance not. The human still has to watch, because the environment doesn't prevent mistakes.
+You can transfer work without transferring assurance. That is the vigilance trap: work moved, assurance didn't. The human still has to watch because the environment doesn't prevent mistakes. The model's job is to make this gap visible and actionable for every responsibility.
 
 ### The 2D Grid and the Safe Path
 
@@ -219,6 +219,26 @@ Non-determinism can carry vigilance load, but not in all cases. It works in two 
 **When non-deterministic vigilance doesn't work:** when the domain requires precise, universal guarantees. A non-deterministic checker can miss things; it reduces vigilance load but doesn't eliminate it. This is only stable when the supervised domain is small enough that residual risk is acceptable.
 
 The general principle: non-deterministic vigilance is a **bootstrap mechanism** for creating deterministic guards, not a permanent substitute for them.
+
+### Observability: You Don't Know Where You Are
+
+The dangerous property of low assurance with high agency is that you feel safe until you're not. Vigilance toil builds slowly; defects appear later; the relationship between choices and outcomes is delayed and indirect. Teams consistently misplace themselves on the assurance spectrum — usually too optimistically.
+
+This means the model needs to surface **leading indicators**, not just describe stable states. What signals tell you a gap is widening before the defects arrive? What does early-stage maintenance burden look like vs. late-stage? The model is incomplete without an answer to "how do I know where I actually am?" Arlo confirmed this needs to be much more visible in the model.
+
+Candidates for leading indicators: rate of unplanned maintenance work, time to diagnose a defect, frequency of "it worked last time" surprises, how often team members reference tribal knowledge rather than written assurance mechanisms.
+
+### Temporal Dynamics: Portfolios Grow and Decay
+
+The rate at which you expand your zero-risk portfolio matters as much as your current position. A team adding one new scoped guarantee per week compounds to massive coverage. A team that makes a large investment once then coasts will find their guarantees decaying — tools become stale as the codebase evolves, contexts drift, patterns are abandoned when the person who built them leaves.
+
+Two forces drive this:
+- **Growth**: discrete investments each eliminate a class of mistakes; compounding over time is substantial
+- **Decay**: discipline-based mechanisms (human review recipes, testing habits) decay fast; tooling-enforced mechanisms decay slowly; structurally enforced mechanisms don't decay at all
+
+This is another reason to prefer higher-level assurance mechanisms: levels 4–5 are structurally enforced and decay-resistant. Level 1 (human review) decays as soon as attention lapses or a team member changes. The decay profile is an underrated property of any assurance investment.
+
+Arlo's framing: focus on the specific vigilance toil people face today, incrementally segment pieces out into zero-risk zones, and when a zone is made safe enough it *unlocks* the next level of work delegation. Progress is real and visible, zone by zone.
 
 ### Careless Engineering
 
