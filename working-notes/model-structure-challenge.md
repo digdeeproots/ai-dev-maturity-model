@@ -8,206 +8,148 @@
 
 The maturity model becomes two-dimensional: Agency (who acts) × Sustainability (ease of achieving safety). Most cells in the grid are dangerous — they require vigilance toil that humans cannot actually sustain. A narrow path of safe cells exists. Falling off the path leads to compounding maintenance costs and defects.
 
-@ai: also a possible flaw in the existing model: perhaps the agency axis isn't actually primary. It might be that delegating work toil is the reward you get after you've addressed vigilance toil. It's especially clear when we stop thinking about "degree of safety" as the metric, and start thinking about "vigilance toil cost required to ensure sufficient safety" as the metric. Especially when we look at software developers as the people who own long-term sustainability of the business. The product people own what we need to do right now in order to grow. The software people own ensuring that we don't die of disease - we are the company's immune system. So cost of vigilance is a weakening of the immune system. It doesn't guarantee death, but it does make us more vulnerable. Weave this metaphor into the brainstorm and the model structure thinking.
-
 ---
 
 ## Flaws
 
+### 0. Agency may not be the primary axis
+
+The existing model treats agency as primary. But consider: you can only safely increase agency once you've addressed vigilance toil. Delegating work is the reward you get *after* you've addressed sustainability. Sustainability comes first; agency follows.
+
+If that's true, the axes are ordered — sustainability is the enabling condition, agency is the result — not independent dimensions you can move along in any order.
+
+This maps onto a useful framing of what software developers actually own. Product people own what the business needs to do right now in order to grow. Software people own ensuring the business doesn't die of disease — they are the company's immune system. The cost of vigilance toil is a weakening of that immune system. It doesn't guarantee death, but it makes the organization more vulnerable: slower to adapt, more exposed to defects, more likely to accrue the kind of systemic fragility that eventually becomes a crisis.
+
+Viewed this way, reducing vigilance toil isn't about productivity. It's about immune function. High vigilance cost means the immune system is working overtime on problems that could be designed away — and therefore less available for novel threats.
+
 ### 1. Sustainability is not one thing
 
-You described sustainability as involving: tool narrowness, context scoping, memory design, goal specification, invocation timing, result handling, non-deterministic guardian mechanisms, and the translation layer between abstraction and detail. These are not a single dial. They can be varied independently.
+Sustainability involves: tool narrowness, context scoping, memory design, goal specification, invocation timing, result handling, non-deterministic guardian mechanisms, and the translation layer between abstraction and detail. These are not a single dial. They can be varied independently.
 
 A team could have excellent tool narrowness and poor context scoping. Or excellent memory design and no translation layer. The aggregate "sustainability" score for such a team is undefined — the components don't compose into a number. A single axis forces a false compression.
 
 The minimum split that preserves meaning might be:
-- **Prevention axis**: how structurally impossible are unintended actions? (tool narrowness, invocation constraints, write restrictions)
-- **Recovery axis**: how quickly and cheaply do you detect and correct mistakes? (evaluation mechanisms, guardian loops, escalation)
+- **Prevention**: how structurally impossible are unintended actions? (tool narrowness, invocation constraints, write restrictions)
+- **Recovery**: how quickly and cheaply do you detect and correct mistakes? (evaluation mechanisms, guardian loops, escalation)
 
-@ai: also, recovery is inherently probabilistic. You can't have a 100% detection rate. Include that.
+These are genuinely orthogonal. High prevention / low recovery is a different failure mode from low prevention / high recovery. Critically: recovery is inherently probabilistic. No detection mechanism has a 100% catch rate. This means recovery-based assurance always leaves some residual vigilance burden; prevention-based assurance can genuinely reach zero. A model that doesn't distinguish these will conflate strategies with fundamentally different ceilings.
 
-These are genuinely orthogonal. High prevention / low recovery is a different failure mode from low prevention / high recovery.
+### 2. High sustainability with low agency is entirely possible — and valuable
 
-### 2. The axes are probably not orthogonal to each other
+The axes are not coupled in the direction I first assumed. A team can have high sustainability at low agency. Example: a team that depends entirely on PR review for safety has low sustainability (high vigilance cost, lax detection over time). A different team at the same agency level has clear testing recipes, session-based exploratory testing that discovers blind spots, systematic incorporation of those discoveries into the recipe, and deterministic tools enforcing coverage. These teams are at the same agency level but very different sustainability levels.
 
-High agency with low sustainability is the danger zone — but can you actually have high sustainability with low agency? At A0-A1, sustainability barely matters because you're reviewing everything. The sustainability requirements grow with agency level. If that's true, the axes are correlated, not independent, and a rectangular grid misrepresents the shape.
+The rectangular grid is correct in this respect — the axes are independent, and teams can and should improve sustainability even before increasing agency.
 
-@ai: you can definitely have high sustainability with low agency. Eg, the difference between a team that depends on PR for everything vs one that has clear testing approaches and ensures testing is complete, plus has session-based exploratory testing to discover test blind-spots, that are then incorporated into the test recipe that each engineer follows when adding tests. Lots of these are manual (non-deterministic), but there are still efforts to leverage systematic non-determinisim and deterministic tools.
+What is *not* symmetric: high agency with low sustainability is the dangerous zone, but high sustainability with low agency is simply a well-run team that hasn't yet delegated. The dependency runs one way: advancing on agency safely *requires* sustainability to have advanced first.
 
-The actual shape might be a triangle or wedge: the left edge (low agency) allows any sustainability level safely; the right edge (high agency) requires high sustainability; the danger zone is the bottom-right triangle. A rectangular grid implies dangerous combinations that don't actually exist (high agency / high sustainability without prerequisites) and safe combinations that overstate safety at the bottom-left.
+### 3. "The path" implies a single correct route
 
-### 3. The "safe path" implies a single correct route
+Different teams reach high agency via different valid sequences. A well-typed functional language gives structural prevention properties that a Python team must build explicitly. "The path" singular may be wrong — there is a family of valid paths through the grid, shaped by language, domain, team size, and risk tolerance.
 
-Different teams might reach high agency via different valid sequences. A team working in a well-typed functional language has structural safety properties from day one that a Python team must build explicitly. The path they walk is different. "The path" singular may be wrong — there may be a family of paths, or even a safe region rather than a path.
+More importantly: the path metaphor implies moving toward higher agency is the goal. Some teams should stay at A2 or A3. The model should not communicate that maximizing agency is the objective.
 
-Relatedly, the path metaphor implies you're trying to move toward higher agency. Some teams should stay at A2 or A3. The model should not communicate that maximizing agency is the goal.
+### 4. Low agency + low sustainability is not safe
 
-### 4. "Safe spaces" may not be where you think
+My original claim that the safe region is large at low agency was wrong. Low agency with low sustainability is often a dangerous combination — it just looks different than the high-agency version. The signal is long bug tails, slow development, and chronic "maintenance" that is mostly responding to foot-guns rather than to a genuinely changing world. Human review is a poor substitute for sustainability: high vigilance cost, declining detection rate over time as people get lax.
 
-The claim is "small number of safe spaces, large number of dangerous combinations." But at low agency levels (A0-A2), even low sustainability is safe — because the human is reviewing everything anyway. The dangerous zone is specifically high agency + low sustainability. The safe region at the bottom of the grid may be quite large, not a narrow path.
+The danger zone isn't confined to the top-right of the grid. It runs through the whole grid wherever sustainability is low.
 
-@ai: not true: low agency is often done in a dangerous combination. This shows up in long bug tails, slow development, and lots of effort on "maintenance". Software maintenance is sometimes responding to a changing world, but is usually responding to foot-guns. And human review is a very poor way to implement safety - it is high vigilance cost, low detect rate over time (people get lax).
+What does shift as you move right on the agency axis: the visibility of the problem changes. At low agency, you can blame Bob and tell yourself it will improve. That fiction is available. As you increase AI agency, you lose that option — you can no longer attribute failures to individual human carelessness. The systemic flaw becomes undeniable. External stakeholders raise their expectations; the development team can no longer rationalize the same failure rate. The vigilance cost required to meet those expectations increases. Additionally, more work flows through the system with AI agency, so the number of items requiring vigilance grows — just as it would if you increased staff size without improving sustainability.
 
-This matters for the narrative: the vigilance trap isn't "most of the grid is dangerous." It's "as you move toward higher agency, sustainability requirements grow faster than most teams realize, and the danger zone expands rapidly."
+### 5. Sustainability is a portfolio, not a continuous axis
 
-@ai: actually, the real change is that as you go right, you no longer have a human to blame. The expectations increase, because we can't just ask Bob to do it better next time and then fool ourselves into believing that that will improve things. We have to actually admit to the systemic flaw and then do something about it. That increaess the vigilence cost required by external stakeholders as well as by the dev team. It is also true that more work flows with AI, so the number of items to be vigilent about increases. But the same happens when you increase staff size.
+"Bounded scopes that are entirely safe" describes the actual structure better than a continuous axis does. You have a portfolio of zero-risk zones (scopes where you've stacked enough guarantees), and an uncovered remainder where vigilance is required. Your position on the sustainability axis is really a description of how much of the mistake space your portfolio covers.
 
-### 5. Sustainability is binary within scopes, not continuous across the axis
-
-You described "bounded scopes that are entirely safe" — zero risk within a scope. But a continuous axis implies you're sliding along a dial. The actual structure is more like: you have a portfolio of zero-risk zones (scopes where you've stacked enough guarantees), and an uncovered remainder where vigilance is required. Your "position" on the sustainability axis is really a description of how much of the mistake space your portfolio covers.
-
-@ai: this is a much better description of the structure.
-
-This matters because: moving along the axis isn't smooth. You make discrete investments (add a refactoring tool, add a type system, add a deterministic planning tool) and each one eliminates a class of mistakes. The portfolio grows in steps, not continuously.
+Progress isn't smooth. You make discrete investments — add a refactoring tool, add a type system, add a deterministic planning tool — and each one eliminates a class of mistakes. The portfolio grows in steps.
 
 ### 6. The model doesn't capture where assurance transfers to
 
-You described a spectrum of assurance mechanisms:
-- Human vigilance (weakest — fatigues, misses things in detail space)
-- Non-deterministic AI vigilance (reduces but doesn't eliminate vigilance burden; requires a checker)
-- Deterministic code evaluation (reliable, doesn't fatigue)
-- Structural prevention via tool/universe design (strongest — mistakes become impossible, not just detected)
+A spectrum of assurance mechanisms exists:
+- Human vigilance (weakest — fatigues, misses things in detail space, 100% vigilance burden)
+- Non-deterministic AI vigilance (reduces but doesn't eliminate burden; requires a checker; inherently probabilistic)
+- Deterministic code evaluation (reliable, doesn't fatigue; catches mistakes after the fact)
+- Structural prevention via universe design (strongest — mistakes become impossible, not just detected)
 
-This "what does the assurance transfer to" dimension is currently invisible in the grid. Two teams at the same (agency, sustainability) cell might have completely different durability: one is relying on non-deterministic AI guardians (fragile long-term), the other on structural prevention (durable). They look the same on the grid but have very different futures.
-
-@ai: agreed. We need to make this much more visible.
+Two teams at the same grid position might have very different durability: one relies on non-deterministic AI guardians (fragile long-term), the other on structural prevention (durable). They look identical on the grid but have very different futures. This dimension needs to be much more visible in the model.
 
 ### 7. The responsibility matrix is the underlying structure; the grid is a visualization artifact
 
-You described a responsibility matrix where each item has a work component and an assurance component, and most items are currently missing one. This is the actual content. The 2D grid is a way to present it — but it's one visualization choice among several, and it may flatten structure that the matrix captures better.
+The grid shows aggregate position. The matrix shows which specific responsibilities have been addressed and which haven't. A team could look "mid-sustainability" on the grid while having specific critical assurance gaps alongside irrelevant assurance strengths.
 
-A grid shows aggregate position. The matrix shows which specific responsibilities have been addressed and which haven't. A team could look "mid-sustainability" on the grid while having specific critical assurance gaps (the things that will bite them) alongside irrelevant assurance strengths.
+A model that doesn't address "which specific responsibilities lack assurance?" may cause teams to feel falsely secure about their overall position while leaving dangerous gaps uncovered.
 
-### 8. The observability problem: you don't know where you are
+### 8. You don't know where you are — the observability problem
 
-The grid implies you can locate your position. But the dangerous property of low sustainability at high agency is that you feel safe until you're not. Vigilance toil builds up slowly; defects appear later; the relationship between your choices and your outcome is delayed and indirect.
+The grid implies you can locate your position. But the dangerous property of low sustainability at high agency is that you feel safe until you're not. Vigilance toil builds up slowly; defects appear later; the relationship between choices and outcomes is delayed and indirect.
 
-A model that doesn't address "how do you know your sustainability level?" may cause teams to misplace themselves — usually too optimistically. The model needs something about signals and leading indicators, not just the grid positions.
+Teams consistently misplace themselves — usually too optimistically. The model needs leading indicators and signals, not just stable-state descriptions. This needs to be much more visible.
 
-@ai: I agree. We need to make this much more visible.
+### 9. Temporal dynamics and the subway diagram opportunity
 
-### 9. Temporal dynamics are missing
+The rate at which you expand your zero-risk portfolio matters as much as your current position. A team adding one new scoped guarantee per week compounds to massive coverage. A team that builds sustainability in one big push then coasts will find their guarantees decaying — tools become stale, contexts drift, patterns are abandoned.
 
-"Small forever beats large occasionally" — the rate at which you expand your zero-risk portfolio matters as much as your current position. A team adding one new scoped guarantee per week compounds to massive sustainability coverage. A team that builds a lot at once and then coasts will find their guarantees decaying (tools become stale, contexts drift, patterns are abandoned).
-
-The grid is a static snapshot. A model that doesn't capture movement and decay misses a critical dimension.
-
-@ai: True. We want something that focuses on the vigilence toil people are facing - in specific - and then incrementally segments out pieces. And then when something has been made safe enough, that "unlocks" some agency delegation. Perhaps a subway diagram style thing (like Arlo Belshee's Agile Engineering Fluency map) might work better.
+The model as a static grid misses this. What would work better: something that focuses on the specific vigilance toil a team is currently facing, helps them incrementally segment pieces out into zero-risk zones, and makes visible that achieving each piece of safety *unlocks* the next level of agency delegation. A subway diagram style — like the Agile Engineering Fluency map — might fit this better than a grid: stations are specific investments, and the lines show what each unlocks.
 
 ---
 
 ## Alternative Models
 
-### Alternative A: Three-Axis Model
+*(See `alternatives/` subdirectory for prototype elaborations of each.)*
 
-**Agency** × **Prevention** × **Recovery**
+### Alternative A: Three-Axis Model — Agency × Prevention × Recovery
 
-- Agency: who acts / decides
-- Prevention: how structurally impossible are unintended actions (tool narrowness, scope restriction, universe design)
-- Recovery: how quickly and cheaply do you detect and fix mistakes (evaluation, testing, guardian loops)
+Agency × Prevention × Recovery, where prevention and recovery are explicitly separated. The safe zone becomes a surface in 3D space. This resolves the "sustainability is not one thing" flaw but adds complexity.
 
-This is more honest about the independence of these concerns. Teams can and do have high prevention / low recovery (rare mistakes, slow to detect when they occur) or low prevention / high recovery (mistakes happen often but are caught fast). Both can be viable at certain agency levels; they have different risk profiles.
+### Alternative B: Safety Cone
 
-The "safe path" becomes a surface in 3D space, not a line in 2D space.
+The safe zone is a cone in the agency × sustainability plane: at low agency, any sustainability is fine; as agency increases, the minimum required sustainability increases. The cone makes the dependency visible without implying a single path. Challenge: still uses a single sustainability axis.
 
-### Alternative B: Safety Cone Model
+### Alternative C: Portfolio Model (preferred)
 
-Rather than a rectangular grid, model the safe zone as a cone:
+Track a portfolio of named zero-risk zones, each scoped to a class of mistakes. Sustainability is the aggregate coverage of the mistake space. Agency unlocks are tied to specific portfolio items. Progress is discrete and visible. The 2D grid can still be used as a summary, calculated from portfolio state.
 
-- At agency level 0, any sustainability level is safe (you're reviewing everything)
-- As agency increases, the minimum required sustainability increases
-- The slope of the cone encodes how fast the requirements grow
-- Above the cone surface: safe. Below: danger zone.
+What it makes visible: which specific mistake classes are covered vs. uncovered; what to invest in next; whether a team is actually advancing or just feeling like they are.
 
-This is honest about the shape of the problem. Teams see immediately that advancing on agency without sustainability investments puts them below the cone surface. The visualization also makes clear that low-agency teams don't need to worry about sustainability yet — which corrects the false urgency of a symmetric rectangular grid.
+### Alternative D: Responsibility-Pair Matrix
 
-### Alternative C: Portfolio Model
+Make the responsibility matrix the center. Each row has: the responsibility, who does the work (agency axis position), what provides assurance (assurance mechanism type and quality). Gaps are directly visible. More actionable than the grid; less visually compact.
 
-Instead of a single sustainability axis, track a portfolio of "zero-risk zones" achieved:
+### Alternative E: Transfer-Target Spectrum
 
-Each zone is named (e.g., "behavioral safety of refactorings," "thought structure of planning," "test file write isolation"). The portfolio grows as teams add scoped guarantees. "Sustainability" is the aggregate coverage of the mistake space, calculated from the portfolio.
+For each responsibility, show separately where the work transferred to and where the assurance transferred to. The vigilance trap becomes structurally visible as the gap between those two placements. Strong conceptual clarity; hard to summarize compactly.
 
-Benefits:
-- Honest about how teams actually progress (discrete investments, not smooth movement)
-- Identifies specific gaps (you see exactly which mistake classes aren't covered)
-- Doesn't aggregate away the important detail about which specific guarantees you have
-- More actionable: "add X to your portfolio" is a clearer recommendation than "move along the sustainability axis"
+### Alternative F: Subway Diagram (worth elaborating)
 
-The 2D grid could still be used as a summary visualization, where position is calculated from portfolio coverage — but the portfolio is the underlying model.
+Specific investments as stations. Lines show enabling relationships — achieving this station unlocks that one, which makes this agency delegation safe. The vigilance toil focus becomes the starting point: "where does it hurt?" finds your current station; the diagram shows what to tackle next.
 
-@ai: I definitely like the portfolio-style thinking. Worth elaborating.
-
-### Alternative D: Responsibility-Pair Matrix as the Primary Model
-
-Instead of a 2D grid, make the responsibility matrix the center of the model. For each responsibility:
-
-| Responsibility | Work item | Assurance item |
-|----------------|-----------|----------------|
-| Code changes | Who writes? | What prevents unintended behavior changes? |
-| Test creation | Who writes? | What ensures test quality? |
-| Architecture | Who decides? | What prevents architectural drift? |
-| ... | ... | ... |
-
-Each row has: who does the work (agency axis), what mechanism provides assurance (sustainability / assurance-transfer-target). The 2D grid is a summary; the matrix is the detail.
-
-This is more actionable: you can see exactly which responsibilities have assurance gaps and which don't, rather than inferring from a grid position.
-
-@ai: a representational shift from the portfolio-style thinking. Similar, and also worth exploring.
-
-### Alternative E: Transfer-Target Model
-
-Make explicit the spectrum of what assurance can transfer to:
-
-1. **Human vigilance** — fragile, fatigues, fails in detail-space problems
-2. **Non-deterministic AI guardian** — reduces but doesn't eliminate vigilance; requires a checker; good for probabilistic problems and bootstrapping deterministic guards
-3. **Deterministic code evaluation** — reliable, doesn't fatigue; catches mistakes after the fact
-4. **Structural prevention** — eliminates the mistake from possibility; requires universe design
-
-Each responsibility can have its assurance mechanism located on this spectrum. Progress on the sustainability axis is really progress on this spectrum: moving assurance for each responsibility from human vigilance toward structural prevention.
-
-This adds a third dimension to the model but explains the mechanism of progress, not just the position.
-
-### Alternative F: The "What Transfers To What" Bipartite Graph
-
-The fundamental move is: work responsibility transfers from human to AI. Assurance responsibility transfers from human vigilance to some system. These are two independent transfers. Model this as a bipartite graph:
-
-- Left nodes: who performs (human → AI spectrum)
-- Right nodes: what provides assurance (human vigilance → structural prevention spectrum)
-- Edges: each responsibility, plotted at its (work-performer, assurance-mechanism) position
-
-The safe zone is: work-performer and assurance-mechanism move together. The danger zone is: work-performer advances without the corresponding assurance-mechanism advance.
-
-This makes the vigilance trap structurally visible: it's the gap between where work landed and where assurance is.
-
-@ai: Interesting. I want to see more in this direction as well.
+Inspired by the Agile Engineering Fluency map. Challenges: implies a single path; requires careful ordering decisions.
 
 ---
 
-@ai: a metaphor that applies: in driving, your speed is not limited by your engine. It is limited by your brakes. How easily can you get to safety (stopped)?
+## Brakes, Not Engine
 
-@ai: Now give me some alternative models. Each in its own directory, elaborating a few of the core concepts (don't make it complete yet! These are prototypes). Let me see what the model would make visible, and how. Also include an analysis of the opportunities and challenges for each model.
+A metaphor that applies across all alternatives: in driving, your speed is not limited by your engine — it's limited by your brakes. How easily can you get to safety (stopped)? Teams focus on AI capability (engine) when the real constraint is sustainability (brakes). You can only safely go as fast as your brakes allow.
+
+This reframes the model: sustainability isn't a constraint on ambition. It's the thing that *enables* higher velocity safely.
+
+---
 
 ## Opportunities for Clarity the Grid Misses
 
-**The complementarity insight needs a home.** Humans are strong at abstraction; AIs are strong at detail-pattern-discovery. The grid doesn't capture this. A model that shows "which kinds of work are safe to transfer" and "which kinds of assurance mechanisms fail in which domains" would make this structural. Currently the complementarity is a note in the brainstorm, not part of the model architecture.
+**Agency may not be primary** — sustainability comes first; agency is the reward. This inverts the existing model's framing and may be the most important structural change.
 
-@ai: yes, want to expose this.
+**The immune system framing** — software developers as the organization's immune system; vigilance toil as immune suppression. Not just a metaphor — it reframes the stakes.
 
-**"Careless Engineering" as a named practice.** The model should distinguish the goal (high sustainability) from the practice that achieves it (Careless Engineering: designing for careless implementors). The grid shows the destination but not the discipline.
+**Human/AI complementarity needs a home** — which kinds of work are safe to transfer, and which assurance mechanisms fail in which domains, should be structural parts of the model, not notes in a brainstorm doc.
 
-@ai: yes, want to expose this.
+**Careless Engineering as a named practice** — the model should distinguish the goal (high sustainability) from the discipline that achieves it (Careless Engineering). The grid shows destination, not path.
 
-**The translation layer is a recurring pattern worth naming.** Abstract → detail → execute → abstract → verify appears repeatedly. It could be a named concept in the model — the "abstraction stack" — with explicit attention to where it's present and where it's missing.
+**Prevention vs. recovery ceiling** — prevention can reach zero vigilance; recovery cannot. This is a fundamental ceiling difference that the model should make visible.
 
-@ai: detail; not in core view.
-
-**Leading indicators vs. lagging indicators.** The grid shows stable states. Teams need to know: what signals tell you you're drifting toward the danger zone before the defects arrive? The model is silent on this.
-
-@ai: detail; in drill-down only.
-
-**The "check the checker" problem.** When you delegate vigilance to a non-deterministic system, you need a meta-evaluation mechanism. This recursion — who guards the guardian — isn't currently modeled. It applies at every level of the assurance hierarchy.
-
-@ai: detail; in drill-down only.
+The following are real but belong in drill-down, not in the core view:
+- The translation layer (abstract → detail → execute → abstract → verify)
+- Leading vs. lagging indicators of sustainability
+- The "check the checker" meta-evaluation problem
 
 ---
 
@@ -215,12 +157,12 @@ This makes the vigilance trap structurally visible: it's the gap between where w
 
 | Gets right | Gets wrong or misses |
 |---|---|
-| Two things are varying independently (agency, sustainability) | Sustainability isn't one thing |
-| Dangerous combinations exist | The grid's rectangular shape misrepresents the actual danger zone shape |
-| A path of safe spaces exists | "A path" may be "a family of paths" or "a safe region" |
-| Vigilance toil is the penalty for falling off | Where you fall off determines the character of the toil |
-| The safe path requires both axes to move together | The model doesn't show what moves each axis |
-| — | The "what assurance transfers to" dimension is invisible |
-| — | Portfolio structure of sustainability is lost |
-| — | Temporal dynamics (rate of portfolio growth, decay) are absent |
+| Two things are varying (agency, sustainability) | Sustainability isn't one thing (prevention ≠ recovery) |
+| Dangerous combinations exist | The danger zone isn't confined to high-agency; low-sustainability is dangerous everywhere |
+| Sustainability and agency should move together | The dependency is asymmetric: sustainability enables agency, not vice versa |
+| Vigilance toil is the penalty | Where you fall off determines the character of the toil |
+| — | Where assurance transfers to is invisible |
+| — | Portfolio structure of sustainability is lost in aggregation |
+| — | Temporal dynamics and decay are absent |
 | — | Observability of position is unaddressed |
+| — | Agency may not be the primary axis |
