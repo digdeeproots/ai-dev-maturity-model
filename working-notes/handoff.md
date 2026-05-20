@@ -1,6 +1,6 @@
 # Handoff — Next Claude Instance
 
-*Written 2026-05-20. Context was getting full; this picks up cleanly.*
+*Written 2026-05-20. Updated same day as the behavioral matrix reached v6.*
 
 ---
 
@@ -10,11 +10,15 @@
 
 2. **`work/local/CLAUDE.md`** — project structure (Vue 3 app, model JSON files, path aliases).
 
-3. **`work/local/working-notes/vigilance-axis-brainstorm.md`** — the core concepts document. This is the primary reference for everything developed. Includes three rounds of transcript + interpretations sections. Read all of it.
+3. **`work/local/working-notes/vigilance-axis-brainstorm.md`** — the core concepts document. Includes three rounds of transcript + interpretations sections. Read all of it.
 
-4. **`work/local/working-notes/alternatives/delegation-model.md`** — the main model prototype. The assurance spectrum (levels 0–5) lives here. Read before doing any model work.
+4. **`work/local/working-notes/behavioral-matrix.md`** — the current primary model document (v6). The careless safety ladder, product facets, worry surface, rate event, and per-work-type agency delegation paths all live here. Read before doing any model work.
 
-5. **`work/local/model/`** — the existing maturity model JSON files (overview.json, agency_stages.json, agency_substages.json, fate-determining-choices.json, responsibility_ownership.json). These are the source being extended. Skim them; refer back as needed.
+5. **`work/local/working-notes/alternatives/delegation-model.md`** — earlier prototype. Still useful for the portfolio vs. structured-map framing and the safety spectrum definitions. Secondary reference.
+
+6. **`work/local/working-notes/alternatives/fluency-dag.md`** — the DAG target form. Read for the node/edge structure and the vigilance-toil-as-missing-safety-nodes insight.
+
+7. **`work/local/model/`** — the existing maturity model JSON files (overview.json, agency_stages.json, agency_substages.json, fate-determining-choices.json, responsibility_ownership.json). These are the source being extended. Skim them; refer back as needed.
 
 ### Background (read if you need context on where ideas came from)
 
@@ -29,31 +33,39 @@
 
 ### The Core Extension
 
-The existing model tracks one thing per responsibility: **agency** (who performs the work, on a human → AI spectrum). This is the model's primary axis.
+The existing model tracks one thing per responsibility: **agency** (who performs the work, on a human → AI spectrum). We are extending the model to also track **safety** for each responsibility: how careless can an implementor be and still achieve safety, on a 0–5 ladder.
 
-We are extending the model to also track **assurance** for each responsibility: what mechanism ensures the work was done correctly, on a 0–5 spectrum (see delegation-model.md for the full spectrum definition). Together, work delegation and assurance delegation define a **delegation region** — a named scope with both sides tracked.
+The key finding: delegating work without corresponding safety investment creates a **gap**. Gaps produce vigilance toil. Gap cost is multiplicative: `toil ∝ rate event × worry surface × safety gap`. This is why the problem is severe in brownfield codebases and why AI makes it worse (AI increases rate without changing the existing body).
 
-The core finding: delegating work without corresponding assurance investment creates a **gap**. Gaps produce vigilance toil. Gap cost is multiplicative: `toil ∝ new work rate × existing body of work`. This is why the problem is severe in brownfield codebases and why AI makes it worse (AI increases new work rate without changing the existing body).
+The model is not a grid. It is a structured view of product work, organized by product facet, with each type of work carrying error classes that have independent vigilance costs. The goal of maturity progress is to close safety gaps by investing in mechanisms that either shrink the worry surface or raise the safety level for each error class.
 
-The model is not a grid. It is a structured view of responsibilities, each with a work side and an assurance side, and a gap between them when the two are mismatched. The goal of maturity progress is to close gaps by either advancing assurance mechanisms or by ensuring assurance advances in step with work delegation.
+**Agency is now a portfolio, not a single axis.** Instead of one global agency stage (A0–A5), each work type has its own agency delegation path. A team can be at A3 for "evolving the design" (because AST tools give Carefree safety for behavioral regression) while still at A2 for "making architectural decisions" (because they lack a planning tool). This heterogeneous reality was always true; the model now makes it visible.
 
 ### Key Findings (already established — don't re-derive)
 
-**Vigilance toil is multiplicative:** `toil cost ∝ new work rate × existing body of work`. Greenfield: existing body ≈ 0, so weak assurance is survivable. Brownfield: large existing body, so weak assurance is catastrophic. AI hits brownfield disproportionately.
+**Vigilance toil is multiplicative:** `toil cost ∝ rate event × worry surface × safety gap`. Greenfield: worry surface ≈ 0, so weak safety is survivable. Brownfield: large worry surface, so weak safety is catastrophic. AI increases rate; it doesn't change the worry surface — but the existing body amplifies everything.
 
-**The assurance spectrum (0–5):**
-- 5: Guided correctness — environment makes the right action easy and the wrong action hard to attempt (refactoring tools, compiler-backed reference finding). Zero vigilance + improved work quality.
-- 4: Prevention — mistake cannot propagate past the originator (type systems, theorem provers, AST tools enforced by workflow). Zero vigilance within scope.
-- 3: Deterministic detection — catches known classes reliably; predictable gaps (entirely misses some categories). Near-zero for covered classes.
-- 2: Non-deterministic guardian — probabilistic detection; unpredictable gaps; can be broader than level 3 via multiple runs. Use to discover new categories, then harden to 3/4.
-- 1: Human review — full vigilance burden; decays over time.
-- 0: None.
+**The careless safety ladder (0–5):** How careless can an implementor be and still achieve safety?
+- 5: Carefree — environment makes the right action easy and mistakes structurally hard. Careless implementors thrive.
+- 4: Prevention — mistake cannot propagate past the originator. Careless is fine within scope.
+- 3: Deterministic — catches known error classes reliably. Careless is fine for covered classes.
+- 2: Probabilistic — errors sometimes caught. Careless is sometimes fine.
+- 1: Vigilance — errors caught only when someone is paying attention. Careless is never fine.
+- 0: Hope — no mechanism. Errors propagate undetected.
 
-Levels 4–5 can reach zero vigilance within scope; levels 0–3 cannot. Every level has a scope; precision of scope description increases with level ("catches 70% of everything, no pattern" at low levels vs. "100% guaranteed for this class; no false positives for anything else" at high levels).
+Levels 4–5 can reach zero vigilance within scope; levels 0–3 cannot.
 
-**The error visibility criterion:** Level 4 vs. level 3 is propagation, not timing. A type checker that runs immediately before output is shared prevents propagation — level 4. Unit tests catch known cases after injection — level 3. You can't "fail to imagine" a type comparison the way you can a test case.
+**Product facets:** The product has seven properties that work can improve or degrade: capability, adaptability, explainability, abstractability, transparency, consistency, security. Each has a work type phrase (what people are doing to improve it) and a business stake (why it matters). Work that improves one facet always risks degrading others.
 
-**Agency may not be primary:** Sustainability comes first; agency is the reward after work is made safe to delegate. The relationship is asymmetric.
+**Worry surface and rate event:** Each error class has a countable scope (worry surface) and a named trigger (rate event). These are the two multipliers in the toil formula. Scope-shrinking investments reduce the worry surface; efficiency investments reduce safety gap (toil per unit of worry surface).
+
+**Tests are safety mechanisms, not work types.** Test quality (structure, coverage, duplication, environment coupling) determines the effective safety level of the mechanism. Coverage gaps are a reduced effective safety level, not a separate error class.
+
+**Reversibility is a scope-shrinking investment.** When errors are easy to undo (feature flags, canary deployments, AST refactoring tools, short iteration cycles), the effective worry surface is smaller. Reversibility investments appear in the scope-shrinking table of each relevant error class.
+
+**The error visibility criterion:** Safety level 4 vs. 3 is propagation, not timing. A type checker that runs before output is shared prevents propagation — level 4. Unit tests catch known cases after injection — level 3. You can't "fail to imagine" a type comparison the way you can a test case.
+
+**Agency may not be primary:** Safety comes first; agency is the reward after work is made safe to delegate. The relationship is asymmetric.
 
 **The immune system metaphor (root):** Software developers are the company's immune system; product is the brain. The brain survives tigers; the immune system prevents disease. "Only a little salmonella" is fine to the brain; the immune system sees the categorical difference between "you'll probably fight it off" and "actually clean food." Vigilance toil = immune suppression.
 
@@ -61,36 +73,33 @@ Levels 4–5 can reach zero vigilance within scope; levels 0–3 cannot. Every l
 
 **The "no human to blame" dynamic:** Low agency hides gaps (blame Bob). High AI agency makes them undeniable. Expectations rise; tolerance for the same failure rate drops.
 
-**Brakes, not engine:** Speed (agency) is limited by brakes (sustainability). Teams obsess over engine; the bottleneck is always the brakes.
+**Brakes, not engine:** Speed (agency) is limited by brakes (safety). Teams obsess over engine; the bottleneck is always the brakes.
 
-### The Two Model Forms
+### The Current Model Form
 
-**Delegation model — behavioral matrix** (`working-notes/alternatives/delegation-model.md`): The structured variant applied to the full responsibility matrix. Each responsibility gets work-delegation and assurance-level measurements. Drill-down per responsibility lists specific investments. Two flavors: portfolio (open-world, you define zones) and structured map (closed-world, comprehensive taxonomy). Use the structured map to discover gaps; use the portfolio to track investments.
+**Behavioral matrix** (`working-notes/behavioral-matrix.md`): The primary model document. Organized by product facet and work type. Each work type has: (1) business stake, (2) agency delegation path with safety minimums per level, (3) error classes with worry, worry surface, rate event, scope-shrinking options, and efficiency options. The careless safety ladder governs all option tables.
 
-**Fluency DAG** (`working-notes/alternatives/fluency-dag.md`): The target form. Work nodes and assurance nodes in a directed acyclic graph. Edges are prerequisites. Missing assurance nodes before work nodes = visible vigilance trap. Multiple valid traversal paths. Inspired by the Agile Engineering Fluency map.
+**Fluency DAG** (`working-notes/alternatives/fluency-dag.md`): The target form. Work nodes and safety nodes in a directed acyclic graph. Edges are prerequisites. Missing safety nodes before work nodes = visible vigilance trap. Inspired by the Agile Engineering Fluency map.
+
+**Delegation model** (`working-notes/alternatives/delegation-model.md`): Earlier prototype. Portfolio vs. structured-map variants; useful for the foundational framing. The behavioral matrix supersedes it for actual model content.
 
 ---
 
 ## What's Next
 
-### Step 1: Behavioral Matrix (next version of the model)
+### Step 1: Behavioral Matrix — substantially done
 
-Extend the existing responsibility matrix into a full behavioral matrix:
-- Each responsibility gets a **work delegation** column (who performs this, agency level) and one or more **assurance** columns (what mechanism, 0–5 level)
-- Currently missing: most responsibilities have only the work side; the assurance side needs to be added for each
-- For each responsibility, identify **portfolio options** — specific investments that can improve assurance level (concrete, actionable, labeled by mechanism type and level achieved)
-- Make gaps visible: work delegation level ahead of assurance level = vigilance toil
+The behavioral matrix (v6) covers all work types with full safety dimensions. Still open:
 
-This is the structured delegation map variant of the delegation model, applied to the existing responsibility matrix.
+- Encoding the behavioral matrix as JSON (extending the model/*.json files)
+- Extending the Vue app to render the safety dimension alongside the agency dimension
 
-### Step 2: Fluency DAG (version after that)
-
-**`work/local/working-notes/alternatives/fluency-dag.md`** — the DAG target. Read for the node/edge structure and the vigilance-toil-as-missing-assurance-nodes insight.
+### Step 2: Fluency DAG
 
 Convert the behavioral matrix into a DAG:
-- Each responsibility × assurance-investment = one node
+- Each work type × safety investment = one node
 - Edges = prerequisite relationships
-- Work nodes and assurance nodes visually distinct; missing assurance nodes are visible gaps
+- Work nodes and safety nodes visually distinct; missing safety nodes are visible gaps
 - Should resemble the Agile Engineering Fluency map in structure and navigability
 - Reference: https://arlobelshee.github.io/AgileEngineeringFluency/Stages_of_practice_map.html
 

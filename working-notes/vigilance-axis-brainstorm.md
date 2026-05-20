@@ -1,6 +1,8 @@
 # Vigilance Axis Brainstorm
 *Word vomit from Arlo, 2026-05-20. Cleaned for readability; order and words preserved.*
 
+*Terminology note: in the transcripts, the second axis was called "assurance." The current term is **safety**, and the spectrum is the **careless safety ladder** (0 = Hope, 1 = Vigilance, 2 = Probabilistic, 3 = Deterministic, 4 = Prevention, 5 = Carefree). All interpretations below use current terminology.*
+
 ---
 
 ## Transcript (Near-Verbatim)
@@ -71,70 +73,89 @@ Several things are true regardless of which model structure we choose. They belo
 
 ## Interpretations and Findings
 
-### The Second Dimension: Assurance (Sustainability)
+### The Second Dimension: Safety (Careless Safety Ladder)
 
-The existing model tracks one thing per responsibility: agency (who performs the work). The model is being extended to also track **assurance** for each responsibility: what mechanism ensures the work was done correctly, on a 0–5 spectrum. Working name for this dimension: **Sustainability**.
+The existing model tracks one thing per responsibility: agency (who performs the work). The model is extended to also track **safety** for each responsibility: how careless can an implementor be and still achieve safe outcomes, on a 0–5 careless safety ladder.
 
-Assurance is not about degree of safety. It is about **ease of achieving safety**: how hard must an implementor try in order to avoid doing unintended things while doing the intended thing? At one end: every mistake is easy to make and hard to detect. At the other: careless implementors thrive because the environment makes unintended actions structurally difficult or impossible.
+Safety is not about degree of risk reduction alone. It is about **ease of achieving safety**: how hard must an implementor try in order to avoid doing unintended things while doing the intended thing? At one end: every mistake is easy to make and hard to detect. At the other: careless implementors thrive because the environment makes unintended actions structurally difficult or impossible.
 
 The two dimensions are independent:
 - Agency: who performs the work
-- Assurance: how easily does the environment prevent unintended side-effects of that work
+- Safety: how easily does the environment prevent unintended side-effects of that work
 
-You can transfer work without transferring assurance. That is the vigilance trap: work moved, assurance didn't. The human still has to watch because the environment doesn't prevent mistakes. The model's job is to make this gap visible and actionable for every responsibility.
+You can transfer work without transferring safety. That is the vigilance trap: work moved, safety didn't. The human still has to watch because the environment doesn't prevent mistakes. The model's job is to make this gap visible and actionable for every work type.
 
-### The 2D Grid and the Safe Path
+### From Grid to Portfolio: Agency per Work Type
 
-The safe path is a narrow diagonal through the grid. The dangerous region is large. Falling off the safe path means you've transferred more agency than your correctness assurance can cover — the result is vigilance toil you cannot actually sustain, leading to compounding defects and maintenance cost.
+The model is not a single 2D grid. Each type of product work has its own agency delegation path and its own safety requirements. A team can be at A3 for "evolving the design" (because AST tools provide Carefree safety for behavioral regression) while still at A2 for "making architectural decisions" (because they lack a planning tool). This heterogeneous reality was always true; the model makes it visible.
 
-Key constraint: human executive function cannot scale vigilance. Even a small sustained vigilance requirement will eventually fail. The only stable states are those where correctness assurance has been transferred to a system that doesn't fatigue.
+The safe path for each work type is: advance agency only as fast as safety advances. Falling off the path — advancing agency without advancing safety — produces vigilance toil you cannot actually sustain, leading to compounding defects and maintenance cost.
+
+Key constraint: human executive function cannot scale vigilance. Even a small sustained vigilance requirement will eventually fail. The only stable states are those where safety has been transferred to a system that doesn't fatigue.
 
 ### Vigilance Toil Is Multiplicative, Not Additive
 
-Vigilance toil is not proportional to the rate of new work alone. It is proportional to **new work × existing body of work**. Assurance must protect the existing body from corruption by each new change. The more that already exists, the more expensive each unit of new work becomes to assure.
+Vigilance toil formula: **toil = rate event × worry surface × safety gap**.
+
+- **Rate event**: the specific trigger that incurs toil (e.g., "every time shared code changes")
+- **Worry surface**: the scope of existing product a single instance of this error can affect (quantifiable: number of callers, customers, test files, etc.)
+- **Safety gap**: how much of the worry surface has no safety mechanism (1 - effective safety level)
 
 Consequences:
-- **Greenfield:** existing body ≈ 0, so vigilance toil ≈ 0 regardless of throughput. Weak assurance is survivable.
-- **Brownfield:** existing body is large, so vigilance toil is large regardless of how fast you're moving. Weak assurance is catastrophic.
-- **AI increases the rate of new work; it does not change the existing body.** This is the only mechanism by which AI increases vigilance toil. It explains why AI hits brownfield products disproportionately: the existing body amplifies everything. A team with a large codebase that doubles their throughput via AI has doubled their vigilance toil cost. If their assurance was already marginal, it breaks immediately.
+- **Greenfield:** worry surface ≈ 0, so vigilance toil ≈ 0 regardless of throughput. Weak safety is survivable.
+- **Brownfield:** worry surface is large, so vigilance toil is large regardless of throughput. Weak safety is catastrophic.
+- **AI increases the rate event frequency; it does not change the worry surface.** This is the only mechanism by which AI increases vigilance toil. It explains why AI hits brownfield products disproportionately: the existing body amplifies everything.
 
-This also explains the "maintenance trap" precisely: teams with large codebases and weak assurance end up in a steady state where most capacity is consumed by vigilance toil (maintenance, defect response) rather than new work. AI doesn't solve this — it makes it worse unless assurance is addressed first.
+Safety options either reduce the worry surface (scope-shrinking) or reduce toil per unit of worry surface (efficiency). Both are legitimate; both reduce total toil.
 
-### Level 5: Guided Correctness (Above Prevention)
+### The Careless Safety Ladder (0–5)
 
-There is a level above prevention: the environment guides the originator toward the correct action, making the incorrect action harder to attempt in the first place. Level 4 catches a mistake after it is attempted; level 5 makes the mistake unlikely to be attempted because the correct path is easier.
+How careless can an implementor be and still achieve safety?
+
+- **5 — Carefree**: the environment makes the right action easy and mistakes structurally hard. Careless implementors thrive. Example: AST refactoring tools, which make behavioral safety the easy path and make unsafe structural changes harder to attempt.
+- **4 — Prevention**: mistakes cannot propagate past the originator. Careless is fine within scope. Example: strict type system enforced pre-commit — the originator cannot produce visible output with a type error.
+- **3 — Deterministic**: catches known error classes reliably; careless is fine for covered classes. Example: recipe-based unit tests — known behaviors always verified; novel classes missed.
+- **2 — Probabilistic**: errors sometimes caught; careless is sometimes fine. Example: AI exploratory testing — finds things in most runs but not all; gaps are unpredictable.
+- **1 — Vigilance**: errors caught only when someone is paying attention. Careless is never fine. Example: human code review.
+- **0 — Hope**: no mechanism. Errors propagate undetected.
+
+Levels Prevention and Carefree can reach zero vigilance within scope; levels Probabilistic and below cannot.
+
+### Carefree: The Level Above Prevention
+
+Carefree (level 5) differs from Prevention (level 4) not just in degree but in kind. Prevention catches a mistake after it is attempted; Carefree makes the mistake unlikely to be attempted because the correct path is easier.
 
 Examples:
-- A refactoring tool that trivializes extract-method while ensuring behavioral safety as you go. You don't try to do an unsafe refactoring and get caught — you use the tool and the correct action is the easy action.
+- A refactoring tool that trivializes extract-method while ensuring behavioral safety. You don't try to do an unsafe refactoring and get caught — you use the tool and the correct action is the easy action.
 - A language server that finds all references using the compiler. You don't search and miss some — you ask and get all of them, every time.
 
-Level 5 reaches zero vigilance within scope AND improves the quality and ease of work simultaneously. It is the "careless engineering" ideal: the right thing is the easiest thing.
+Carefree reaches zero vigilance within scope AND improves the quality and ease of work simultaneously. It is the careless engineering ideal: the right thing is the easiest thing.
 
-### Scope Precision Scales with Assurance Level
+### Scope Precision Scales with Safety Level
 
-Every assurance level has a scope, but the precision with which you can describe that scope increases at higher levels.
+Every safety level has a scope, but the precision with which you can describe that scope increases at higher levels.
 
-- Level 5/4: scope is fully definable — "100% guaranteed for this class; no false positives for anything else"
-- Level 3: gaps are predictable — you know which categories are entirely missed; coverage is consistent within covered categories
-- Level 2: coverage is statistical — you can estimate it but not specify it; gaps are unpredictable
-- Level 1: scope is "whatever the reviewer happened to notice today"
-- Level 0: no scope
+- Carefree/Prevention: scope is fully definable — "100% guaranteed for this class; no false positives for anything else"
+- Deterministic: gaps are predictable — you know which categories are entirely missed; coverage is consistent within covered categories
+- Probabilistic: coverage is statistical — you can estimate it but not specify it; gaps are unpredictable
+- Vigilance: scope is "whatever the reviewer happened to notice today"
+- Hope: no scope
 
-The goal of moving up the spectrum is not just fewer errors — it is increasing the precision with which you can describe what is and is not covered. Precise scope description is what makes assurance trustworthy rather than merely hopeful.
+The goal of moving up the ladder is not just fewer errors — it is increasing the precision with which you can describe what is and is not covered. Precise scope description is what makes safety trustworthy rather than merely hopeful.
 
-**Level 2 can be broader than level 3:** A non-deterministic system finds different things on different runs; multiple runs accumulate catch rate, potentially exceeding any fixed deterministic check. The trade-off: level 3 has predictable gaps (you know which categories it misses entirely), while level 2 has unpredictable gaps (misses things everywhere, no pattern). Use level 2 to discover new categories, then encode those discoveries as level 3 or 4 mechanisms.
+**Probabilistic can be broader than Deterministic:** A probabilistic system finds different things on different runs; multiple runs accumulate catch rate, potentially exceeding any fixed deterministic check. The trade-off: Deterministic has predictable gaps (you know which categories it misses), while Probabilistic has unpredictable gaps (misses things everywhere with no pattern). Use Probabilistic to discover new categories, then encode those discoveries as Deterministic or Prevention mechanisms.
 
-### The Error Visibility Criterion for Prevention (Level 4)
+### The Error Visibility Criterion for Prevention
 
-The key criterion for whether a mechanism is level 4 (prevention) is: **does the error propagate past the originator?** Not: does it happen before or after code is written.
+The key criterion for whether a mechanism is Prevention is: **does the error propagate past the originator?** Not: does it happen before or after code is written.
 
-A type system or theorem prover runs after code is written — but if it runs immediately, before any other agent or human sees the output, and is enforced by deterministic workflow code, then the error cannot propagate. The originator cannot produce visible output with that class of error. That is prevention, not detection.
+A type system or theorem prover runs after code is written — but if it runs immediately, before any other agent or human sees the output, and is enforced by deterministic workflow code, then the error cannot propagate. The originator cannot produce visible output with that class of error. That is Prevention, not Deterministic.
 
 The escape hatch matters: if the worker can bypass the mechanism (casting to `any`, disabling the check, skipping the workflow step), the level drops. Prevention requires that bypassing is itself prevented or detectable.
 
-This means: type systems, theorem provers, AST-only refactoring tools, and constraint-enforcing workflow gates are all level 4 — even though they operate "after" code generation. Tests and linters are level 3 — they detect known classes deterministically but cannot prevent novel problems and do not prevent propagation to others who might see the code before checks run.
+Type systems, theorem provers, AST-only refactoring tools, and constraint-enforcing workflow gates are all Prevention — even though they operate "after" code generation. Tests and linters are Deterministic — they detect known classes deterministically but cannot prevent novel problems and do not prevent propagation to others who might see the code before checks run.
 
-Level 3 and level 2 are more similar than they appear: both are probabilistic in coverage (only known classes or probabilistic detection). Level 3's advantage is precision and reliability for what it covers, not breadth.
+Deterministic and Probabilistic are more similar than they appear: both are probabilistic in coverage (only known classes, or probabilistic detection). Deterministic's advantage is precision and reliability for what it covers, not breadth.
 
 ### The Zero-Risk Threshold
 
@@ -157,19 +178,17 @@ Verification after the fact is insufficient for zero risk. The focus is on upstr
 
 ### Layered Scoped Guarantees (Not Universal Correctness)
 
-The refactoring tool example shows one pattern: the tool guarantees execution correctness (behavioral safety, reversibility) within its scope, but says nothing about design correctness (whether this was the right move). Two named domains.
-
-But the general pattern is broader: **each deterministic tool gives a guarantee within its scope, not a universal guarantee.** The scope and domain of the guarantee varies by tool type:
+Each deterministic tool gives a guarantee within its scope, not a universal guarantee:
 
 - **Refactoring tools**: guarantee behavioral safety of the transformation; don't guarantee design quality
-- **Deterministic planning tools** (done well): guarantee that each required element of thought was addressed (variation points named, grounding source identified, stakeholder named); don't guarantee the content is sufficient or correct
+- **Deterministic planning tools**: guarantee that each required element of thought was addressed (variation points named, grounding identified); don't guarantee the content is sufficient
 - **Type systems / compilers**: guarantee type-level consistency; don't guarantee behavioral correctness
 - **Linters**: guarantee style or structural rules; don't guarantee logic correctness
 - **Unit tests**: guarantee the tested behavior at the tested inputs; don't guarantee coverage or design
 
-The move is to stack these scoped guarantees so they cover large areas of the mistake space. Each tool eliminates a class of mistakes. Stacked, they create large vigilance-free zones. The remaining gap — where no tool gives a guarantee — is where human attention is required and can actually be afforded.
+The move is to stack these scoped guarantees to cover large areas of the mistake space. Each tool eliminates a class of mistakes. Stacked, they create large vigilance-free zones. The remaining gap — where no tool gives a guarantee — is where human attention is required and can actually be afforded.
 
-This is the mechanism for moving along the assurance axis: not one magic tool, but progressive accumulation of scoped guarantees that shrink the vigilance-required zone.
+This is the mechanism for advancing along the safety ladder: not one magic tool, but progressive accumulation of scoped guarantees that shrink the vigilance-required zone.
 
 ### Human/AI Complementarity as a Structural Property
 
@@ -179,7 +198,7 @@ This is the mechanism for moving along the assurance axis: not one magic tool, b
 | Pattern discovery in vast detail | Weak | Strong |
 | Verification in abstraction space | Strong | Cannot reliably |
 
-This is not just a capability observation — it determines where vigilance fails. Applying human vigilance to a detail-discovery problem doesn't just fail slowly; it fails invisibly, because the AI can generate plausible-sounding detail that the human cannot independently verify. The human has no ground truth to check against.
+This determines where vigilance fails. Applying human vigilance to a detail-discovery problem doesn't just fail slowly; it fails invisibly, because the AI can generate plausible-sounding detail that the human cannot independently verify. The human has no ground truth to check against.
 
 The architectural implication: AI should not be in a position where its output must be verified in detail space by a human. The output must be translated back to abstraction space before humans verify it.
 
@@ -191,52 +210,52 @@ This is a concrete architectural pattern worth naming and modeling explicitly.
 
 ### AI's Structural Tendency to Repeat Rather Than Abstract
 
-AI will perform an operation a million times rather than extract-isolate-reuse. This is not a capability gap; it's a structural default. AI doesn't experience the fatigue or the cognitive load that makes repetition costly to humans — so it doesn't feel the pressure to abstract.
+AI will perform an operation a million times rather than extract-isolate-reuse. This is not a capability gap; it's a structural default. AI doesn't experience the fatigue or cognitive load that makes repetition costly to humans — so it doesn't feel the pressure to abstract.
 
 The engineering response: the deterministic orchestration layer must surface reuse opportunities and bring them into context explicitly. Once AI is given the abstraction (the pattern, the helper, the assertion method, the architecture), it uses it well. It won't reach for it on its own.
 
-Concrete examples from the word vomit:
+Concrete examples:
 - Tests: writes primitive assertion tests; won't invent fluent assertion DSLs, business-concept verifiers, well-formatted snapshots
 - Dependencies: always uses mocks; won't redesign for mock-free testability, won't switch to events, won't reach for Nullables/Simulators/Hexagonal Architecture ports
 - What works: once the deterministic layer deposits a Nullables implementation into a standard location and references it in every invocation, AI will use and build on it reliably
 
-### The "Work" / "Second-Order" Distinction in the Responsibility Matrix
+### Product Facets and the Work/Safety Audit
 
-The existing responsibility matrix has ~21 items. Arlo's hypothesis: most of them are either:
-- A **work item** missing a corresponding **correctness-assurance item**
-- A **correctness-assurance item** missing a corresponding **work item**
+The product has seven facets that work can improve or degrade: capability, adaptability, explainability, abstractability, transparency, consistency, security. Work that improves one facet always risks degrading others in the code it touches, and degrading the same facet in other parts of the code.
 
-The matrix needs to be audited with this lens and missing items added. The "correctness-assurance" side of each pair is what needs to be transferred from human vigilance to a system — and identifying where it transfers to (deterministic code, non-deterministic AI with a checker, automated evaluation, etc.) is the core of the second axis.Expe
+For each work type, there are error classes — each is an independent vigilance problem. The safety options either shrink the worry surface (fewer things at risk per event) or close the safety gap (cheaper to protect each unit). Both approaches matter.
 
-### Non-Deterministic Vigilance: When It Works and How
+This replaces the earlier framing of "work items missing safety items" with a richer structure: each work type has multiple error classes, each with independent toil costs that sum. The full taxonomy lives in `working-notes/behavioral-matrix.md`.
 
-Non-determinism can carry vigilance load, but not in all cases. It works in two patterns:
+### Probabilistic Safety: When It Works and How
+
+Probabilistic safety can carry vigilance load, but not in all cases. It works in two patterns:
 
 **Pattern 1: Pattern-matching + exception enumeration.** Give the AI a pattern, ask what matches and what doesn't. Run it twice with different prompts; take the union of exceptions found. Deterministic code acts on the exception set. Humans review the abstracted exceptions, not the raw detail. This works because: (a) pattern-matching in detail space is where AI is strong, (b) the output is translated to abstraction space before humans see it, (c) false positives are manageable at the abstract level.
 
-**Pattern 2: Probabilistic verification + escalation cycle.** Some verification is inherently probabilistic anyway (exploratory testing, anomaly detection). A non-deterministic agent continually scans. When it finds something, the cycle is: detect → abstract the error into a category → collaborate to design a deterministic guard → create an environment change that prevents the category of mistake. The non-deterministic agent's output bootstraps a deterministic improvement. Over time, the vigilance-free zone expands.
+**Pattern 2: Probabilistic verification + escalation cycle.** Some verification is inherently probabilistic anyway (exploratory testing, anomaly detection). A probabilistic agent continually scans. When it finds something, the cycle is: detect → abstract the error into a category → collaborate to design a deterministic guard → create an environment change that prevents the category of mistake. The probabilistic agent's output bootstraps a deterministic improvement. Over time, the vigilance-free zone expands.
 
-**When non-deterministic vigilance doesn't work:** when the domain requires precise, universal guarantees. A non-deterministic checker can miss things; it reduces vigilance load but doesn't eliminate it. This is only stable when the supervised domain is small enough that residual risk is acceptable.
+**When probabilistic safety doesn't work:** when the domain requires precise, universal guarantees. A probabilistic checker can miss things; it reduces vigilance load but doesn't eliminate it. This is only stable when the supervised domain is small enough that residual risk is acceptable.
 
-The general principle: non-deterministic vigilance is a **bootstrap mechanism** for creating deterministic guards, not a permanent substitute for them.
+The general principle: probabilistic safety is a **bootstrap mechanism** for creating deterministic guards, not a permanent substitute for them.
 
 ### Observability: You Don't Know Where You Are
 
-The dangerous property of low assurance with high agency is that you feel safe until you're not. Vigilance toil builds slowly; defects appear later; the relationship between choices and outcomes is delayed and indirect. Teams consistently misplace themselves on the assurance spectrum — usually too optimistically.
+The dangerous property of low safety with high agency is that you feel safe until you're not. Vigilance toil builds slowly; defects appear later; the relationship between choices and outcomes is delayed and indirect. Teams consistently misplace themselves on the safety ladder — usually too optimistically.
 
-This means the model needs to surface **leading indicators**, not just describe stable states. What signals tell you a gap is widening before the defects arrive? What does early-stage maintenance burden look like vs. late-stage? The model is incomplete without an answer to "how do I know where I actually am?" Arlo confirmed this needs to be much more visible in the model.
+The model needs to surface **leading indicators**, not just describe stable states. What signals tell you a gap is widening before the defects arrive?
 
-Candidates for leading indicators: rate of unplanned maintenance work, time to diagnose a defect, frequency of "it worked last time" surprises, how often team members reference tribal knowledge rather than written assurance mechanisms.
+Candidates for leading indicators: rate of unplanned maintenance work, time to diagnose a defect, frequency of "it worked last time" surprises, how often team members reference tribal knowledge rather than written safety mechanisms. The worry surface and rate event per error class give more specific candidates: how large is the worry surface? How often does the rate event fire?
 
 ### Temporal Dynamics: Portfolios Grow and Decay
 
-The rate at which you expand your zero-risk portfolio matters as much as your current position. A team adding one new scoped guarantee per week compounds to massive coverage. A team that makes a large investment once then coasts will find their guarantees decaying — tools become stale as the codebase evolves, contexts drift, patterns are abandoned when the person who built them leaves.
+The rate at which you expand your zero-risk portfolio matters as much as your current position. A team adding one new scoped guarantee per week compounds to massive coverage. A team that makes a large investment once then coasts will find their guarantees decaying — tools become stale, patterns are abandoned when the person who built them leaves.
 
 Two forces drive this:
 - **Growth**: discrete investments each eliminate a class of mistakes; compounding over time is substantial
-- **Decay**: discipline-based mechanisms (human review recipes, testing habits) decay fast; tooling-enforced mechanisms decay slowly; structurally enforced mechanisms don't decay at all
+- **Decay**: discipline-based mechanisms (Vigilance-level) decay fast; tooling-enforced mechanisms (Deterministic, Prevention) decay slowly; structurally enforced mechanisms (Carefree) don't decay at all
 
-This is another reason to prefer higher-level assurance mechanisms: levels 4–5 are structurally enforced and decay-resistant. Level 1 (human review) decays as soon as attention lapses or a team member changes. The decay profile is an underrated property of any assurance investment.
+Carefree and Prevention are structurally enforced and decay-resistant. Vigilance decays as soon as attention lapses or a team member changes. The decay profile is an underrated property of any safety investment.
 
 Arlo's framing: focus on the specific vigilance toil people face today, incrementally segment pieces out into zero-risk zones, and when a zone is made safe enough it *unlocks* the next level of work delegation. Progress is real and visible, zone by zone.
 
@@ -247,18 +266,18 @@ Arlo's framing: focus on the specific vigilance toil people face today, incremen
 This applies identically to:
 - Human developers (safeguarding, zero-bugs practices)
 - AI agents (orchestration design, tool narrowness, universe control)
-- AI agents supervising AI agents (non-deterministic vigilance + abstraction extraction)
+- AI agents supervising AI agents (probabilistic safety + abstraction extraction)
 
 The measure of success is not "how safe is this?" but "how careless can the implementor be and still succeed?"
 
 ### Universe Design Mechanisms — Detailed
 
-For each element of the agent's universe, at least two mechanisms for creating safety zones (both correct-action and guardian patterns):
+For each element of the agent's universe, at least two mechanisms for creating safety zones:
 
 **Tooling**
-1. *Restrict write access by file type* (only test files, only plan files, not production code). Makes it structurally impossible to corrupt production code while doing test work. Correct-action pattern.
-2. *AST-based refactoring tools only* (no edit-file). Every code change is behaviorally safe by construction. Correct-action pattern.
-3. *Planning tool that enforces thought structure*. Guarantees variation points named, grounding identified — without judging content quality. Correct-action pattern for thought discipline.
+1. *Restrict write access by file type* (only test files, only plan files, not production code). Makes it structurally impossible to corrupt production code while doing test work. Carefree-pattern.
+2. *AST-based refactoring tools only* (no edit-file). Every code change is behaviorally safe by construction. Carefree-pattern.
+3. *Planning tool that enforces thought structure*. Guarantees variation points named, grounding identified — without judging content quality. Carefree-pattern for thought discipline.
 
 **Context (what information is surfaced)**
 1. *Inject the canonical reuse target explicitly*. If a Nullables implementation exists, include a reference to it and its interface in every test-writing invocation. AI will use it; it won't discover it on its own.
@@ -277,5 +296,5 @@ For each element of the agent's universe, at least two mechanisms for creating s
 
 **Result Handling**
 1. *Deterministic expansion*. AI produces a seed (a migration definition, a test skeleton, a plan node). Deterministic code expands it into the full artifact following known patterns. AI's surface area is small; the expansion is guaranteed correct.
-2. *Union from multiple runs*. Run the same analysis twice with slightly different prompts; take the union of outputs. Guards against single-run blind spots. Still non-deterministic, but higher coverage with bounded effort.
+2. *Union from multiple runs*. Run the same analysis twice with slightly different prompts; take the union of outputs. Guards against single-run blind spots. Still probabilistic, but higher coverage with bounded effort.
 3. *Normalize into standard location before next invocation*. Whatever the AI produces goes through a deterministic normalization step before it becomes part of the context for the next invocation. This prevents garbage-in propagation across turns.
