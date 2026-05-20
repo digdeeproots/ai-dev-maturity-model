@@ -16,9 +16,7 @@
 
 5. **`work/local/working-notes/alternatives/delegation-model.md`** — the main model prototype. The assurance spectrum (levels 0–5) lives here. This is the most detailed developed artifact. Read before doing any model work.
 
-6. **`work/local/working-notes/alternatives/fluency-dag.md`** — the DAG alternative. Shorter; read for the node/edge structure and the vigilance-toil-as-missing-assurance-nodes insight.
-
-7. **`work/local/model/`** — the existing maturity model JSON files (overview.json, agency_stages.json, agency_substages.json, fate-determining-choices.json, responsibility_ownership.json). These are the source you are extending. Skim them once; refer back as needed.
+6. **`work/local/model/`** — the existing maturity model JSON files (overview.json, agency_stages.json, agency_substages.json, fate-determining-choices.json, responsibility_ownership.json). These are the source you are extending. Skim them once; refer back as needed.
 
 ### Background (read if you need context on where ideas came from)
 
@@ -32,6 +30,8 @@
 ## What We've Built
 
 ### The Core Extension
+
+@rework this section. It isn't a 2-axis system anymore.
 
 The existing model has one primary axis: **Agency** (who acts / who decides what happens next). We are adding a second axis: **Sustainability** (working name — ease of achieving high safety; specifically, how easily careless implementors can thrive without producing unintended effects).
 
@@ -65,6 +65,8 @@ Key distinctions: levels 4–5 can reach zero vigilance within scope; levels 0�
 
 ### Model Alternatives Explored
 
+@ai: Remove all mention in all documents of the 2D grid. We will not be going that way. Write as if the only ideas we had ever had were the delegation model as a first step, then the full fluency DAG.
+
 Three alternatives are prototyped in `working-notes/alternatives/`:
 
 **Delegation model** (portfolio + structured variants) — the main working model. Portfolio is open-world (you define zones); structured map is closed-world (comprehensive taxonomy from responsibility matrix, consistent measurement, drill-down options per region). Use structured map to discover gaps; use portfolio to track investments. Both use the same 0–5 assurance spectrum.
@@ -88,6 +90,8 @@ Extend the existing responsibility matrix into a full behavioral matrix:
 This is the "structured delegation map" variant of the delegation model, applied to the existing responsibility matrix.
 
 ### Step 2: Fluency DAG (version after that)
+
+Read **`work/local/working-notes/alternatives/fluency-dag.md`** — the DAG alternative. Shorter; read for the node/edge structure and the vigilance-toil-as-missing-assurance-nodes insight.
 
 Convert the behavioral matrix into a DAG:
 - Each responsibility × assurance-investment = one node
@@ -115,8 +119,6 @@ Commit rule: every edit (yours or Arlo's) gets its own commit before the next tu
 ### Git
 
 Branch: `l/talks/w/incorporate-vigilance` in `work/local/`.
-
-The movement MCP tool (`mcp__cabinet__movement`) is not accessible in this session — it needs to be connected via `/mcp/henchery/<wing-name>`. Use raw git commands (`git add`, `git commit`) instead. The CLAUDE.md says to use the movement tool, but it doesn't work here; fall back to raw git.
 
 ### File Paths
 
