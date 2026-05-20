@@ -59,7 +59,7 @@ Another example is careful memory control. We can have an agent read all the inf
 
 ### The Second Axis
 
-The existing model has one primary axis: agency (who acts / who decides what happens next). Arlo is proposing a second primary axis. Working name still needed — "assurance" is the closest candidate so far.
+The existing model has one primary axis: agency (who acts / who decides what happens next). Arlo is proposing a second primary axis. Working name: **Sustainability**. (To be iterated.)
 
 The second axis is not about degree of safety. It is about **ease of achieving safety**: how hard must an implementor try in order to avoid doing unintended things while doing the intended thing? At one end: every mistake is easy to make and hard to detect. At the other: careless implementors thrive because the environment makes unintended actions structurally difficult or impossible.
 
