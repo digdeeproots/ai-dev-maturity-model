@@ -31,8 +31,8 @@ How careless can an implementor be and still achieve safety? Higher levels mean 
 | Level | Name | What it means |
 |-------|------|---------------|
 | 5 | **Carefree** | The system makes the right action easy and mistakes structurally hard. Careless implementors thrive. |
-| 4 | **Prevention** | Mistakes cannot propagate past the originator. Careless is fine within scope. |
-| 3 | **Deterministic** | Known error classes are reliably caught. Careless is fine for covered classes. |
+| 4 | **Prevention** | Mistakes cannot propagate past the originator. Careless is fine within well-defined scopes. |
+| 3 | **Deterministic** | Known error classes are reliably caught. Careless is fine for covered classes, but boundaries are fuzzy and require care. |
 | 2 | **Probabilistic** | Errors are sometimes caught. Careless is sometimes fine. |
 | 1 | **Vigilance** | Errors are caught only when someone is paying attention. Careless is never fine. |
 | 0 | **Hope** | No mechanism exists. Errors propagate undetected. |
