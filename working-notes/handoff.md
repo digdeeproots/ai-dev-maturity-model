@@ -110,12 +110,6 @@ Use `closet/dev-and-check/briefings/pattern-iterate.md` for all document work. T
 
 Commit rule: every edit (yours or Arlo's) gets its own commit before the next turn.
 
-### Git
-
-Branch: `l/talks/w/incorporate-vigilance` in `work/local/`.
-
-The movement MCP tool (`mcp__cabinet__movement`) requires connection via `/mcp/henchery/<wing-name>` and is not accessible. Use raw git commands (`git add`, `git commit`) instead. The CLAUDE.md says to use the movement tool, but fall back to raw git when it fails.
-
 ### File Paths
 
 Wing root is `D:\_Lairs\talks\wings\incorporate-vigilance\`. All unqualified paths resolve to `work/local/` per the wing CLAUDE.md. Maturity model JSON files are in `work/local/model/`. Working notes are in `work/local/working-notes/`.
