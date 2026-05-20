@@ -15,42 +15,63 @@ A delegation region is a named scope of work that has both a work side and an as
 - **Work side**: who performs this type of work (human → AI, the agency question)
 - **Assurance side**: what mechanism ensures this work was done correctly (the sustainability question)
 
-The vigilance trap is what you get when work is delegated without corresponding assurance delegation. The region exists; one side moved; the other didn't.
+### What the Vigilance Trap Actually Is
 
-@ai: no, the vigilance trap is what you get when the assurance side is weak. It becomes more visible when more work is done - either via delegation or scale (increase in staff or increase in lines of code). This is partly because assurance has to maintain that all existing work is not corrupted by the new work. Thus, it is a function of the product of new work and existing body of past work. This suggests that one critical element to assessing the amount of vigilance toil required is the volume of already-completed work - it is not sufficient to look even at the amount of work that is currently being done. And that's why this isn't just a problem when delegating to AI. AI will increase the rate of new work, but it doesn't impact the amount that is already there. So a sudden increase in the rate of new work for a greenfield project has low maint / vigilance cost, as we are multiplying by near-zero. Reverse is true on a brownfield one. This is the only way in which AI actually increases vigilance toil, and why it hits disporportionately on brownfield products.
+The vigilance trap is what you get when the assurance side is weak. It becomes more visible as more work flows through the system — either because work is delegated to AI (faster rate) or because team or codebase scale increases (more staff, more lines of code).
+
+The key relationship: **vigilance toil ∝ new work × existing body of work.** Assurance has to protect existing work from corruption by new work. This is multiplicative, not additive.
+
+Consequences:
+
+- **Greenfield project:** existing body is near-zero. Even a high rate of new work produces near-zero vigilance toil. The danger zone is low even with weak assurance.
+- **Brownfield codebase:** existing body is large. Even a moderate rate of new work produces high vigilance toil. Weak assurance is catastrophic.
+- **AI increases the rate of new work.** It does not change the size of the existing body. This is the only mechanism by which AI actually increases vigilance toil — and it explains why AI hits brownfield products disproportionately hard. The existing body amplifies everything.
+
+The trap therefore has two triggers, not one: delegating work without improving assurance (the obvious one), and increasing throughput in a large codebase without improving assurance first (the one that catches teams by surprise).
 
 ### The Assurance Spectrum
 
-The same spectrum applies in both variants:
+The key criterion for placing a mechanism on the spectrum: **at what point does an error become visible to anyone other than the originator?**
 
-| Level | Mechanism | Vigilance residual | Ceiling |
-|-------|-----------|-------------------|---------|
-| 4 | Structural prevention — mistake is impossible by universe design | Zero | Absolute |
-| 3 | Deterministic evaluation — code catches it reliably after the fact | Near-zero for known unknowns | Fairly low |
-| 2 | Non-deterministic guardian — AI/probabilistic detection; inherently imperfect | Reduced, not eliminated | Probabilistic cap |
-| 1 | Human review — human inspects and judges | Full; decays over time | Decays |
-| 0 | None — mistake goes undetected until consequences arrive | Full + blind | None |
+- Level 4: never propagates past the originator — it is impossible to produce visible output with that class of error
+- Level 3: propagates past the originator, then is deterministically caught for known error classes
+- Level 2: propagates past the originator, then is probabilistically detected
+- Levels 0–1: propagates until someone notices, or never
 
-Note: Level 2 (non-deterministic) cannot reach zero vigilance burden. It reduces the burden and can bootstrap level 3/4 mechanisms, but is not a permanent endpoint. Recovery-based mechanisms (levels 1-3) all leave residual vigilance; prevention-based (level 4) does not.
+| Level | Mechanism | When error becomes visible | Vigilance residual | Ceiling |
+|-------|-----------|---------------------------|-------------------|---------|
+| 4 | Prevention — mistake cannot propagate past originator within scope | Never (to others) | Zero within scope | Absolute within scope |
+| 3 | Deterministic detection — catches known error classes reliably after injection | At the check | Near-zero for known classes; zero for novel ones | Fixed to known classes |
+| 2 | Non-deterministic guardian — probabilistic detection after injection | Probabilistically at detection | Reduced; cannot be eliminated | Probabilistic cap |
+| 1 | Human review — human inspects and judges | At review (if reviewer catches it) | Full; decays as attention lapses | Decays |
+| 0 | None | At consequences | Full + blind | None |
 
-@ai: the problem with level 3 is that it is also probabilistic - it can only check for the things that we think to look for. We can't prevent novel problems. It isn't, of itself, a learning solution. And it isn't a constraint that prevents defect insertion. It simply finds a portion of those defects that have been been injected, and then guarnatees that it will eliminate those that it finds (while doing nothing about htose that it fails to detect). In that sense, level 2 & 3 are very similar. This is why I would categorize things like theorem provers and type systems as level 4, not level 3. Even though they happen after the code has been written/changed, and are thus "after the fact", they are 100% within a scope - they completely prevent errors in that scope. As long as we prevent the worker (AI or human) from disabling the system (casting a type to any, etc), then they are prevented from ever injecting a visible error. I think that it is useful to distinguish the point of error visibility as "as soon as anyone other than the originator could see it". So if we have a theorem prover or type checker that runs immediately, before we even let another AI look at the output, and that workflow is driven by deterministic code, then we are in level 4 territory, not level 3. Adjust the spectrum accordingly, and pull this out as another example (for the general case - it is not model-style-specific).
+**Why type systems and theorem provers are level 4, not level 3:** Even though they run after code is written, a type checker that runs immediately — before any other agent or human sees the output, enforced by deterministic workflow code — prevents the error from ever propagating. As long as the worker cannot bypass the system (casting to `any`, disabling the check), they cannot produce visible output with a type error. The error class is completely prevented within scope. The distinction is propagation, not timing.
+
+**Why levels 2 and 3 are more similar than they appear:** Both are probabilistic in coverage. Level 3 is deterministic about what it covers — for errors it checks for, it always catches them. But it cannot check for errors no one has thought to look for. Novel problems are blind spots for both levels 2 and 3. Level 3's advantage over level 2 is precision and reliability for known classes, not breadth.
+
+**The scope qualifier on level 4:** Every level-4 mechanism has a scope. A type system prevents type errors within the type system's scope, not logic errors. AST refactoring tools prevent behavior changes within refactoring operations, not design mistakes. Level-4 guarantees are always scoped; they cannot be universal. The goal is to accumulate scoped guarantees until the remaining uncovered area is small and well-understood.
+
+**Note on the recovery vs. prevention ceiling:** Prevention (level 4) can reach zero vigilance within its scope. Detection mechanisms (levels 2–3) cannot — they require vigilance over whatever they miss. This is a fundamental ceiling difference between prevention-based and detection-based assurance strategies.
 
 ### What a Gap Looks Like
 
-A gap is any region where the work side is further along the delegation spectrum than the assurance side can support. Gaps produce vigilance toil in direct proportion to the volume of work flowing through the region times the total volume of the body of work that must be protected against disruption by the new work.
+A gap is any region where the work side is further along the delegation spectrum than the assurance side can support. Given the multiplicative relationship above:
 
-**Gaps exist even without AI.** Teams in chronic "maintenance mode" or "keeping the lights on" have gaps in their human-work delegation regions — usually code changes, architecture decisions, or test coverage. The foot-guns they fight daily are the symptom. The gap is the cause.
+**Gap cost = weakness of assurance × rate of new work × size of existing body**
+
+Teams in chronic "maintenance mode" have high existing body, moderate new work rate, and low assurance across most regions. That product is large. The maintenance burden is not technical debt in the abstract — it is the gap cost, accumulating.
 
 ### Measuring a Region
 
-For any delegation region, two measurements:
+For any delegation region:
 
 | Measurement | Question | Scale |
 |-------------|----------|-------|
 | Work delegation | Who performs this? | Human → AI (maps to agency levels) |
 | Assurance level | What ensures correctness? | 0–4 (spectrum above) |
 
-Safe delegation: work delegation level and assurance level are matched. Moving work delegation without moving assurance creates a gap.
+Safe delegation: work delegation level and assurance level are matched. Moving work delegation without moving assurance widens the gap.
 
 ---
 
@@ -67,40 +88,41 @@ Safe delegation: work delegation level and assurance level are matched. Moving w
 | Zone name | Behavioral safety of refactorings |
 | Mistake class covered | Refactorings that change behavior |
 | Work delegation | AI executes refactoring steps (A3) |
-| Assurance level | 4 — structural prevention (AST tools only; no edit-file access) |
+| Assurance level | 4 — prevention (AST tools only; no edit-file access; enforced by workflow) |
 | What it does NOT cover | Whether the refactoring was the right design choice |
 | Agency unlock | Agent can execute refactoring without per-step human review |
-| Decay risk | Low — mechanism is tooling, not discipline |
+| Decay risk | Low — mechanism is tooling and workflow enforcement, not discipline |
 
 **A partial portfolio at A3:**
 
 | Zone | Work | Assurance | Gap? |
 |------|------|-----------|------|
-| Behavioral safety of refactorings | AI | Structural (4) | No |
-| Test structure | AI | Structural (4) — recipe tool | No |
-| Migration data safety | AI | Structural (4) — framework | No |
+| Behavioral safety of refactorings | AI | Prevention (4) — AST tools | No |
+| Test structure | AI | Prevention (4) — recipe tool in workflow | No |
+| Migration data safety | AI | Prevention (4) — migration framework | No |
+| Type safety of new code | AI | Prevention (4) — strict TS enforced before commit | No |
 | Migration semantic correctness | AI | Human review (1) | **Yes** |
 | Architecture decisions | Human | None (0) | **Yes — even at human agency** |
-| Code changes (new code) | AI | Deterministic (3) — type system + tests | Partial |
+| Test coverage selection | AI | Non-det guardian (2) — coverage scanner | Partial |
 
-**Visible from a portfolio view:**
+**What it makes visible:**
 - Which mistake classes have been addressed and which haven't
-- Whether a team is actually advancing or just feeling like they are
-- Where to invest next based on where the remaining gaps are highest-risk
-- Decay risk per zone (discipline-based zones need maintenance)
+- Whether a team is advancing or just feeling like they are
+- Where to invest next based on remaining gap × throughput × codebase size
+- Decay risk per zone (discipline-based zones drift; tooling-enforced zones hold)
 
 **What it makes visible about the maintenance trap:**
-Teams without AI can audit their portfolio too. A team in maintenance mode typically has a portfolio of zero or one: maybe CI/CD (level 3) but nothing else. Every other region is at level 0 or level 1. The foot-guns they fight are the uncovered regions producing defects. The investment path is the same as for AI delegation — just with fewer available mechanisms at level 4.
+A team in maintenance mode auditing their portfolio typically finds: CI/CD (level 3 at best) and human review everywhere else. Most regions at level 0–1. Given a large existing body, the gap cost is enormous. The foot-guns are not bad luck — they are the mathematical product of weak assurance × large codebase × ongoing new work. The investment path (moving regions from level 1 to level 4) is the same whether or not AI is involved.
 
 **Opportunities:**
-- Maximally flexible — teams in unusual domains can create zones that don't exist in any taxonomy
+- Maximally flexible — unusual domains can create zones not in any taxonomy
 - Directly actionable: "add X to your portfolio" rather than "improve your sustainability score"
-- Honest about progress: binary per zone, not a dial
+- Honest about progress: binary per zone, not a continuous dial
 - Compositional: zones stack; coverage grows incrementally
 
 **Challenges:**
-- No comprehensive view — you don't know what you don't know. A team may feel good about their portfolio while missing entire mistake classes.
-- Hard to compare across teams — different portfolios, different taxonomies
+- No comprehensive view — you don't know what you don't know; critical regions may be entirely missing
+- Hard to compare across teams — different taxonomies, different regions
 - Doesn't guarantee coverage — you might invest in the wrong zones while leaving critical ones empty
 
 ---
@@ -109,73 +131,75 @@ Teams without AI can audit their portfolio too. A team in maintenance mode typic
 
 **The approach**: All regions are identified up front, using a shared taxonomy derived from the responsibility matrix. Each region gets the same measurement applied. Drill-down for each region lists specific options for improving work delegation or assurance level.
 
-**What makes it structured**: The regions are exhaustive and consistent. You can't miss a region because it's already in the map. The trade-off is that you're using our taxonomy rather than yours.
+**What makes it structured**: The regions are exhaustive and consistent. You cannot miss a region because it is already in the map. The trade-off is that you are using a shared taxonomy rather than inventing your own.
 
 **The region taxonomy (from responsibility matrix + assurance expansion):**
 
-Each existing responsibility splits into its work side and assurance side. Missing pairs are added. Sample:
+Each existing responsibility splits into its work side and assurance side. Missing pairs are added.
 
 | Region | Work side | Assurance side |
 |--------|-----------|----------------|
 | Code changes: refactoring | Who refactors? | What prevents behavior change? |
-| Code changes: new code | Who writes new code? | What ensures correctness? |
+| Code changes: new code | Who writes? | What ensures type/structural correctness? |
+| Code changes: logic correctness | Who writes? | What detects logic errors? |
 | Test creation: structure | Who structures tests? | What ensures recipe compliance? |
 | Test creation: coverage | Who identifies what to test? | What detects blind spots? |
-| Architecture: decisions | Who makes decisions? | What ensures consistency over time? |
-| Architecture: drift | Who detects drift? | What prevents drift from compounding? |
+| Architecture: decisions | Who decides? | What ensures consistency over time? |
+| Architecture: drift | Who detects drift? | What prevents compounding? |
 | Migration: execution | Who executes? | What prevents data loss? |
 | Migration: mapping | Who defines the mapping? | What ensures semantic correctness? |
+| Planning: structure | Who plans? | What ensures all required elements addressed? |
+| Planning: grounding | Who validates? | What ensures grounding in evidence? |
 | ... | ... | ... |
 
-**A structured map view:**
+**A structured map view (sample at A3):**
 
-| Region | Work level | Work performer | Assurance level | Assurance mechanism | Gap? |
-|--------|-----------|---------------|-----------------|---------------------|------|
-| Refactoring | A3 | AI | 4 | AST tools | No |
-| New code | A3 | AI | 3 | Type system + tests | Partial |
-| Test structure | A3 | AI | 4 | Recipe tool | No |
-| Test coverage | A2 | Human-guided AI | 1 | Human review | **Yes** |
-| Architecture decisions | A1 | Human + AI review | 0 | None | **Yes** |
-| Architecture drift | A3 | AI monitor | 2 | Non-det guardian | Partial |
-| Migration execution | A3 | AI | 4 | Migration framework | No |
-| Migration mapping | A3 | AI | 1 | Human review | **Yes** |
+| Region | Work | Assurance | Gap? |
+|--------|------|-----------|------|
+| Refactoring | A3 AI | Prevention (4) — AST tools | No |
+| New code: type safety | A3 AI | Prevention (4) — strict TS in workflow | No |
+| New code: logic correctness | A3 AI | Detection (3) — tests | Partial (novel classes blind) |
+| Test structure | A3 AI | Prevention (4) — recipe tool | No |
+| Test coverage | A2 human-guided AI | Non-det (2) — scanner | **Gap — partial** |
+| Architecture decisions | A1 human | None (0) | **Gap** |
+| Architecture drift | A3 AI monitor | Non-det (2) — guardian | Partial |
+| Migration execution | A3 AI | Prevention (4) — framework | No |
+| Migration mapping | A3 AI | Human review (1) | **Gap** |
+| Planning structure | A2 AI | Detection (3) — planning tool checks fields | No |
+| Planning grounding | A2 AI | Human review (1) | **Gap** |
 
 **Drill-down for a gap region (Test coverage):**
 
-Options to improve work delegation:
-- Provide AI with pattern library of common blind spots per domain
-- Run two independent AI coverage assessments with different prompts; take union
-- Have AI generate coverage hypothesis then have human confirm/extend
+Current state: A2 work delegation, level-2 assurance (non-deterministic scanner).
 
-Options to improve assurance level (currently 1 → target 3 or 4):
-- Session-based exploratory testing on a cadence; findings become deterministic test recipes
-- Non-deterministic guardian scans for coverage patterns; flags regions without business-concept tests
-- Deterministic coverage tool verifies recipe compliance (structure only, not semantics)
+Options to improve work delegation to A3:
+- Provide AI with domain-specific blind-spot library; run two independent coverage assessments with different prompts; take union
+- Have AI generate coverage hypothesis; human confirms/extends; AI implements
+
+Options to improve assurance level (2 → 3 or 4):
+- Session-based exploratory testing on cadence; findings become deterministic recipe additions (bootstraps from level 2 to level 3)
+- Deterministic tool verifies recipe structural compliance before output is shared (reaches level 4 for recipe compliance scope)
 
 **What it makes visible about the maintenance trap:**
-The structured map applies to human-only teams. A team in maintenance mode gets the same map filled in with mostly low work-delegation levels (A1-A2) and mostly low assurance levels (0-1). The map shows exactly which regions are producing their foot-guns. Investments in the human universe (testing discipline, type systems, code review recipes, architectural decision records) show up as assurance level improvements even before any AI agency is added.
+The structured map applies to human-only teams directly. A team in maintenance mode fills in mostly A1–A2 work with mostly level 0–1 assurance. The map shows exactly which regions are generating their foot-guns. Given a large brownfield codebase, the gap cost (weak assurance × high existing body × ongoing new work) explains the chronic maintenance burden structurally. The investment path — moving assurance levels up — is identical to the AI delegation investment path. The levers available in the human universe are fewer, but the structure is the same.
 
 **Opportunities:**
 - Comprehensive — no gaps hidden by incomplete self-assessment
-- Consistent measurement across teams — enables comparison and benchmarking
+- Consistent measurement across teams — enables comparison
 - Drill-down actionability — each gap has a menu of specific options
-- Makes the maintenance trap structurally visible — not just "we have tech debt" but "these specific regions have assurance level 0"
+- Makes the maintenance trap structurally visible and quantifiable
+- Applies to human-only teams, mixed teams, and AI-heavy teams identically
 
 **Challenges:**
-- Taxonomy requires maintenance — what are all the regions? Who decides? Boundaries are fuzzy.
-- May feel prescriptive — teams in unusual domains may not see their specific situation in the taxonomy
-- Large surface area — 20+ regions × 2 sides = a lot to fill in
-- Assurance level placement requires shared calibration
+- Taxonomy requires maintenance and agreement on boundaries
+- May feel prescriptive; unusual domains may not fit cleanly
+- Large surface area at full scale
+- Assurance level placement requires calibration
 
 ---
 
 ## Relationship Between Variants
 
-The structured map and the portfolio are the same model at different levels of openness:
+Use the structured map to discover what you are missing. Use the portfolio to track what you are investing in. The structured map is the taxonomy; the portfolio is your current position within it.
 
-- The structured map gives you the canonical taxonomy of regions; the portfolio lets you define your own
-- Both use the same assurance spectrum for measurement
-- Both identify gaps the same way (work delegation ahead of assurance level)
-- A team can use the structured map to find their gaps and build a portfolio of investments to close them
-
-In practice: use the structured map to find what you don't know; use the portfolio to track what you're investing in.
+Both use the same assurance spectrum and gap measurement. Both show the maintenance trap using the same mechanism. The difference is open vs. closed world — invention vs. exhaustiveness.

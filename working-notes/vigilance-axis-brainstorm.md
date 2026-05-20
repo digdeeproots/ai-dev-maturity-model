@@ -89,6 +89,29 @@ The safe path is a narrow diagonal through the grid. The dangerous region is lar
 
 Key constraint: human executive function cannot scale vigilance. Even a small sustained vigilance requirement will eventually fail. The only stable states are those where correctness assurance has been transferred to a system that doesn't fatigue.
 
+### Vigilance Toil Is Multiplicative, Not Additive
+
+Vigilance toil is not proportional to the rate of new work alone. It is proportional to **new work × existing body of work**. Assurance must protect the existing body from corruption by each new change. The more that already exists, the more expensive each unit of new work becomes to assure.
+
+Consequences:
+- **Greenfield:** existing body ≈ 0, so vigilance toil ≈ 0 regardless of throughput. Weak assurance is survivable.
+- **Brownfield:** existing body is large, so vigilance toil is large regardless of how fast you're moving. Weak assurance is catastrophic.
+- **AI increases the rate of new work; it does not change the existing body.** This is the only mechanism by which AI increases vigilance toil. It explains why AI hits brownfield products disproportionately: the existing body amplifies everything. A team with a large codebase that doubles their throughput via AI has doubled their vigilance toil cost. If their assurance was already marginal, it breaks immediately.
+
+This also explains the "maintenance trap" precisely: teams with large codebases and weak assurance end up in a steady state where most capacity is consumed by vigilance toil (maintenance, defect response) rather than new work. AI doesn't solve this — it makes it worse unless assurance is addressed first.
+
+### The Error Visibility Criterion for Prevention (Level 4)
+
+The key criterion for whether a mechanism is level 4 (prevention) is: **does the error propagate past the originator?** Not: does it happen before or after code is written.
+
+A type system or theorem prover runs after code is written — but if it runs immediately, before any other agent or human sees the output, and is enforced by deterministic workflow code, then the error cannot propagate. The originator cannot produce visible output with that class of error. That is prevention, not detection.
+
+The escape hatch matters: if the worker can bypass the mechanism (casting to `any`, disabling the check, skipping the workflow step), the level drops. Prevention requires that bypassing is itself prevented or detectable.
+
+This means: type systems, theorem provers, AST-only refactoring tools, and constraint-enforcing workflow gates are all level 4 — even though they operate "after" code generation. Tests and linters are level 3 — they detect known classes deterministically but cannot prevent novel problems and do not prevent propagation to others who might see the code before checks run.
+
+Level 3 and level 2 are more similar than they appear: both are probabilistic in coverage (only known classes or probabilistic detection). Level 3's advantage is precision and reliability for what it covers, not breadth.
+
 ### The Zero-Risk Threshold
 
 "Low risk" requires vigilance (some fraction of the time, something goes wrong and you need to catch it). "Zero risk within a bounded scope" does not — once you've engineered a class of mistakes out of existence, you spend nothing on them. The goal is to accumulate zero-risk zones so the vigilance budget is spent only where it must be.
