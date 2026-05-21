@@ -537,14 +537,14 @@ const boardStyle = computed(() => ({
 
 .board {
   padding: 32px 40px 40px;
-  min-height: 100vh;
+  height: 100vh;
+  box-sizing: border-box;
   transition: opacity 380ms, filter 380ms, transform 380ms cubic-bezier(0.4,0,0.2,1);
   transform-style: preserve-3d;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto auto;
+  grid-template-rows: 1fr 1fr;
   gap: 32px 40px;
-  align-content: start;
 }
 
 .board-dimmed {
@@ -555,6 +555,9 @@ const boardStyle = computed(() => ({
 
 .domain-section {
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .domain-label {
@@ -568,15 +571,18 @@ const boardStyle = computed(() => ({
 }
 
 .wt-row {
+  flex: 1;
   display: flex;
+  flex-direction: column;
   gap: 16px;
-  flex-wrap: wrap;
+  min-height: 0;
 }
 
 /* ── Work type card (overview) ────────────────────────────────── */
 
 .wt-card {
-  width: 272px;
+  flex: 1;
+  min-height: 0;
   background: #fff;
   border-radius: 14px;
   overflow: hidden;
