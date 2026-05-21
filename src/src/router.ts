@@ -5,6 +5,9 @@ import PrimaryAxisView from './views/PrimaryAxisView.vue'
 import ProtoA from './views/ProtoA.vue'
 import ProtoB from './views/ProtoB.vue'
 import ProtoC from './views/ProtoC.vue'
+import ProtoD from './views/ProtoD.vue'
+import ProtoE from './views/ProtoE.vue'
+import ProtoIndex from './views/ProtoIndex.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -28,6 +31,9 @@ const router = createRouter({
     { path: '/proto-a', name: 'proto-a', component: ProtoA },
     { path: '/proto-b', name: 'proto-b', component: ProtoB },
     { path: '/proto-c', name: 'proto-c', component: ProtoC },
+    { path: '/proto-d', name: 'proto-d', component: ProtoD },
+    { path: '/proto-e', name: 'proto-e', component: ProtoE },
+    { path: '/prototypes', name: 'prototypes', component: ProtoIndex },
   ]
 })
 
