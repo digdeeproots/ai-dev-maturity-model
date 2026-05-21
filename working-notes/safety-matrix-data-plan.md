@@ -469,10 +469,10 @@ export interface PatternsData {
       ]
     },
     {
-      "id": "test_recipe_workflow",
-      "name": "Test Recipe Workflow",
-      "tagline": "Inject a deterministic recipe at test-write time that scaffolds correct structure, eliminating mock-based patterns before they are established.",
-      "description_markdown": "Inject a deterministic recipe at test-write time specifying structure — which helpers to use, which dependencies to substitute, how to name scenarios. The AI follows the recipe rather than generating from its default pattern. Combine with Nullables to eliminate mocks entirely.",
+      "id": "default_override_workflow",
+      "name": "Default Override Workflow",
+      "tagline": "The orchestration layer injects the desired pattern before AI starts, overriding AI's strong defaults before they produce problems at scale.",
+      "description_markdown": "AI applies strong default patterns automatically. The orchestration layer intercepts the task before AI starts and injects the desired pattern into AI's context. AI then works within the injected pattern. This is the input side of the Determinism Sandwich; it pairs well with template expansion or narrow tools as the output side. The injected pattern is debugged once and applied consistently.\n\nApply wherever AI has a strong default that diverges from the desired pattern: test writing, code structure, planning, documentation.",
       "worry_examples": [
         "adaptability_reduction_test_duplication",
         "consistency_violation_in_code",
@@ -621,9 +621,3 @@ In `router/index.ts`, add:
 The Overview landing page gets a new entry linking to `/safety` alongside the existing primary axis and fate choices links.
 
 The new data files have no dependency on the existing `model/` files. The two models are independent.
-
----
-
-## Open Question Before Encoding
-
-**Bootstrapped safety levels**: Some options in the source material have a safety level that is not a fixed point on the ladder but a trajectory. The behavioral matrix lists one monitoring option as "Drift to deterministic check pipeline" with a safety level of "Bootstrapped to Deterministic." This means the option starts at Probabilistic coverage and systematically drives coverage up to Deterministic over time — it is not immediately effective at the higher level. The current `SafetyOption` schema handles this with a `safety_level_note` field: `safety_level: 3, safety_level_note: "Bootstrapped"` (meaning "reaches Deterministic, but via a process rather than immediately"). An alternative is a `from_level` / `to_level` pair that explicitly captures the starting point and destination. Which do you prefer?

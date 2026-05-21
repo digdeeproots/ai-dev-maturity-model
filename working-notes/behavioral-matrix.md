@@ -1044,133 +1044,134 @@ Business stake: security failures are catastrophic and irreversible. One success
 
 ## Patterns
 
-General-applicability patterns that appear across multiple worries and work types. Each is a structural approach to achieving a safety level — not a single tool, but a reusable mechanism.
+General-applicability patterns that appear across multiple worries and work types. Each is a structural approach to achieving a safety level.
 
 ---
 
 ### AI Problem Scout Pipeline {#ai-problem-scout-pipeline}
 
-**The problem**: many worry domains are too large to enumerate upfront. You cannot write comprehensive deterministic guards before you know what classes of problems exist.
+**The problem**: Safety coverage defined upfront misses failure classes that have not yet been observed. You cannot write automated guards for problems you have not named.
 
-**The pattern**: run a probabilistic AI scout continuously to find new problem instances. When the scout finds something, abstract it into a named problem class and build a deterministic guard for that class. The scout then shifts focus to what the guards don't yet cover. Over time, guards accumulate and the deterministic zone expands.
+**The pattern**: Run a probabilistic AI scout continuously to find new problem instances. When the scout finds something, abstract it into a named failure class and build a deterministic guard for that class. Run the deterministic guards first, so the scout sees only what slips through them. Guards accumulate; the deterministic zone expands.
 
-**The two rows**: every option table where this pattern applies has two entries:
-- *AI problem scout* — Probabilistic. Finds new candidate classes. Without the workflow below, this row alone stays Probabilistic.
-- *Deterministic guards from scout findings* — Deterministic. Each guard covers one class permanently.
+**The two rows**: Every option table where this pattern applies has two entries:
+- *AI problem scout*: Probabilistic. Finds new candidate classes. Without the workflow below, this row stays Probabilistic.
+- *Deterministic guards from scout findings*: Deterministic. Each guard covers one class permanently.
 
-**The workflow**: (1) Scout finds a candidate problem instance. (2) Human (or AI) abstracts it into a named class. (3) A deterministic check — test, alert, linter rule, gate — is written for that class. (4) The guard joins the permanent check pipeline. (5) Scout runs again, now focusing on what guards don't cover.
+**The workflow**: (1) Scout finds a candidate problem instance. (2) Human and AI collaboration abstracts it into a named class. (3) Collaboration determines which aspect of the agents' universe could most effectively safeguard this class. (4) Collaboration writes a deterministic element: tool, workflow, check script, test, context limit, pattern abstraction, alert, linter rule, or gate. (5) The new element joins the universe at the right times. (6) Scout runs again, now seeing only what slips through.
 
-**Applies to**: monitoring blind spots, evaluation coverage gaps, capability regression (via exploratory testing that becomes permanent tests), documentation-code misalignment (via AI alignment scans that become linter rules or workflow gates), decision inconsistency.
+**The safety effect**: The scout row is Probabilistic (2). Each guard row is Deterministic (3). Coverage compounds as guards accumulate.
+
+**Applies to**: Monitoring blind spots, evaluation coverage gaps, capability regression (via exploratory testing that becomes permanent tests), documentation-code misalignment (via AI alignment scans that become linter rules or workflow gates), decision inconsistency.
 
 ---
 
 ### Determinism Sandwich {#determinism-sandwich}
 
-**The problem**: AI given unconstrained access has an unbounded mistake space.
+**The problem**: An agent given unconstrained access to a system can make mistakes anywhere in that system. The mistake surface equals the full system.
 
-**The pattern**: wrap AI creative work between deterministic code on both sides. Deterministic pre-processing molds the input space — scoping context, preparing scaffolding, selecting tools, constraining the decision surface to just the creative question. The AI makes the creative decision. Deterministic post-processing executes and validates the output — expanding templates, running checks, verifying invariants, integrating with the rest of the system.
+**The pattern**: Place AI creative work between two layers of deterministic code. Deterministic pre-processing constrains the decision surface: it scopes context, prepares scaffolding, selects tools, and narrows the question to exactly what requires creative judgment. The AI makes the creative decision. Deterministic post-processing executes and validates the output: expanding templates, running checks, verifying invariants, integrating with the rest of the system. The AI touches only the creative decision; everything else stays in deterministic code.
 
-**The safety effect**: AI's surface of possible mistakes is bounded on both sides. The AI cannot corrupt what it cannot touch. Deterministic code handles the dangerous operations.
+**The safety effect**: The AI cannot corrupt what it cannot touch. Within the sandwich, execution correctness reaches Carefree (5).
 
-**Applies to**: code generation (deterministic scaffold → AI writes function body → deterministic expansion), migration creation (architecture inputs → AI defines migration → deterministic execution library), test scaffolding (recipe injection → AI writes test scenarios → recipe validation), planning (workflow field requirements → AI thinking → deterministic completion check).
+**Applies to**: Code generation (deterministic scaffold, AI writes logic, deterministic expansion); migration creation (architecture inputs, AI defines the migration, deterministic execution library); test scaffolding (recipe injection, AI writes scenarios, recipe validation); planning (required field structure, AI thinking, deterministic completion check).
 
 ---
 
 ### Narrow Tools {#narrow-tools}
 
-**The problem**: general-purpose tools (edit-file, raw git, arbitrary writes) make every part of the system reachable from every agent.
+**The problem**: An agent with general-purpose access can make any kind of mistake. The mistake surface equals the full capability of the tools provided.
 
-**The pattern**: give each agent only the minimal tools for its current task. A refactoring agent gets AST tools but no edit-file. A planning agent gets a planning tool, not free-form notes. A git-using agent gets a movement tool that enforces branching rules, not raw git. Each tool gap is a class of mistakes that becomes structurally impossible.
+**The pattern**: Give each agent only the minimal tools its current task requires. A refactoring agent works through transformation tools that guarantee behavioral safety, with no ability to free-edit files. An architecture agent works through a structured planning tool, with no ability to write free-form notes. A source-control agent works through a workflow-aware commit tool, with no access to raw version control commands. Each tool gap is a class of mistakes that becomes structurally impossible.
 
-**The safety effect**: Prevention (4) or Carefree (5) within the constrained scope — the agent cannot make certain mistakes because the tools for those mistakes don't exist in its world.
+**The safety effect**: Prevention (4) or Carefree (5) within the constrained scope. Every gap in the tool set is a category of mistakes the agent cannot make.
 
-**Applies to**: capability regression via refactoring (AST tools), consistency violation via architecture decisions (planning tool), scope enforcement gap (file-type and access restrictions), deployment failure (declarative deployment tools instead of scripted commands).
+**Applies to**: Capability regression via refactoring (safe transformation tools), consistency violation via architecture decisions (planning tool), scope enforcement gap (file-type and access restrictions), deployment failure (declarative deployment tools instead of scripted commands).
 
 ---
 
 ### Fork and Specialize {#fork-and-specialize}
 
-**The problem**: a single agent cannot simultaneously implement a feature, critique the design, define correctness criteria, and check for security issues — the roles conflict and bias each other.
+**The problem**: A single agent cannot simultaneously implement a feature, critique the design, define correctness criteria, and check for security issues. The roles conflict and bias each other.
 
-**The pattern**: share a context-loading phase between multiple agent invocations. After the shared read, fork: each agent gets the same starting memory but different tools, goals, and perspectives. Agents are blind to each other's post-fork thinking. Pit their independent outputs against each other — disagreements surface genuine uncertainty or risk.
+**The pattern**: Share a context-loading phase across multiple agent invocations. After the shared read, fork: each agent gets the same starting context but different tools, goals, and perspectives. Agents are blind to each other's post-fork thinking. Comparing their independent outputs surfaces genuine uncertainty or risk wherever they disagree.
 
-**The safety effect**: Probabilistic (2) to Deterministic (3) depending on the number of forks and how outputs are reconciled. Independent forks share AI biases less than a single agent switching roles.
+**The safety effect**: Probabilistic (2) to Deterministic (3) depending on how outputs are reconciled. Independent forks share AI biases less than a single agent switching roles.
 
-**Applies to**: adaptability regression (design critique fork vs. implementation fork), evaluation coverage gaps (adversarial judge forks run with different prompts), capability regression (correctness-criteria fork runs before the implementation fork and constrains it), decision inconsistency (independent architecture review fork).
+**Applies to**: Adaptability regression (design critique fork alongside implementation fork), evaluation coverage gaps (adversarial judge forks with different prompts), capability regression (correctness-criteria fork before the implementation fork, constraining what gets built), decision inconsistency (independent architecture review fork).
 
 ---
 
 ### Scope Limiter {#scope-limiter}
 
-**The problem**: reducing the probability of a mistake is hard; reducing the scope of impact when one occurs is often much easier.
+**The problem**: Reducing the probability of a mistake is hard. Reducing the consequences when one occurs is often much easier.
 
-**The pattern**: before delegation, bound what can go wrong. Feature flags route only a canary cohort to new behavior. Narrow task scope limits how far an agent can go before a human checkpoint. Immutable infrastructure replaces rather than patches. The `.skip.until()` marker prevents a test-writing agent from attempting premature implementation. The mistake rate stays constant; the worry surface shrinks.
+**The pattern**: Before delegation, bound what can go wrong. Feature flags route only a small cohort to new behavior; a mistake rolls back within minutes. Narrow task scope keeps each agent invocation short, so the most it can do before a checkpoint is small. Immutable infrastructure is replaced rather than patched, preventing accumulated drift. The mistake rate stays constant; the potential damage per mistake shrinks.
 
-**The safety effect**: Prevention (4) — mistakes cannot propagate past the defined scope boundary.
+**The safety effect**: Prevention (4). Mistakes cannot propagate past the defined scope boundary.
 
-**Applies to**: capability regression (feature flags, canary deployments), deployment failure (canary), missing escalation conditions (narrow task scope as circuit breaker), scope enforcement gap (tooling restrictions on file and system access).
+**Applies to**: Capability regression (feature flags, canary deployments), deployment failure (canary releases), missing escalation conditions (narrow task scope as circuit breaker), scope enforcement gap (access restrictions on file and system access).
 
 ---
 
 ### Nullables Pattern {#nullables-pattern}
 
-**The problem**: mock-based testing couples tests to implementation details, making the codebase fragile to change. The mock count is a direct proxy for future change cost.
+**The problem**: Tests that depend on infrastructure details are coupled to that infrastructure. Every infrastructure change breaks tests that had nothing to do with the change. The coupling count is a direct proxy for future change cost.
 
-**The pattern**: wrap dependencies behind interfaces satisfiable by either a real implementation or a lightweight in-memory stand-in. Tests use the stand-in without mocking. When the dependency changes, tests don't break because they never depended on mock setup. The coupling count — the primary worry surface for adaptability reduction — approaches zero.
+**The pattern**: Wrap annoying dependencies (slow, non-deterministic, stateful) behind interfaces satisfiable by either a real implementation or a no-op in-memory stand-in. Tests use real dependencies for everything that is not annoying, and the stand-in for the annoying steps. When the dependency changes, tests do not break because they never depended on mock setup. The coupling count, the primary measure of future change cost, approaches zero.
 
-**The safety effect**: Deterministic (3) for adaptability in touched code; Carefree (5) for test structure when combined with Test Recipe Workflow.
+**The safety effect**: Deterministic (3) for adaptability in touched code; Carefree (5) for test structure when combined with Default Override Workflow.
 
 **Applies to**: adaptability reduction in touched code, adaptability reduction in vigilance mechanisms (test duplication), consistency violation in code.
 
 ---
 
-### Test Recipe Workflow {#test-recipe-workflow}
+### Default Override Workflow {#default-override-workflow}
 
-**The problem**: AI defaults to mock-based, structurally duplicated tests and will not reach for better patterns without explicit guidance — the default produces the duplication problem at scale.
+**The problem**: AI applies strong default patterns automatically. For tests, the default is mocks and duplicated setup, which compounds into brittle test suites at the throughput of the AI. For code structure, the default is whatever was most common in training data, which may not match the codebase's conventions. Any pattern the AI repeats without thinking will be produced at scale.
 
-**The pattern**: inject a deterministic recipe at test-write time that specifies structure — which helpers to use, which dependencies to substitute, how to name scenarios. The AI follows the recipe rather than generating from its default pattern. The recipe is debugged once and applied consistently. Combine with Nullables to eliminate the need for mocks entirely.
+**The pattern**: The orchestration layer intercepts the task before AI starts and injects the desired pattern into AI's context. AI then works within the injected pattern. This is the input side of the Determinism Sandwich; it pairs well with template expansion or narrow tools as the output side, which enforce the structure the injected pattern established. The injected pattern is debugged once and applied consistently.
 
-**The safety effect**: Prevention (4) for all tests written through the tool; Carefree (5) for the structural properties the recipe governs.
+**Where to apply it**: Any task where AI has a strong default that diverges from the desired pattern. Test writing (inject a test recipe before AI writes a single test); code structure (inject architectural examples before AI writes a new module); planning (inject required fields before AI drafts a plan); documentation (inject the template before AI fills it in).
 
-**Applies to**: adaptability reduction in vigilance mechanisms (test duplication), consistency violation in code, capability regression (recipe-level coverage definition).
+**The safety effect**: Prevention (4) for structural properties the injected pattern governs, across all work done through the workflow.
+
+**Applies to**: Adaptability reduction in vigilance mechanisms (test duplication), consistency violation in code, capability regression (recipe-level coverage definition).
 
 ---
 
 ### Progressive Structure {#progressive-structure}
 
-**The problem**: a complex recurring output has variable content (AI's job) and fixed structure (deterministic code's job), but the structure is not obvious at the start.
+**The problem**: A complex recurring output has both fixed structure, which deterministic code can guarantee, and variable content, which requires AI judgment. Until the structure is encoded, AI handles both, and structural consistency is probabilistic.
 
-**The pattern**: begin with AI generating loose content; observe what parts always take the same shape; encode that shape as a template or schema; have AI fill only the variable parts; assemble deterministically. Each structuring step moves a class of decisions from probabilistic to deterministic. Repeat until AI is responsible only for genuinely variable content.
+**The pattern**: Begin with AI generating loose content. Observe what parts always take the same shape. Encode that shape as a template or schema, and have AI fill only the variable parts. Assemble deterministically. Each structuring step moves a class of decisions from probabilistic to deterministic. The progression ends when AI handles only genuinely variable content.
 
-**The safety effect**: moves from Hope (0) toward Prevention (4) as more structure is encoded.
+**The safety effect**: Moves from Hope (0) toward Prevention (4) as more structure is encoded. Each step is a permanent reduction in structural risk.
 
-**Applies to**: consistency violation in output structure, documentation-code misalignment (doc generation), process enforcement gap (workflow structure), decision inconsistency (planning structure).
+**Applies to**: Consistency violation in output structure, documentation-code misalignment (doc generation), process enforcement gap (workflow structure), decision inconsistency (planning structure).
 
 ---
 
 ### Defect Stream Feedback Loop {#defect-stream-feedback-loop}
 
-**The problem**: defects are treated as individual events rather than signals about systemic hazards.
+**The problem**: Defects are treated as individual events to resolve rather than signals about conditions that made them likely. The conditions persist; new defects of the same class continue to arrive.
 
-**The pattern**: when something fails, don't just fix the instance — find the hazard that made the mistake likely. Make it slightly less likely, slightly smaller in impact, or slightly easier to detect. Apply this to every defect. Small investments compound over time. AI enables the consistency required: the same workflow fires for every defect, with no human fatigue or drift.
+**The pattern**: When something fails, find the hazard that made the failure likely. Make it slightly less likely, slightly smaller in impact, or slightly easier to detect next time. Apply this to every failure, consistently, without fatigue or drift. Each improvement is small; compounded over every defect across a codebase, the reduction is substantial. AI enables the consistency this requires.
 
-**The safety effect**: each improvement permanently moves the relevant worry from a lower safety level to a higher one for that defect's class.
+**The safety effect**: Each improvement permanently raises the safety level for that failure class. Compounded across all improvements over time, the effect is large.
 
-**Applies to**: any worry across any work type. This is the general mechanism for systematically improving safety levels over time and expanding the deterministic zone.
+**Cross-session telemetry variant**: Rather than responding to individual failures, collect telemetry across many agent sessions and apply the AI Problem Scout Pipeline to the session data. The scout analyzes the sessions, abstracts recurring failures into named classes, and proposes workflow improvements for each class. A single sweep over a large set of sessions surfaces patterns no individual defect report would reveal, and the resulting workflow improvements compound across all future sessions.
+
+**Applies to**: Any worry across any work type. This is the general mechanism for systematically improving safety levels over time.
 
 ---
 
 ### Dead Drops {#dead-drops}
 
-**The problem**: synchronous agent-to-agent call chains are hard to pause, inspect, or redirect — a bad output propagates immediately to the next step.
+**The problem**: Agents in a direct call chain pass outputs immediately to the next step. A bad output propagates before anyone can stop it, and the pipeline cannot be paused or redirected without breaking it.
 
-**The pattern**: agents communicate via fully async message passing rather than synchronous calls. Each agent deposits its output into a named location; the orchestration layer routes it to the next agent independently. Every deposit point is a potential inspection or redirection point. A human can pause at any drop, examine the state, and redirect before the next agent fires.
+**The pattern**: Agents deposit outputs into a named location. The orchestration layer routes them to the next agent independently. Every deposit point is a checkpoint a human can inspect and redirect before the next step runs. The pipeline can be paused, the state examined, and the next agent reassigned or its input corrected.
 
-**The safety effect**: Prevention (4) for oversight mechanism gap — bad outputs can be caught at every drop point before propagating.
+**The safety effect**: Prevention (4) for the oversight mechanism gap. Bad outputs can be intercepted at every checkpoint before they propagate.
 
-**Applies to**: oversight mechanism gap, scope enforcement gap, missing escalation conditions, any multi-agent pipeline where intermediate results need to be inspectable.
-
-
-
-
-
+**Applies to**: Oversight mechanism gap, scope enforcement gap, missing escalation conditions, any multi-agent pipeline where intermediate results need to be inspectable.
