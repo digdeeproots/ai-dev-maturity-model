@@ -96,6 +96,10 @@ function closeWorry() {
   setTimeout(() => { selectedRef.value = null }, 360)
 }
 
+function handleMainClick() {
+  if (worryVisible.value) closeWorry()
+}
+
 // Resolved worry for the selected ref
 const selectedWorry = computed(() =>
   selectedRef.value ? worryMap.value[selectedRef.value.worry_id] : null
@@ -149,9 +153,9 @@ const boardStyle = computed(() => ({
             :key="wt.id"
             class="wt-card"
             :data-wt="wt.id"
-            :style="{ background: domainColors(domain.id).card }"
             @click="focusWT(wt, $event)"
           >
+            <div class="wt-accent" :style="{ background: domainColors(domain.id).header }"></div>
             <div class="wt-card-body">
               <div class="wt-name">{{ wt.name }}</div>
               <div class="wt-desc">{{ wt.description_markdown }}</div>
@@ -185,7 +189,7 @@ const boardStyle = computed(() => ({
       <div class="ov-body" :class="{ 'panel-open': worryVisible }">
 
         <!-- Main content -->
-        <div class="ov-main">
+        <div class="ov-main" @click="handleMainClick">
           <p class="ov-stake" v-html="md(selectedWT.business_stake_markdown)"></p>
 
           <!-- Agency path -->
@@ -219,7 +223,7 @@ const boardStyle = computed(() => ({
               :key="ref.worry_id"
               class="ov-worry-card"
               :class="{ active: selectedRef?.worry_id === ref.worry_id }"
-              @click="openWorry(ref)"
+              @click.stop="openWorry(ref)"
             >
               <div class="owc-name">{{ worryMap[ref.worry_id]?.name }}</div>
               <div class="owc-rate">{{ worryMap[ref.worry_id]?.rate_event }}</div>
@@ -382,6 +386,8 @@ const boardStyle = computed(() => ({
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  padding: 16px;
+  border-radius: 10px;
 }
 
 .domain-label {
@@ -400,11 +406,10 @@ const boardStyle = computed(() => ({
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 7px;
   overflow-y: auto;
   align-content: flex-start;
   min-height: 0;
-  padding-right: 4px;
   scrollbar-width: thin;
   scrollbar-color: rgba(0,0,0,0.15) transparent;
 }
@@ -413,23 +418,32 @@ const boardStyle = computed(() => ({
 
 .wt-card {
   width: 190px;
+  background: #fff;
   border-radius: 10px;
   overflow: hidden;
   cursor: pointer;
   position: relative;
   flex-shrink: 0;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.06);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.05);
   transition: transform 200ms cubic-bezier(0.34,1.56,0.64,1), box-shadow 180ms;
   user-select: none;
 }
 
 .wt-card:hover {
   transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.16), 0 0 0 1px rgba(0,0,0,0.06);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.14), 0 0 0 1px rgba(0,0,0,0.05);
+}
+
+.wt-accent {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
 }
 
 .wt-card-body {
-  padding: 10px 12px 12px 12px;
+  padding: 10px 12px 12px 18px;
 }
 
 .wt-name {
