@@ -37,7 +37,7 @@ The existing model tracks one thing per responsibility: **agency** (who performs
 
 The key finding: delegating work without corresponding safety investment creates a **gap**. Gaps produce vigilance toil. Gap cost is multiplicative: `toil ∝ rate event × worry surface × safety gap`. This is why the problem is severe in brownfield codebases and why AI makes it worse (AI increases rate without changing the existing body).
 
-The model is not a grid. It is a structured view of product work, organized by product facet, with each type of work carrying error classes that have independent vigilance costs. The goal of maturity progress is to close safety gaps by investing in mechanisms that either shrink the worry surface or raise the safety level for each error class.
+The model is not a grid. It is a structured view of product work, organized by product facet, with each type of work carrying worries that have independent vigilance costs. The goal of maturity progress is to close safety gaps by investing in mechanisms that either shrink the worry surface or raise the safety level for each worry.
 
 **Agency is now a portfolio, not a single axis.** Instead of one global agency stage (A0–A5), each work type has its own agency delegation path. A team can be at A3 for "evolving the design" (because AST tools give Carefree safety for behavioral regression) while still at A2 for "making architectural decisions" (because they lack a planning tool). This heterogeneous reality was always true; the model now makes it visible.
 
@@ -48,7 +48,7 @@ The model is not a grid. It is a structured view of product work, organized by p
 **The careless safety ladder (0–5):** How careless can an implementor be and still achieve safety?
 - 5: Carefree — environment makes the right action easy and mistakes structurally hard. Careless implementors thrive.
 - 4: Prevention — mistake cannot propagate past the originator. Careless is fine within scope.
-- 3: Deterministic — catches known error classes reliably. Careless is fine for covered classes.
+- 3: Deterministic — catches known worries reliably. Careless is fine for covered ones.
 - 2: Probabilistic — errors sometimes caught. Careless is sometimes fine.
 - 1: Vigilance — errors caught only when someone is paying attention. Careless is never fine.
 - 0: Hope — no mechanism. Errors propagate undetected.
@@ -57,11 +57,11 @@ Levels 4–5 can reach zero vigilance within scope; levels 0–3 cannot.
 
 **Product facets:** The product has seven properties that work can improve or degrade: capability, adaptability, explainability, abstractability, transparency, consistency, security. Each has a work type phrase (what people are doing to improve it) and a business stake (why it matters). Work that improves one facet always risks degrading others.
 
-**Worry surface and rate event:** Each error class has a countable scope (worry surface) and a named trigger (rate event). These are the two multipliers in the toil formula. Scope-shrinking investments reduce the worry surface; efficiency investments reduce safety gap (toil per unit of worry surface).
+**Worry surface and rate event:** Each worry has a countable scope (worry surface) and a named trigger (rate event). These are the two multipliers in the toil formula. Scope-shrinking investments reduce the worry surface; efficiency investments reduce safety gap (toil per unit of worry surface).
 
-**Tests are safety mechanisms, not work types.** Test quality (structure, coverage, duplication, environment coupling) determines the effective safety level of the mechanism. Coverage gaps are a reduced effective safety level, not a separate error class.
+**Tests are safety mechanisms, not work types.** Test quality (structure, coverage, duplication, environment coupling) determines the effective safety level of the mechanism. Coverage gaps are a reduced effective safety level, not a separate worry.
 
-**Reversibility is a scope-shrinking investment.** When errors are easy to undo (feature flags, canary deployments, AST refactoring tools, short iteration cycles), the effective worry surface is smaller. Reversibility investments appear in the scope-shrinking table of each relevant error class.
+**Reversibility is a scope-shrinking investment.** When errors are easy to undo (feature flags, canary deployments, AST refactoring tools, short iteration cycles), the effective worry surface is smaller. Reversibility investments appear in the scope-shrinking table of each relevant worry.
 
 **The error visibility criterion:** Safety level 4 vs. 3 is propagation, not timing. A type checker that runs before output is shared prevents propagation — level 4. Unit tests catch known cases after injection — level 3. You can't "fail to imagine" a type comparison the way you can a test case.
 
@@ -77,7 +77,7 @@ Levels 4–5 can reach zero vigilance within scope; levels 0–3 cannot.
 
 ### The Current Model Form
 
-**Behavioral matrix** (`working-notes/behavioral-matrix.md`): The primary model document. Organized by product facet and work type. Each work type has: (1) business stake, (2) agency delegation path with safety minimums per level, (3) error classes with worry, worry surface, rate event, scope-shrinking options, and efficiency options. The careless safety ladder governs all option tables.
+**Behavioral matrix** (`working-notes/behavioral-matrix.md`): The primary model document. Organized by product facet and work type. Each work type has: (1) business stake, (2) agency delegation path with safety minimums per level, (3) worries with worry statement, worry surface, rate event, scope-shrinking options, and efficiency options. The careless safety ladder governs all option tables.
 
 **Fluency DAG** (`working-notes/alternatives/fluency-dag.md`): The target form. Work nodes and safety nodes in a directed acyclic graph. Edges are prerequisites. Missing safety nodes before work nodes = visible vigilance trap. Inspired by the Agile Engineering Fluency map.
 

@@ -35,7 +35,7 @@ The key criterion for placing a mechanism on the spectrum: **at what point does 
 
 - Level 5: the originator is guided to the right answer; the error is never even attempted
 - Level 4: the error is attempted but cannot propagate past the originator
-- Level 3: propagates past the originator, then is deterministically caught for known error classes
+- Level 3: propagates past the originator, then is deterministically caught for known worries
 - Level 2: propagates past the originator, then is probabilistically detected
 - Levels 0–1: propagates until someone notices, or never
 
@@ -43,20 +43,20 @@ The key criterion for placing a mechanism on the spectrum: **at what point does 
 |-------|-----------|---------------------------|-------------------|-----------------|
 | 5 | Carefree — environment makes the right action easy and incorrect action hard; correctness verified as you go | Never attempted | Zero within scope | "Right thing is the easy thing for this class" |
 | 4 | Prevention — mistake cannot propagate past originator | Never (to others) | Zero within scope | "100% guaranteed for this class; no false positives for anything else" |
-| 3 | Deterministic — catches known error classes reliably | At the check | Near-zero for known classes; blind to novel ones | Predictable gaps: entirely misses some categories, consistent elsewhere |
+| 3 | Deterministic — catches known worries reliably | At the check | Near-zero for known ones; blind to novel ones | Predictable gaps: entirely misses some categories, consistent elsewhere |
 | 2 | Probabilistic — probabilistic detection | Probabilistically at detection | Reduced; cannot reach zero | Unpredictable gaps: misses things everywhere, no pattern |
 | 1 | Vigilance | At review, if caught | Full; decays over time | "Catches what someone happened to notice" |
 | 0 | None | At consequences | Full + blind | None |
 
 **Level 5 — Carefree:** The originator is steered toward correct behavior by the environment itself; the wrong action is made harder or impossible to attempt. Examples: a refactoring tool that trivializes extract-method while ensuring behavioral safety as you go — you don't try to do an unsafe refactoring and get caught, you use the tool and the correct action is the easy action. A language server that finds all references using the compiler — you don't search and miss some, you ask and get all of them. The distinction from level 4: level 4 catches a mistake after it is attempted; level 5 makes the mistake unlikely to be attempted at all because the correct path is easier. Both reach zero vigilance within scope; level 5 also improves the quality of work and reduces effort.
 
-**Why type systems and theorem provers are level 4, not level 3:** Even though they run after code is written, a type checker will find every type error, every time. As long as the worker cannot bypass the system (casting to `any`, disabling the check), they cannot produce visible output with a type error. The error class is completely prevented within scope. This is different from unit tests, which only find the errors that you think to write tests for. You can't "fail to imagine" a type comparison the way you can a test case.
+**Why type systems and theorem provers are level 4, not level 3:** Even though they run after code is written, a type checker will find every type error, every time. As long as the worker cannot bypass the system (casting to `any`, disabling the check), they cannot produce visible output with a type error. The worry is completely prevented within scope. This is different from unit tests, which only find the errors that you think to write tests for. You can't "fail to imagine" a type comparison the way you can a test case.
 
 **Why levels 2 and 3 are more similar than they appear — and how 2 can be broader than 3:** Both are probabilistic in coverage overall. Level 3 is deterministic about what it covers — for errors it checks for, it always catches them — but it cannot check for errors no one has thought to look for. Level 2 finds different errors on different runs, so multiple runs accumulate catch rate. Never to 100%, but potentially broader than any fixed deterministic check. The key distinction is predictability of gaps: level 3 has predictable gaps (you know which categories it entirely misses; it does consistently well at others), while level 2 has unpredictable gaps (misses things everywhere with no pattern). Level 3 misses categories; level 2 misses instances. Use level 2 to discover new categories, then encode those discoveries as level 3 or level 4 mechanisms.
 
 **Scope precision scales with level:** Every safety level has a scope, but higher levels allow more precise scope description. Lower levels tend to miss things more randomly — the scope is something like "catches roughly 70% of everything, with no predictable pattern." Higher levels are "100% guaranteed for this specific class; no false positives for anything outside it." This means:
 - Level 5/4: scope is definable and guaranteeable — you can say exactly what is and isn't covered
-- Level 3: scope is the set of known error classes — gaps are identifiable even if not yet addressed
+- Level 3: scope is the set of known worries — gaps are identifiable even if not yet addressed
 - Level 2: scope is statistical — you can estimate coverage but not specify it
 - Level 1: scope is "whatever the reviewer noticed today" — unpredictable and decaying
 - Level 0: no scope

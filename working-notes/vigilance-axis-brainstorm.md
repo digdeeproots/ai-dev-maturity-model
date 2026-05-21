@@ -114,7 +114,7 @@ How careless can an implementor be and still achieve safety?
 
 - **5 — Carefree**: the environment makes the right action easy and mistakes structurally hard. Careless implementors thrive. Example: AST refactoring tools, which make behavioral safety the easy path and make unsafe structural changes harder to attempt.
 - **4 — Prevention**: mistakes cannot propagate past the originator. Careless is fine within scope. Example: strict type system enforced pre-commit — the originator cannot produce visible output with a type error.
-- **3 — Deterministic**: catches known error classes reliably; careless is fine for covered classes. Example: recipe-based unit tests — known behaviors always verified; novel classes missed.
+- **3 — Deterministic**: catches known worries reliably; careless is fine for covered ones. Example: recipe-based unit tests — known behaviors always verified; novel worries missed.
 - **2 — Probabilistic**: errors sometimes caught; careless is sometimes fine. Example: AI exploratory testing — finds things in most runs but not all; gaps are unpredictable.
 - **1 — Vigilance**: errors caught only when someone is paying attention. Careless is never fine. Example: human code review.
 - **0 — Hope**: no mechanism. Errors propagate undetected.
@@ -223,9 +223,9 @@ Concrete examples:
 
 The product has seven facets that work can improve or degrade: capability, adaptability, explainability, abstractability, transparency, consistency, security. Work that improves one facet always risks degrading others in the code it touches, and degrading the same facet in other parts of the code.
 
-For each work type, there are error classes — each is an independent vigilance problem. The safety options either shrink the worry surface (fewer things at risk per event) or close the safety gap (cheaper to protect each unit). Both approaches matter.
+For each work type, there are worries — each is an independent vigilance problem. The safety options either shrink the worry surface (fewer things at risk per event) or close the safety gap (cheaper to protect each unit). Both approaches matter.
 
-This replaces the earlier framing of "work items missing safety items" with a richer structure: each work type has multiple error classes, each with independent toil costs that sum. The full taxonomy lives in `working-notes/behavioral-matrix.md`.
+This replaces the earlier framing of "work items missing safety items" with a richer structure: each work type has multiple worries, each with independent toil costs that sum. The full taxonomy lives in `working-notes/behavioral-matrix.md`.
 
 ### Probabilistic Safety: When It Works and How
 
@@ -245,7 +245,7 @@ The dangerous property of low safety with high agency is that you feel safe unti
 
 The model needs to surface **leading indicators**, not just describe stable states. What signals tell you a gap is widening before the defects arrive?
 
-Candidates for leading indicators: rate of unplanned maintenance work, time to diagnose a defect, frequency of "it worked last time" surprises, how often team members reference tribal knowledge rather than written safety mechanisms. The worry surface and rate event per error class give more specific candidates: how large is the worry surface? How often does the rate event fire?
+Candidates for leading indicators: rate of unplanned maintenance work, time to diagnose a defect, frequency of "it worked last time" surprises, how often team members reference tribal knowledge rather than written safety mechanisms. The worry surface and rate event per worry give more specific candidates: how large is the worry surface? How often does the rate event fire?
 
 ### Temporal Dynamics: Portfolios Grow and Decay
 
