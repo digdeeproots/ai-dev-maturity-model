@@ -275,30 +275,6 @@ No known Prevention-level mechanism for design quality in the general case.
 **Gap condition**: expensive at high test volume. Grows silently alongside the test suite.
 
 ---
-#### Error class: Architectural drift
-
-**The worry**: "Is the code still following the architecture, or is it slowly becoming something else while nobody notices?"
-
-**Worry surface**: number of violations of intended architecture in the codebase. Countable with linting tools.
-
-**Rate event**: every code change made without checking architectural intent.
-
-**Scope-shrinking options:**
-
-| Option | Effect | Safety level |
-|--------|--------|-------------|
-| Modular architecture (strong boundaries between layers) | Drift in one module cannot cross into others | Deterministic |
-
-**Efficiency options:**
-
-| Option | Safety level | Scope |
-|--------|-------------|-------|
-| Ad hoc review | Vigilance | Occasional; decays fast |
-| AI drift guardian (scans + abstracts anomalies) | Probabilistic | Broader than rules; unpredictable |
-| Architecture linters | Deterministic | Configured rule set |
-| Drift to ADR pipeline | Bootstrapped to Deterministic | Systematic improvement |
-
----
 
 ### Work type: Making intent visible
 
@@ -344,6 +320,35 @@ Business stake: every future developer and AI agent starts with reading. Explain
 | Language-server reference tracking | Prevention | All references within language server scope |
 | Strict type system (catches callsite mismatches) | Prevention | All typed callsites |
 | AST refactoring tool (rename-aware) | Carefree | All callsites within tool scope |
+
+---
+
+#### Error class: Documentation-code misalignment
+
+**The worry**: "Does our documentation -- READMEs, how-to guides, API docs, architecture diagrams, decision records, any of it -- still describe what the system actually does? When docs and code disagree, which one is right?"
+
+**Worry surface**: number of documented concepts, behaviors, or structures whose documentation no longer matches reality. Countable by auditing docs against the current system for each documented item.
+
+**Rate event**: every change to code or system behavior not reflected in documentation, or every doc update not reflected in code.
+
+**Note**: resolution is bidirectional. Sometimes code evolved correctly and docs need updating. Sometimes docs reflect intended design and code needs correcting. The error is the misalignment, not the direction.
+
+**Scope-shrinking options:**
+
+| Option | Effect | Safety level |
+|--------|--------|-------------|
+| Fewer, well-bounded documented items | Smaller surface of docs to keep in sync | Deterministic |
+| Modular design (narrow responsibilities per documented item) | Docs stay accurate longer; each change affects fewer doc surfaces | Deterministic |
+
+**Efficiency options:**
+
+| Option | Safety level | Scope |
+|--------|-------------|-------|
+| Human review of docs vs. code | Vigilance | When someone thinks to check |
+| AI alignment scan (compare docs to code; surface discrepancies) | Probabilistic | Broader than rules; unpredictable |
+| Architecture linters (check structural intent vs. code) | Deterministic | Configured rule set |
+| Doc update embedded in planning workflow | Deterministic | All changes that touch a documented item |
+| Automated doc-code alignment tool | Prevention | All items covered by the tool |
 
 ---
 
@@ -1021,7 +1026,7 @@ Business stake: security failures are catastrophic and irreversible. One success
 | Making intent visible | Partial rename | Callsites not updated | Prevention (type system) | Carefree (AST tools) |
 | Building shared vocabulary | Domain model corruption | Diverged domain concepts | Probabilistic (domain docs) | Prevention (planning tool) |
 | Making behavior predictable | Behavioral inconsistency | User journeys affected | Probabilistic (design system) | Prevention (enforced) |
-| Evolving the design | Architectural drift | Violations in codebase | Probabilistic (guardian) | Deterministic (linters) |
+| Making intent visible | Documentation-code misalignment | Documented items out of sync | Probabilistic (AI scan) | Deterministic (linters + workflow) |
 | Making behavior predictable | Decision inconsistency | Code areas with violated assumptions | Probabilistic (ADRs) | Prevention (planning tool) |
 | Planning | Ungrounded goals | Unvalidated story points | Prevention (planning tool) | Prevention |
 | Planning | Missing criteria | Work items without criteria | Deterministic (stakeholder review) | Prevention |
