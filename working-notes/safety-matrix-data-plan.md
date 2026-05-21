@@ -14,13 +14,14 @@ The new safety matrix is a parallel structure — a second major viewer alongsid
 
 ## New JSON Files
 
-Three new files in `model/`:
+Four new files in `model/`:
 
 | File | Purpose |
 |------|---------|
 | `safety_ladder.json` | The 6 levels of the careless safety ladder |
 | `work_types.json` | Domains containing their work types, with agency paths and worry refs |
 | `worries.json` | Worry definitions with options for addressing each |
+| `patterns.json` | General-applicability patterns referenced from option entries across worries |
 
 ---
 
@@ -110,6 +111,7 @@ export interface SafetyOption {
   name: string
   safety_level: number          // 0–5 (matches safety_ladder.json levels)
   safety_level_note?: string    // qualifier on the level, e.g., "Bootstrapped"
+  pattern_ref?: string          // ID in patterns.json, if this option is an instance of a named pattern
   // scope-shrinking options use "effect"; efficiency options use "scope"
   effect?: string               // scope-shrinking: what it does to the worry surface
   scope?: string                // efficiency: what the option covers
@@ -373,6 +375,146 @@ export interface WorriesData {
 
 ---
 
+## File 4: `patterns.json`
+
+General-applicability patterns that appear across multiple worries and work types. Options in `worries.json` and `work_types.json` reference patterns by ID via the `pattern_ref` field on `SafetyOption`. The full catalog of patterns and their descriptions lives in `working-notes/behavioral-matrix.md` under "## Patterns".
+
+### TypeScript Interface
+
+```typescript
+export interface Pattern {
+  id: string
+  name: string
+  tagline: string                  // one-line description
+  description_markdown: string     // full explanation and how to apply
+  worry_examples: string[]         // worry IDs where this pattern commonly appears
+}
+
+export interface PatternsData {
+  patterns: Pattern[]
+}
+```
+
+### Example
+
+```json
+{
+  "patterns": [
+    {
+      "id": "ai_problem_scout_pipeline",
+      "name": "AI Problem Scout Pipeline",
+      "tagline": "A probabilistic scout finds new problem instances; deterministic guards accumulate one per discovered class.",
+      "description_markdown": "Run a probabilistic AI scout to find new problem instances. When the scout finds something, abstract it into a named class and build a deterministic guard for that class. The scout shifts focus to what guards don't cover. Over time, guards accumulate and the deterministic zone expands.\n\nThe two rows in every option table where this applies: (1) *AI problem scout* — Probabilistic, finds new candidate classes. (2) *Deterministic guards from scout findings* — Deterministic, each guard covers one class permanently.\n\nThe workflow: (1) Scout finds a candidate instance. (2) Abstract it into a named class. (3) Write a deterministic check for that class. (4) Add it to the permanent pipeline. (5) Scout runs again, now ignoring covered classes.",
+      "worry_examples": [
+        "monitoring_blind_spot",
+        "evaluation_coverage_gap",
+        "capability_regression",
+        "documentation_code_misalignment"
+      ]
+    },
+    {
+      "id": "determinism_sandwich",
+      "name": "Determinism Sandwich",
+      "tagline": "Deterministic code molds the input space; AI makes the creative decision; deterministic code executes and validates the output.",
+      "description_markdown": "Wrap AI creative work between deterministic code on both sides. Pre-processing constrains the decision surface to just the creative question. The AI decides. Post-processing executes and validates the output. The AI's surface of possible mistakes is bounded on both sides.",
+      "worry_examples": [
+        "capability_regression",
+        "adaptability_reduction_in_touched_code",
+        "deployment_failure"
+      ]
+    },
+    {
+      "id": "narrow_tools",
+      "name": "Narrow Tools",
+      "tagline": "The tools an agent has access to define what mistakes are possible. Give it only what it needs for this specific task.",
+      "description_markdown": "Give each agent only the minimal tools for its current task — AST tools but no edit-file for refactoring, a planning tool but no free-form notes for architecture, a movement tool but no raw git for commits. Each tool gap is a class of mistakes that becomes structurally impossible.",
+      "worry_examples": [
+        "capability_regression",
+        "consistency_violation_structural_breakage",
+        "scope_enforcement_gap"
+      ]
+    },
+    {
+      "id": "fork_and_specialize",
+      "name": "Fork and Specialize",
+      "tagline": "Share a context-loading phase; fork to separate agents with different tools and roles; pit their independent outputs against each other.",
+      "description_markdown": "Share a context-loading phase between multiple agent invocations. After the shared read, fork: each agent gets the same starting memory but different tools, goals, and perspectives. Agents are blind to each other's post-fork thinking. Compare outputs for disagreements — which surface genuine uncertainty or risk.",
+      "worry_examples": [
+        "adaptability_regression_design",
+        "evaluation_coverage_gap",
+        "capability_regression",
+        "decision_inconsistency"
+      ]
+    },
+    {
+      "id": "scope_limiter",
+      "name": "Scope Limiter",
+      "tagline": "Limit what can go wrong before the mistake is made — by reducing the blast radius, not the mistake rate.",
+      "description_markdown": "Bound what can go wrong before delegation. Feature flags route only a canary cohort to new behavior. Narrow task scope limits how far an agent can go before a human checkpoint. Immutable infrastructure replaces rather than patches. The mistake rate stays constant; the worry surface shrinks to an acceptable blast radius.",
+      "worry_examples": [
+        "capability_regression",
+        "deployment_failure",
+        "missing_escalation_conditions",
+        "scope_enforcement_gap"
+      ]
+    },
+    {
+      "id": "nullables_pattern",
+      "name": "Nullables Pattern",
+      "tagline": "Design dependencies so they can be swapped without test rewrites, eliminating mock-based coupling as the structural default.",
+      "description_markdown": "Wrap dependencies behind interfaces satisfiable by either a real implementation or a lightweight in-memory stand-in. Tests use the stand-in without mocking. The coupling count — the primary worry surface for adaptability reduction — approaches zero.",
+      "worry_examples": [
+        "adaptability_reduction_in_touched_code",
+        "adaptability_reduction_test_duplication"
+      ]
+    },
+    {
+      "id": "test_recipe_workflow",
+      "name": "Test Recipe Workflow",
+      "tagline": "Inject a deterministic recipe at test-write time that scaffolds correct structure, eliminating mock-based patterns before they are established.",
+      "description_markdown": "Inject a deterministic recipe at test-write time specifying structure — which helpers to use, which dependencies to substitute, how to name scenarios. The AI follows the recipe rather than generating from its default pattern. Combine with Nullables to eliminate mocks entirely.",
+      "worry_examples": [
+        "adaptability_reduction_test_duplication",
+        "consistency_violation_in_code",
+        "capability_regression"
+      ]
+    },
+    {
+      "id": "progressive_structure",
+      "name": "Progressive Structure",
+      "tagline": "Start with loose human-authored content; progressively encode structure into deterministic code as patterns emerge.",
+      "description_markdown": "Begin with AI generating loose content; observe what parts always take the same shape; encode that shape as a template or schema; have AI fill only the variable parts; assemble deterministically. Each structuring step moves a class of decisions from probabilistic to deterministic.",
+      "worry_examples": [
+        "consistency_violation_in_code",
+        "documentation_code_misalignment",
+        "process_enforcement_gap",
+        "decision_inconsistency"
+      ]
+    },
+    {
+      "id": "defect_stream_feedback_loop",
+      "name": "Defect Stream Feedback Loop",
+      "tagline": "Use what breaks to improve the conditions that make breaking likely — small, permanent, compounding investments.",
+      "description_markdown": "When something fails, find the hazard that made the mistake likely. Make it slightly less likely, smaller in impact, or easier to detect. Apply to every defect. Small investments compound over time. AI enables the consistency required: the same workflow fires for every defect, with no human fatigue or drift.",
+      "worry_examples": []
+    },
+    {
+      "id": "dead_drops",
+      "name": "Dead Drops",
+      "tagline": "Agents communicate via fully async message passing, enabling pause, inspect, and redirect at any point.",
+      "description_markdown": "Agents deposit outputs into a named location; the orchestration layer routes them to the next agent independently. Every deposit point is a potential inspection or redirection point. A human can pause, examine the state, and redirect before the next agent fires.",
+      "worry_examples": [
+        "oversight_mechanism_gap",
+        "scope_enforcement_gap",
+        "missing_escalation_conditions"
+      ]
+    }
+  ]
+}
+```
+
+---
+
 ## TypeScript Additions to `types.ts`
 
 New interfaces to add alongside the existing ones:
@@ -383,7 +525,7 @@ export interface SafetyLevel { ... }
 export interface SafetyLadderData { ... }
 
 // work_types.json (domains with embedded work types)
-export interface SafetyOption { ... }
+export interface SafetyOption { ... }    // includes pattern_ref?: string
 export interface AgencyPathEntry { ... }
 export interface WorryRef { ... }
 export interface WorkType { ... }
@@ -393,19 +535,24 @@ export interface WorkTypesData { ... }
 // worries.json
 export interface Worry { ... }
 export interface WorriesData { ... }
+
+// patterns.json
+export interface Pattern { ... }
+export interface PatternsData { ... }
 ```
 
 ---
 
 ## New Composable: `useSafetyData.ts`
 
-Parallel to `useModelData.ts`. Imports the three new JSON files and exposes reactive refs plus lookup helpers:
+Parallel to `useModelData.ts`. Imports the four new JSON files and exposes reactive refs plus lookup helpers:
 
 ```typescript
 // Reactive refs
 safetyLadder     // SafetyLevel[]
 domains          // BehavioralDomain[]
 worries          // Worry[]
+patterns         // Pattern[]
 
 // Helpers
 getLevelByNumber(n)
@@ -414,6 +561,8 @@ getWorkTypeById(id)
 getWorkTypesByDomain(domainId)
 getWorryById(id)
 getWorriesForWorkType(workTypeId)
+getPatternById(id)
+getPatternsForWorry(worryId)
 ```
 
 ---
@@ -425,6 +574,9 @@ Allows the user to survey the full model — all domains and work types — and 
 
 ### `WorkTypeDetailView.vue`
 Allows the user to fully understand one work type: why it matters to the business, how AI agency can be safely delegated at each level, and what the relevant worries are with the full set of options for addressing each. The agency delegation path and the worry detail should be readable as a connected argument — the safety requirements at each agency level refer directly to specific worries, and users should be able to follow that connection.
+
+### `PatternsView.vue`
+Allows the user to browse all identified patterns, understand what each pattern achieves and where it applies, and navigate from a pattern to the worries where it appears. This view serves as a reference for engineers who want to understand a mechanism in depth before looking up where to apply it.
 
 ---
 
@@ -448,6 +600,9 @@ Renders the agency delegation path for a work type. Rows: A1–A4. Columns: labe
 ### `WorkTypeCard.vue`
 Compact representation of a work type for navigation within SafetyMatrixView. Clickable to navigate to WorkTypeDetailView.
 
+### `PatternCard.vue`
+Compact representation of a pattern: name, tagline, and the worries it applies to. Used in PatternsView for browsing and inline in WorryCard when an option has a `pattern_ref`.
+
 ---
 
 ## Integration with Existing Model
@@ -459,6 +614,8 @@ In `router/index.ts`, add:
 ```
 /safety              → SafetyMatrixView
 /safety/:workTypeId  → WorkTypeDetailView
+/patterns            → PatternsView
+/patterns/:patternId → PatternsView (filtered to that pattern)
 ```
 
 The Overview landing page gets a new entry linking to `/safety` alongside the existing primary axis and fate choices links.
