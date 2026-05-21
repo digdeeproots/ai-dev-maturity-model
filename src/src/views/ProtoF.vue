@@ -581,8 +581,7 @@ const boardStyle = computed(() => ({
 /* ── Work type card (overview) ────────────────────────────────── */
 
 .wt-card {
-  flex: 1;
-  min-height: 0;
+  width: 272px;
   background: #fff;
   border-radius: 14px;
   overflow: hidden;
