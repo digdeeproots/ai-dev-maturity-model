@@ -349,6 +349,7 @@ Business stake: every future developer and AI agent starts with reading. Explain
 | Architecture linters (check structural intent vs. code) | Deterministic | Configured rule set |
 | Doc update embedded in planning workflow | Deterministic | All changes that touch a documented item |
 | Automated doc-code alignment tool | Prevention | All items covered by the tool |
+| Auto-generated documentation (docs derived from code annotations, tests, or living-doc tools; regenerated on every change) | Prevention | All items expressible in generated form -- including API docs, behavior docs from tests, compliance docs from test results, governance reports |
 
 ---
 
