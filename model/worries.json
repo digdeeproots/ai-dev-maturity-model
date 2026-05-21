@@ -1,0 +1,926 @@
+{
+  "worries": [
+    {
+      "id": "capability_regression",
+      "name": "Capability regression",
+      "worry": "Did I break something that was working? Who's going to find out in production before I do?",
+      "worry_surface": "Number of callers (components, services, customer flows) that depend on the behavior that could break.",
+      "rate_event": "Every time shared code changes.",
+      "gap_condition_markdown": "Expensive in any codebase where components have more than a few callers. Grows with caller count and customer base.",
+      "scope_shrinking_options": [
+        {
+          "name": "Feature flags / canary deployments",
+          "effect": "Regression rolls back within minutes; affected customers limited to canary cohort",
+          "safety_level": 4
+        },
+        {
+          "name": "Decoupled architecture (no shared state, pure interfaces)",
+          "effect": "Regression cannot propagate beyond the component's direct consumers",
+          "safety_level": 4
+        },
+        {
+          "name": "Functional / decoupled style (isolation is the easy default)",
+          "effect": "Errors are self-contained; cross-component propagation is structurally hard",
+          "safety_level": 5
+        }
+      ],
+      "efficiency_options": [
+        {
+          "name": "Human code review",
+          "safety_level": 1,
+          "scope": "Whatever reviewer noticed"
+        },
+        {
+          "name": "AI exploratory testing (edge-case tests after change)",
+          "safety_level": 2,
+          "scope": "Findings become permanent test guards",
+          "pattern_ref": "ai_problem_scout_pipeline"
+        },
+        {
+          "name": "AI change-impact analysis (untested behaviors, invariants, negative cases)",
+          "safety_level": 2,
+          "scope": "Targets specific change surface"
+        },
+        {
+          "name": "Unit tests (ad hoc)",
+          "safety_level": 3,
+          "scope": "Tested behaviors; effective level drops with coverage gaps"
+        },
+        {
+          "name": "Unit tests (recipe-based, comprehensive coverage)",
+          "safety_level": 3,
+          "scope": "Recipe-defined coverage; predictable gaps remain"
+        },
+        {
+          "name": "Property-based / mutation testing",
+          "safety_level": 3,
+          "scope": "Structural properties"
+        },
+        {
+          "name": "Theorem provers",
+          "safety_level": 4,
+          "scope": "Formally specified invariants only"
+        }
+      ]
+    },
+    {
+      "id": "adaptability_reduction_in_touched_code",
+      "name": "Adaptability reduction in touched code",
+      "worry": "Is this code going to be a nightmare to change when requirements shift next quarter?",
+      "worry_surface": "Coupling depth of the module -- count mock dependencies or layers of coupling. Proxy for future change effort.",
+      "rate_event": "Every time code is added without design consideration.",
+      "note": "AI defaults to mock-based coupling. It will not reach for Nullables or Hexagonal ports unless the orchestration layer injects these patterns on every invocation.",
+      "gap_condition_markdown": "Cumulative; invisible until severe. Expensive when a large fraction of the codebase lacks clean test seams.",
+      "scope_shrinking_options": [
+        {
+          "name": "Nullables pattern",
+          "effect": "Dependencies become swappable; coupling count drops",
+          "safety_level": 3
+        },
+        {
+          "name": "Hexagonal architecture (ports and adapters)",
+          "effect": "Infrastructure dependencies isolated at the boundary",
+          "safety_level": 3
+        },
+        {
+          "name": "Functional architecture (pure functions, explicit state)",
+          "effect": "Each function has zero hidden coupling; worry surface = function signature",
+          "safety_level": 5
+        },
+        {
+          "name": "Nullables template auto-generated alongside each new class",
+          "effect": "Correct structure is the starting point; coupling harder to introduce than avoid",
+          "safety_level": 5
+        }
+      ],
+      "efficiency_options": [
+        {
+          "name": "Human review for design quality",
+          "safety_level": 1,
+          "scope": "Whatever reviewer noticed"
+        },
+        {
+          "name": "Test recipe workflow (injected at write time, scaffolds correct structure)",
+          "safety_level": 5,
+          "scope": "Tests written using the recipe"
+        }
+      ]
+    },
+    {
+      "id": "consistency_violation_in_code",
+      "name": "Consistency violation in touched code",
+      "worry": "Is this consistent with how everything else works, or am I creating a surprise for the next person?",
+      "worry_surface": "Number of developers and AI agents who will need to understand this code over its lifetime.",
+      "rate_event": "Every time code departs from established patterns.",
+      "scope_shrinking_options": [
+        {
+          "name": "Architecture linters",
+          "effect": "Structural violations flagged before merge",
+          "safety_level": 3
+        },
+        {
+          "name": "Planning tool requiring pattern reference",
+          "effect": "No new pattern introduced without acknowledging prior patterns",
+          "safety_level": 4
+        }
+      ],
+      "efficiency_options": [
+        {
+          "name": "Code review",
+          "safety_level": 1,
+          "scope": "Whatever reviewer noticed"
+        },
+        {
+          "name": "Linters (style / structural rules)",
+          "safety_level": 3,
+          "scope": "Configured rules"
+        }
+      ]
+    },
+    {
+      "id": "adaptability_regression_design",
+      "name": "Adaptability regression in other areas (design regression)",
+      "worry": "Did I choose the wrong abstraction and make future work harder for everyone?",
+      "worry_surface": "Number of modules using the affected abstraction.",
+      "rate_event": "Every time a structural change affects a shared abstraction.",
+      "note": "No known Prevention-level mechanism for design quality in the general case.",
+      "scope_shrinking_options": [
+        {
+          "name": "Modular architecture with clean seams",
+          "effect": "Wrong abstraction stays contained; does not cascade to neighbors",
+          "safety_level": 3
+        },
+        {
+          "name": "AST refactoring tooling (reversible structural changes)",
+          "effect": "Wrong abstractions undone in two commands; design decisions are low-stakes",
+          "safety_level": 5
+        }
+      ],
+      "efficiency_options": [
+        {
+          "name": "Human review for design quality",
+          "safety_level": 1,
+          "scope": "Whatever reviewer noticed"
+        },
+        {
+          "name": "AI design critique fork (adversarial, independent)",
+          "safety_level": 2,
+          "scope": "Finds common pattern violations"
+        },
+        {
+          "name": "Architecture linters (dependency rules)",
+          "safety_level": 3,
+          "scope": "Configured structural rules"
+        }
+      ]
+    },
+    {
+      "id": "consistency_violation_structural_breakage",
+      "name": "Consistency violation (structural breakage)",
+      "worry": "Did I update every single place that uses this interface, or did I miss some?",
+      "worry_surface": "Number of direct consumers of the changed interface or type.",
+      "rate_event": "Every time an interface or type contract changes.",
+      "note": "Capability regression means the code does something different. Structural breakage means the interface changed and some consumers were not updated. Refactoring tools address both within tool scope.",
+      "scope_shrinking_options": [
+        {
+          "name": "Narrow, well-defined interfaces",
+          "effect": "Fewer consumers per interface; smaller fan-out",
+          "safety_level": 3
+        },
+        {
+          "name": "Decoupled architecture",
+          "effect": "Components interact via narrow contracts; breakage cannot cascade",
+          "safety_level": 4
+        }
+      ],
+      "efficiency_options": [
+        {
+          "name": "Human review",
+          "safety_level": 1,
+          "scope": "Whatever reviewer noticed"
+        },
+        {
+          "name": "Linter rules",
+          "safety_level": 3,
+          "scope": "Configured rules only"
+        },
+        {
+          "name": "Language-server reference tracking (find all usages before editing)",
+          "safety_level": 4,
+          "scope": "All references within language server scope"
+        },
+        {
+          "name": "Strict type system enforced pre-commit",
+          "safety_level": 4,
+          "scope": "All type interactions in covered code"
+        },
+        {
+          "name": "AST refactoring tools (rename/move with full dependency awareness)",
+          "safety_level": 5,
+          "scope": "All dependents within tool scope"
+        }
+      ]
+    },
+    {
+      "id": "adaptability_reduction_test_duplication",
+      "name": "Adaptability reduction in vigilance mechanisms (test duplication)",
+      "worry": "When I change this code, am I going to have to fix 40 tests that all break together?",
+      "worry_surface": "Number of tests sharing setup code or mocking the same dependency.",
+      "rate_event": "Every time a test is written with mocks or duplicated setup.",
+      "gap_condition_markdown": "Expensive at high test volume. Grows silently alongside the test suite.",
+      "scope_shrinking_options": [
+        {
+          "name": "Nullables pattern (eliminates mocks -- the largest duplication source)",
+          "effect": "Dependencies swappable without test rewrite; duplication source eliminated",
+          "safety_level": 3
+        },
+        {
+          "name": "Functional architecture (pure functions need no mocks)",
+          "effect": "Functions have no side effects to mock; worry surface approaches zero",
+          "safety_level": 5
+        }
+      ],
+      "efficiency_options": [
+        {
+          "name": "Human review of test quality",
+          "safety_level": 1,
+          "scope": "Whatever reviewer noticed"
+        },
+        {
+          "name": "Test recipe tool (prevents structural duplication in new tests)",
+          "safety_level": 4,
+          "scope": "All tests through the tool"
+        },
+        {
+          "name": "Test recipe workflow injected at write time",
+          "safety_level": 5,
+          "scope": "Tests written with the workflow"
+        }
+      ]
+    },
+    {
+      "id": "partial_rename",
+      "name": "Consistency violation (partial rename)",
+      "worry": "Did I update every callsite, or are some places still using the old name?",
+      "worry_surface": "Number of callsites not updated. Directly countable.",
+      "rate_event": "Every rename applied to a shared symbol.",
+      "scope_shrinking_options": [
+        {
+          "name": "Narrow symbol scope",
+          "effect": "Fewer uses = fewer places to update",
+          "safety_level": 3
+        }
+      ],
+      "efficiency_options": [
+        {
+          "name": "Human search-and-replace",
+          "safety_level": 1,
+          "scope": "Whatever human searched for"
+        },
+        {
+          "name": "Language-server reference tracking",
+          "safety_level": 4,
+          "scope": "All references within language server scope"
+        },
+        {
+          "name": "Strict type system (catches callsite mismatches)",
+          "safety_level": 4,
+          "scope": "All typed callsites"
+        },
+        {
+          "name": "AST refactoring tool (rename-aware)",
+          "safety_level": 5,
+          "scope": "All callsites within tool scope"
+        }
+      ]
+    },
+    {
+      "id": "documentation_code_misalignment",
+      "name": "Documentation-code misalignment",
+      "worry": "Does our documentation (READMEs, how-to guides, API docs, architecture diagrams, decision records) still describe what the system actually does? When docs and code disagree, which one is right?",
+      "worry_surface": "Number of documented concepts, behaviors, or structures whose documentation no longer matches reality. Countable by auditing docs against the current system for each documented item.",
+      "rate_event": "Every change to code or system behavior not reflected in documentation, or every doc update not reflected in code.",
+      "note": "resolution is bidirectional. Sometimes code evolved correctly and docs need updating; sometimes docs reflect intended design and code needs correcting. The error is the misalignment, not the direction.",
+      "scope_shrinking_options": [
+        {
+          "name": "Fewer, well-bounded documented items",
+          "effect": "Smaller surface of docs to keep in sync",
+          "safety_level": 3
+        },
+        {
+          "name": "Modular design (narrow responsibilities per documented item)",
+          "effect": "Docs stay accurate longer; each change affects fewer doc surfaces",
+          "safety_level": 3
+        }
+      ],
+      "efficiency_options": [
+        {
+          "name": "Human review of docs vs. code",
+          "safety_level": 1,
+          "scope": "When someone thinks to check"
+        },
+        {
+          "name": "AI alignment scan (compare docs to code; surface discrepancies)",
+          "safety_level": 2,
+          "scope": "Findings become permanent linter rules or workflow gates",
+          "pattern_ref": "ai_problem_scout_pipeline"
+        },
+        {
+          "name": "Architecture linters (check structural intent vs. code)",
+          "safety_level": 3,
+          "scope": "Configured rule set"
+        },
+        {
+          "name": "Doc update embedded in planning workflow",
+          "safety_level": 3,
+          "scope": "All changes that touch a documented item"
+        },
+        {
+          "name": "Automated doc-code alignment tool",
+          "safety_level": 4,
+          "scope": "All items covered by the tool"
+        },
+        {
+          "name": "Auto-generated documentation (docs derived from code annotations, tests, or living-doc tools; regenerated on every change)",
+          "safety_level": 4,
+          "scope": "All items expressible in generated form -- including API docs, behavior docs from tests, compliance docs from test results, governance reports"
+        }
+      ]
+    },
+    {
+      "id": "domain_model_corruption",
+      "name": "Domain model corruption",
+      "worry": "Does this concept match what the businesspeople actually call it, or did I invent terminology that drifts from the domain?",
+      "worry_surface": "Number of domain concepts in the codebase that diverge from business vocabulary.",
+      "rate_event": "Every time a new abstraction is introduced without domain validation.",
+      "gap_condition_markdown": "Invisible until business experts can no longer reason about the product without a developer present.",
+      "scope_shrinking_options": [
+        {
+          "name": "Domain model documentation (glossary, entity definitions)",
+          "effect": "Provides reference; reduces unnoticed drift",
+          "safety_level": 2
+        },
+        {
+          "name": "Domain review embedded in planning workflow",
+          "effect": "All new abstractions checked before implementation",
+          "safety_level": 3
+        }
+      ],
+      "efficiency_options": [
+        {
+          "name": "Domain expert review of new abstractions",
+          "safety_level": 1,
+          "scope": "What expert noticed"
+        },
+        {
+          "name": "Planning tool requiring domain concept mapping",
+          "safety_level": 4,
+          "scope": "All new concepts via the tool"
+        }
+      ]
+    },
+    {
+      "id": "security_violation_logs",
+      "name": "Security violation (logs expose sensitive data)",
+      "worry": "Am I accidentally logging a password, session token, or credit card number?",
+      "worry_surface": "Number of customers whose sensitive data appears in accessible log streams.",
+      "rate_event": "Every time observability code touches a sensitive data path.",
+      "scope_shrinking_options": [
+        {
+          "name": "Structured logging with field-level classification enforcement",
+          "effect": "Sensitive fields classified at write time; unclassified fields cannot be logged",
+          "safety_level": 4
+        }
+      ],
+      "efficiency_options": [
+        {
+          "name": "Code review for data classification",
+          "safety_level": 1,
+          "scope": "Whatever reviewer noticed"
+        },
+        {
+          "name": "Automated PII detection in log output",
+          "safety_level": 3,
+          "scope": "Detected PII patterns"
+        }
+      ]
+    },
+    {
+      "id": "behavioral_inconsistency",
+      "name": "Behavioral inconsistency",
+      "worry": "Does this behave the same way as the similar feature over there, or will users be confused when the pattern breaks?",
+      "worry_surface": "Number of user journeys following the pattern that was violated.",
+      "rate_event": "Every time a user-facing behavior or interaction pattern changes.",
+      "gap_condition_markdown": "Expensive as user base grows and patterns become entrenched.",
+      "scope_shrinking_options": [
+        {
+          "name": "Design system (documented patterns)",
+          "effect": "Reduces unnoticed divergence; not enforced",
+          "safety_level": 2
+        },
+        {
+          "name": "Design system with enforcement gates",
+          "effect": "Pattern violations blocked before shipping",
+          "safety_level": 4
+        }
+      ],
+      "efficiency_options": [
+        {
+          "name": "Code/UX review for consistency",
+          "safety_level": 1,
+          "scope": "Whatever reviewer noticed"
+        },
+        {
+          "name": "Automated behavioral consistency checks",
+          "safety_level": 3,
+          "scope": "Measurable consistency properties"
+        }
+      ]
+    },
+    {
+      "id": "decision_inconsistency",
+      "name": "Decision inconsistency",
+      "worry": "Does this architectural decision contradict something we decided six months ago? Are we building on conflicting assumptions?",
+      "worry_surface": "Number of code areas that make assumptions about the violated decision.",
+      "rate_event": "Every architectural decision made without consulting prior decisions.",
+      "scope_shrinking_options": [
+        {
+          "name": "Modular architecture (clean seams)",
+          "effect": "Inconsistent decisions stay contained; cannot cascade to other modules",
+          "safety_level": 3
+        },
+        {
+          "name": "Architectural experiments (prove before committing)",
+          "effect": "Wrong experiments affect only experimental scope",
+          "safety_level": 3
+        }
+      ],
+      "efficiency_options": [
+        {
+          "name": "Tribal knowledge",
+          "safety_level": 1,
+          "scope": "Whatever team remembers"
+        },
+        {
+          "name": "Architecture Decision Records (ADRs)",
+          "safety_level": 2,
+          "scope": "Written; requires active reference"
+        },
+        {
+          "name": "ADR review in planning workflow",
+          "safety_level": 3,
+          "scope": "All decisions in planning scope"
+        },
+        {
+          "name": "Planning tool requiring ADR reference",
+          "safety_level": 4,
+          "scope": "All decisions via the tool"
+        }
+      ]
+    },
+    {
+      "id": "security_regression",
+      "name": "Security regression (new security code introduces vulnerability)",
+      "worry": "Did my auth change open a hole I am not seeing?",
+      "worry_surface": "Number of customers and data objects accessible through the vulnerability.",
+      "rate_event": "Every time security controls are modified.",
+      "scope_shrinking_options": [
+        {
+          "name": "Least-privilege design (narrow scope per control)",
+          "effect": "Vulnerability scope bounded by control's narrow authority",
+          "safety_level": 3
+        }
+      ],
+      "efficiency_options": [
+        {
+          "name": "Security code review",
+          "safety_level": 1,
+          "scope": "Whatever reviewer noticed"
+        },
+        {
+          "name": "Automated security scanning (SAST)",
+          "safety_level": 3,
+          "scope": "Known vulnerability patterns"
+        },
+        {
+          "name": "Formal security models (threat modeling + verification)",
+          "safety_level": 4,
+          "scope": "Modeled threat classes"
+        }
+      ]
+    },
+    {
+      "id": "ungrounded_goals",
+      "name": "Ungrounded goals",
+      "worry": "Are we building the right thing, or did we just assume we know what users want?",
+      "worry_surface": "Story points committed to goals not grounded in evidence.",
+      "rate_event": "Every planning cycle where goals are assumed rather than validated.",
+      "scope_shrinking_options": [
+        {
+          "name": "Short iteration cycles",
+          "effect": "Less work committed before grounding event; smaller unvalidated backlog",
+          "safety_level": 3
+        }
+      ],
+      "efficiency_options": [
+        {
+          "name": "Planning discipline",
+          "safety_level": 1,
+          "scope": "Individual; decays"
+        },
+        {
+          "name": "Planning tool requiring grounding source",
+          "safety_level": 4,
+          "scope": "All goals made via the tool"
+        }
+      ]
+    },
+    {
+      "id": "decomposition_gaps",
+      "name": "Decomposition gaps",
+      "worry": "Did we think through all the tricky parts, or are there hidden surprises mid-sprint?",
+      "worry_surface": "Number of unidentified variation points. Proxy: count named unknowns; gaps are the unnamed ones.",
+      "rate_event": "Every decomposition without structured analysis.",
+      "scope_shrinking_options": [
+        {
+          "name": "Explicit unknown-surfacing practice",
+          "effect": "Forces unknowns to be named; reduces hidden surprise count",
+          "safety_level": 2
+        }
+      ],
+      "efficiency_options": [
+        {
+          "name": "Human judgment",
+          "safety_level": 1,
+          "scope": "Individual skill; decays"
+        },
+        {
+          "name": "Planning tool with required fields (variation points, unknowns, dependencies)",
+          "safety_level": 4,
+          "scope": "All decompositions via the tool"
+        }
+      ]
+    },
+    {
+      "id": "missing_success_criteria",
+      "name": "Missing or wrong success criteria",
+      "worry": "How will we know if this is actually done and correct?",
+      "worry_surface": "Number of work items without explicitly defined success criteria.",
+      "rate_event": "Every work item started without explicitly defined criteria.",
+      "scope_shrinking_options": [
+        {
+          "name": "Stakeholder review of criteria before work starts",
+          "effect": "Wrong criteria caught before any work is done against them",
+          "safety_level": 3
+        }
+      ],
+      "efficiency_options": [
+        {
+          "name": "Planning discipline",
+          "safety_level": 1,
+          "scope": "--"
+        },
+        {
+          "name": "Planning tool requiring criteria fields",
+          "safety_level": 4,
+          "scope": "All work with criteria via the tool"
+        }
+      ]
+    },
+    {
+      "id": "priority_errors",
+      "name": "Priority errors",
+      "worry": "Are we working on what matters most right now?",
+      "worry_surface": "Value units of work done on wrong-priority items.",
+      "rate_event": "Every task selection without explicit priority criteria.",
+      "scope_shrinking_options": [
+        {
+          "name": "Small batch sizes",
+          "effect": "Less work done on wrong priority before correction",
+          "safety_level": 3
+        }
+      ],
+      "efficiency_options": [
+        {
+          "name": "Human judgment",
+          "safety_level": 1,
+          "scope": "Situation-dependent"
+        },
+        {
+          "name": "Explicit scoring criteria",
+          "safety_level": 3,
+          "scope": "Scored dimensions only"
+        },
+        {
+          "name": "Deterministic queue (rule-based)",
+          "safety_level": 4,
+          "scope": "All tasks through the queue"
+        }
+      ]
+    },
+    {
+      "id": "reality_disconnect",
+      "name": "Reality disconnect",
+      "worry": "Is what we built actually solving the problem users have?",
+      "worry_surface": "Number of users experiencing the diverged behavior. Grows with throughput x time without grounding.",
+      "rate_event": "Every development cycle without grounding in user feedback.",
+      "scope_shrinking_options": [
+        {
+          "name": "Short iteration cycles",
+          "effect": "Less drift accumulates before grounding event",
+          "safety_level": 3
+        },
+        {
+          "name": "Feature flags and modular deployment",
+          "effect": "Diverged behavior rolled back or pivoted quickly",
+          "safety_level": 4
+        }
+      ],
+      "efficiency_options": [
+        {
+          "name": "Regular demos / user review",
+          "safety_level": 1,
+          "scope": "What participants noticed"
+        },
+        {
+          "name": "Metrics / telemetry",
+          "safety_level": 3,
+          "scope": "Measured behaviors only"
+        },
+        {
+          "name": "A/B testing infrastructure",
+          "safety_level": 3,
+          "scope": "Tested variants"
+        },
+        {
+          "name": "Outcome-based planning with measurement gates",
+          "safety_level": 4,
+          "scope": "All work with defined outcome gates"
+        }
+      ]
+    },
+    {
+      "id": "deployment_failure",
+      "name": "Deployment failure",
+      "worry": "Did the deployment break something in production? How many users are affected?",
+      "worry_surface": "Number of customers affected during the failure window.",
+      "rate_event": "Every deployment without automated verification.",
+      "scope_shrinking_options": [
+        {
+          "name": "Canary deployments / blue-green + automated rollback",
+          "effect": "Failure affects small cohort; rollback restores good state within minutes",
+          "safety_level": 4
+        }
+      ],
+      "efficiency_options": [
+        {
+          "name": "Manual deployment with review",
+          "safety_level": 1,
+          "scope": "Whatever human checked"
+        },
+        {
+          "name": "CI/CD pipeline",
+          "safety_level": 3,
+          "scope": "What pipeline checks"
+        },
+        {
+          "name": "Idempotent declarative deployments",
+          "safety_level": 4,
+          "scope": "All deployments through the system"
+        }
+      ]
+    },
+    {
+      "id": "configuration_drift",
+      "name": "Configuration drift",
+      "worry": "Is the environment still what we think it is?",
+      "worry_surface": "Number of environment differences from desired state. Countable with IaC diff.",
+      "rate_event": "Every environment change made outside declarative management.",
+      "scope_shrinking_options": [
+        {
+          "name": "Immutable infrastructure",
+          "effect": "Environments cannot drift; they are replaced, not modified",
+          "safety_level": 4
+        }
+      ],
+      "efficiency_options": [
+        {
+          "name": "Manual audits",
+          "safety_level": 1,
+          "scope": "Occasional"
+        },
+        {
+          "name": "Infrastructure as Code",
+          "safety_level": 3,
+          "scope": "Declared infrastructure"
+        }
+      ]
+    },
+    {
+      "id": "evaluation_coverage_gap",
+      "name": "Evaluation coverage gap",
+      "worry": "Does our evaluation system actually catch the problems we care about, or does it have blind spots we haven't noticed?",
+      "worry_surface": "All outputs produced while a gap exists, weighted by defect rate in the uncovered class. Proxy: output volume x estimated miss rate.",
+      "rate_event": "Every defect in an uncovered class that occurs while the system lacks coverage for it.",
+      "scope_shrinking_options": [
+        {
+          "name": "Modular output consumers",
+          "effect": "A bad output affects fewer downstream systems",
+          "safety_level": 3
+        }
+      ],
+      "efficiency_options": [
+        {
+          "name": "Human review",
+          "safety_level": 1,
+          "scope": "Whatever human noticed"
+        },
+        {
+          "name": "LLM-as-judge (single run)",
+          "safety_level": 2,
+          "scope": "May share AI biases"
+        },
+        {
+          "name": "LLM-as-judge (adversarial, multi-run)",
+          "safety_level": 2,
+          "scope": "Findings drive deterministic eval criteria",
+          "pattern_ref": "ai_problem_scout_pipeline"
+        },
+        {
+          "name": "Automated eval against defined criteria",
+          "safety_level": 3,
+          "scope": "Criteria-covered behaviors"
+        },
+        {
+          "name": "Criteria coverage tool",
+          "safety_level": 4,
+          "scope": "All criteria through the tool"
+        }
+      ]
+    },
+    {
+      "id": "monitoring_blind_spot",
+      "name": "Monitoring blind spot",
+      "worry": "Is there a health dimension we are not measuring that could fail silently for weeks before we notice?",
+      "worry_surface": "Time-to-detection x rate of problems in the unmonitored dimension. Proxy: number of health dimensions with no active metric.",
+      "rate_event": "Every health problem that occurs in an unmonitored dimension.",
+      "scope_shrinking_options": [
+        {
+          "name": "Short feedback loops",
+          "effect": "Less drift accumulates before detection",
+          "safety_level": 3
+        }
+      ],
+      "efficiency_options": [
+        {
+          "name": "Human situational awareness",
+          "safety_level": 1,
+          "scope": "What team notices"
+        },
+        {
+          "name": "AI problem scout",
+          "safety_level": 2,
+          "scope": "Finds candidate blind spots",
+          "pattern_ref": "ai_problem_scout_pipeline"
+        },
+        {
+          "name": "Deterministic monitoring guards (one per class the scout found)",
+          "safety_level": 3,
+          "scope": "All problem classes with guards",
+          "pattern_ref": "ai_problem_scout_pipeline"
+        },
+        {
+          "name": "Metrics + alerts",
+          "safety_level": 3,
+          "scope": "Measured metrics only"
+        }
+      ]
+    },
+    {
+      "id": "oversight_mechanism_gap",
+      "name": "Oversight mechanism gap",
+      "worry": "Does our gate actually stop the bad cases, or does it let them through while we think we are protected?",
+      "worry_surface": "All bad work that passes through the gap x downstream impact. Count uncovered step types.",
+      "rate_event": "Every bad step or cycle that passes through an insufficiently specified gate.",
+      "scope_shrinking_options": [
+        {
+          "name": "Small steps with fast feedback",
+          "effect": "Less work builds on a bad step before detection",
+          "safety_level": 3
+        }
+      ],
+      "efficiency_options": [
+        {
+          "name": "Human reads every step",
+          "safety_level": 1,
+          "scope": "Decays with throughput"
+        },
+        {
+          "name": "Automated health check at boundary",
+          "safety_level": 3,
+          "scope": "What health check covers"
+        },
+        {
+          "name": "Deterministic pass/fail gate per step",
+          "safety_level": 4,
+          "scope": "All work through the gate"
+        }
+      ]
+    },
+    {
+      "id": "missing_escalation_conditions",
+      "name": "Missing escalation conditions",
+      "worry": "Did the AI keep going past the point where I should have been consulted, because we forgot to define a halt condition for that situation?",
+      "worry_surface": "Number of autonomous action categories not covered by halt conditions. Directly countable from the circuit breaker rule set.",
+      "rate_event": "Every novel situation the AI encounters with no defined halt condition.",
+      "gap_condition_markdown": "Even one uncaught event can be high-cost. Probabilistic alone is insufficient.",
+      "scope_shrinking_options": [
+        {
+          "name": "Narrow task scope (AI given small, bounded tasks)",
+          "effect": "Fewer autonomous decisions per invocation; maximum overshoot is small",
+          "safety_level": 4
+        }
+      ],
+      "efficiency_options": [
+        {
+          "name": "Human checks in",
+          "safety_level": 1,
+          "scope": "Depends on attention"
+        },
+        {
+          "name": "Agent detects uncertainty and flags",
+          "safety_level": 2,
+          "scope": "Misses confident-but-wrong"
+        },
+        {
+          "name": "Deterministic halt conditions (circuit breakers)",
+          "safety_level": 4,
+          "scope": "All conditions in the rule set"
+        }
+      ]
+    },
+    {
+      "id": "process_enforcement_gap",
+      "name": "Process enforcement gap",
+      "worry": "Does our process enforcement actually cover the decisions that matter, or are important rules only documented and not enforced?",
+      "worry_surface": "Number of decision types or workflow steps without enforcement gates. Directly countable from the workflow definition.",
+      "rate_event": "Every workflow execution where a required gate is absent.",
+      "scope_shrinking_options": [
+        {
+          "name": "Modular process (each step independently gated)",
+          "effect": "A bypassed step cannot silently affect subsequent steps",
+          "safety_level": 3
+        }
+      ],
+      "efficiency_options": [
+        {
+          "name": "Process documentation + peer review",
+          "safety_level": 1,
+          "scope": "Discipline-based; decays"
+        },
+        {
+          "name": "CI/CD gates",
+          "safety_level": 3,
+          "scope": "What CI checks cover"
+        },
+        {
+          "name": "Deterministic workflow orchestration",
+          "safety_level": 4,
+          "scope": "All work through the workflow"
+        }
+      ]
+    },
+    {
+      "id": "scope_enforcement_gap",
+      "name": "Scope enforcement gap",
+      "worry": "Is the scope we defined for each AI agent actually enforced, or do agents have more access than they should?",
+      "worry_surface": "Files or systems touched beyond authorized scope. Countable from access logs or git diff.",
+      "rate_event": "Every autonomous action in an insufficiently bounded system.",
+      "gap_condition_markdown": "No Probabilistic or Deterministic intermediate exists -- either tools enforce it or they don't.",
+      "scope_shrinking_options": [
+        {
+          "name": "Narrow task scope per invocation",
+          "effect": "Possible overshoot surface is small by construction",
+          "safety_level": 4
+        },
+        {
+          "name": "Tooling restrictions (file-type, read-only access)",
+          "effect": "AI cannot act outside scope regardless of intent",
+          "safety_level": 4
+        }
+      ],
+      "efficiency_options": [
+        {
+          "name": "Written boundary documentation",
+          "safety_level": 1,
+          "scope": "Requires AI to read and follow"
+        },
+        {
+          "name": "Workflow enforcement of boundary",
+          "safety_level": 4,
+          "scope": "All work through the workflow"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "levels": [
+    {
+      "level": 5,
+      "name": "Carefree",
+      "what_it_means": "The system makes the right action easy and mistakes structurally hard. Careless implementors succeed.",
+      "can_reach_zero_vigilance": true
+    },
+    {
+      "level": 4,
+      "name": "Prevention",
+      "what_it_means": "Mistakes cannot propagate past the originator. Careless work is safe within well-defined scopes.",
+      "can_reach_zero_vigilance": true
+    },
+    {
+      "level": 3,
+      "name": "Deterministic",
+      "what_it_means": "Known worries are reliably caught. Careless work is safe for covered cases; uncovered boundaries require attention.",
+      "can_reach_zero_vigilance": false
+    },
+    {
+      "level": 2,
+      "name": "Probabilistic",
+      "what_it_means": "Errors are sometimes caught. Careless work sometimes passes unnoticed.",
+      "can_reach_zero_vigilance": false
+    },
+    {
+      "level": 1,
+      "name": "Vigilance",
+      "what_it_means": "Errors are caught only when someone is paying close attention. Careless work is never safe.",
+      "can_reach_zero_vigilance": false
+    },
+    {
+      "level": 0,
+      "name": "Hope",
+      "what_it_means": "No mechanism exists. Errors propagate undetected.",
+      "can_reach_zero_vigilance": false
+    }
+  ]
+}
