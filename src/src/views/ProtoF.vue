@@ -209,17 +209,6 @@ const boardStyle = computed(() => ({
 <template>
   <div class="proto-f" @click.self="selectedWT && unfocusWT()">
 
-    <!-- ── Safety ladder strip ──────────────────────────── -->
-    <div class="ladder-strip">
-      <div class="ls-label">Safety Ladder</div>
-      <div class="ls-levels">
-        <div v-for="n in [0,1,2,3,4,5]" :key="n" class="ls-level" :style="{ background: LEVEL_COLORS[n] }">
-          <span class="ls-n">{{ n }}</span>
-          <span class="ls-name">{{ LEVEL_NAMES[n] }}</span>
-        </div>
-      </div>
-    </div>
-
     <!-- ── Overview board ──────────────────────────────── -->
     <div
       class="board"
@@ -412,6 +401,18 @@ const boardStyle = computed(() => ({
         </div>
 
       </div><!-- ov-body -->
+
+      <!-- ── Safety ladder footer ─────────────────────── -->
+      <div class="ladder-strip">
+        <div class="ls-label">Safety Ladder</div>
+        <div class="ls-levels">
+          <div v-for="n in [0,1,2,3,4,5]" :key="n" class="ls-level" :style="{ background: LEVEL_COLORS[n] }">
+            <span class="ls-n">{{ n }}</span>
+            <span class="ls-name">{{ LEVEL_NAMES[n] }}</span>
+          </div>
+        </div>
+      </div>
+
     </div><!-- wt-overlay -->
 
   </div>
@@ -438,18 +439,14 @@ const boardStyle = computed(() => ({
 /* ── Safety Ladder Strip ──────────────────────────────────────── */
 
 .ladder-strip {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
   height: 42px;
+  min-height: 42px;
   background: rgba(26, 26, 26, 0.96);
   display: flex;
   align-items: center;
   gap: 14px;
   padding: 0 20px;
-  z-index: 40;
-  backdrop-filter: blur(4px);
+  flex-shrink: 0;
 }
 
 .ls-label {
@@ -494,7 +491,7 @@ const boardStyle = computed(() => ({
 /* ── Board (overview) ─────────────────────────────────────────── */
 
 .board {
-  padding: 58px 40px 40px;
+  padding: 32px 40px 40px;
   min-height: 100vh;
   transition: opacity 380ms, filter 380ms, transform 380ms cubic-bezier(0.4,0,0.2,1);
   transform-style: preserve-3d;
