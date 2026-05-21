@@ -8,9 +8,9 @@ Purpose: map all types of product work to their vigilance requirements and the s
 
 ## How to Read This Document
 
-**The worry**: the gut-check developers feel — named for what experienced developers recognize when they encounter this work type.
+**The worry**: the gut-check developers feel, named for what experienced developers recognize when they encounter this work type.
 
-**Worry surface**: the scope of existing product a single instance of this error can affect. Quantifiable -- something we can count for our specific product.
+**Worry surface**: the scope of existing product a single instance of this error can affect. Quantifiable: something we can count for our specific product.
 
 **Rate event**: the specific event that triggers this worry. Toil is paid every time this event occurs.
 
@@ -30,11 +30,11 @@ How careless can an implementor be and still achieve safety? Higher levels mean 
 
 | Level | Name | What it means |
 |-------|------|---------------|
-| 5 | **Carefree** | The system makes the right action easy and mistakes structurally hard. Careless implementors thrive. |
-| 4 | **Prevention** | Mistakes cannot propagate past the originator. Careless is fine within well-defined scopes. |
-| 3 | **Deterministic** | Known worries are reliably caught. Careless is fine for covered ones, but boundaries are fuzzy and require care. |
-| 2 | **Probabilistic** | Errors are sometimes caught. Careless is sometimes fine. |
-| 1 | **Vigilance** | Errors are caught only when someone is paying attention. Careless is never fine. |
+| 5 | **Carefree** | The system makes the right action easy and mistakes structurally hard. Careless implementors succeed. |
+| 4 | **Prevention** | Mistakes cannot propagate past the originator. Careless work is safe within well-defined scopes. |
+| 3 | **Deterministic** | Known worries are reliably caught. Careless work is safe for covered cases; uncovered boundaries require attention. |
+| 2 | **Probabilistic** | Errors are sometimes caught. Careless work sometimes passes unnoticed. |
+| 1 | **Vigilance** | Errors are caught only when someone is paying close attention. Careless work is never safe. |
 | 0 | **Hope** | No mechanism exists. Errors propagate undetected. |
 
 ---
@@ -43,32 +43,32 @@ How careless can an implementor be and still achieve safety? Higher levels mean 
 
 | Facet | Work type phrase | Business stake |
 |-------|-----------------|----------------|
-| **Capability** | Adding new behavior | Delivering what users need. The direct reason we exist -- but without the other facets, new capability erodes everything else. |
-| **Adaptability** | Evolving the design | Staying viable as the business changes. Dismissed as "cleaning up" or "technical debt," but actually preserving option value. A rigid codebase cannot absorb pivots; an adaptable one costs 10x less to redirect. |
+| **Capability** | Adding new behavior | Delivering what users need. The direct reason we exist: without the other facets, new capability erodes everything else. |
+| **Adaptability** | Evolving the design | Staying viable as the business changes. Dismissed as "cleaning up" or "technical debt," this work actually preserves option value. A rigid codebase cannot absorb pivots; an adaptable one costs a fraction as much to redirect. |
 | **Explainability** | Making intent visible | Reducing the cost of every future decision. A multiplier on the productivity of every future developer and AI agent. |
-| **Abstractability** | Building the shared vocabulary | Enabling businesspeople to reason about the system directly. When code speaks the language of the domain, experts can validate behavior without a developer translation layer. |
-| **Transparency** | Illuminating system behavior | Knowing what your system is doing. Every incident, investigation, and audit is faster when behavior is observable. |
+| **Abstractability** | Building the shared vocabulary | Enabling business experts to reason about the system directly. When code speaks the language of the domain, experts can validate behavior without a developer acting as translator. |
+| **Transparency** | Illuminating system behavior | Knowing what the system is doing at any moment. Every incident, investigation, and audit is faster when behavior is observable. |
 | **Consistency** | Making behavior predictable | Setting and keeping promises to users. Each surprise erodes trust and increases support burden. |
-| **Security** | Hardening against threats | Protecting what users trust you with. Security failures are catastrophic and irreversible. |
+| **Security** | Hardening against threats | Protecting what users trust you with. Security failures are catastrophic and often irreversible. |
 
 ---
 
 ## Domain: Product Work
 
-*Work that directly improves the product across its seven facets. Architectural decisions -- which determine the system's long-term adaptability and consistency -- are part of Evolving the design and Making behavior predictable at the system level, not a separate category.*
+*Work that directly improves the product across its seven facets. Architectural decisions, which determine the system's long-term adaptability and consistency, are part of Evolving the design and Making behavior predictable at the system level.*
 
 ### Work type: Adding new behavior
 
 *Adding new behavior, fixing defects, implementing requirements.*
 
-Business stake: the most visible work, but capability delivered on an adaptability-poor codebase degrades every other facet with each release.
+Business stake: the most visible work. Capability delivered on a codebase with poor adaptability degrades every other facet with each release.
 
 **Agency delegation path:**
 
 | Agency level | What it looks like | Safety required |
 |---|---|---|
 | A1: AI assists | AI suggests; human executes and reviews every line | No minimum |
-| A2: AI executes, human reviews | AI writes complete modules; human reviews outcomes | Capability regression: Deterministic |
+| A2: AI executes, human reviews | AI writes complete modules; human reviews results | Capability regression: Deterministic |
 | A3: AI operates in scope | AI implements features autonomously within task boundaries | Capability regression: Prevention or Carefree scope-shrinking; adaptability: Deterministic |
 | A4: Human in the loop | AI implements and self-tests; human anchors scope | All major classes: Prevention; escalation: circuit breakers |
 
@@ -130,7 +130,7 @@ Business stake: the most visible work, but capability delivered on an adaptabili
 | Human review for design quality | Vigilance | Whatever reviewer noticed |
 | Test recipe workflow (injected at write time, scaffolds correct structure) | Carefree | Tests written using the recipe |
 
-Key: AI defaults to mock-based coupling. It will not reach for Nullables or Hexagonal ports unless the orchestration layer injects these patterns on every invocation.
+**Note**: AI defaults to mock-based coupling. It will not reach for Nullables or Hexagonal ports unless the orchestration layer injects these patterns on every invocation.
 
 **Gap condition**: cumulative; invisible until severe. Expensive when a large fraction of the codebase lacks clean test seams.
 
@@ -164,18 +164,18 @@ Key: AI defaults to mock-based coupling. It will not reach for Nullables or Hexa
 
 *Refactoring, restructuring, improving design, extracting abstractions.*
 
-Business stake: every future pivot costs less when the design can absorb it. This is not cleanup -- it is preserving the team's ability to act on business decisions.
+Business stake: every future pivot costs less when the design can absorb it. This is not cleanup; it is preserving the team's ability to act on business decisions quickly.
 
 **Agency delegation path:**
 
 | Agency level | What it looks like | Safety required |
 |---|---|---|
 | A1: AI assists | AI suggests refactoring; human executes each step | No minimum |
-| A2: AI executes, human reviews | AI executes refactoring sequences; human validates outcomes | Capability regression: Deterministic |
+| A2: AI executes, human reviews | AI executes refactoring sequences; human validates results | Capability regression: Deterministic |
 | A3: AI operates in scope | AI plans and executes multi-step design improvements | Capability regression: Carefree (AST tools); design regression: Deterministic |
 | A4: Human in the loop | AI continuously improves design within architectural principles | All structural classes: Carefree (AST tools) |
 
-Note: this work type can reach A3 ahead of others because AST tools provide Carefree-level safety for the primary worry.
+**Note**: this work type can reach A3 ahead of others because AST tools provide Carefree-level safety for the primary worry.
 
 ---
 
@@ -224,7 +224,7 @@ No known Prevention-level mechanism for design quality in the general case.
 
 **The worry**: "Did I update every single place that uses this interface, or did I miss some?"
 
-*Distinction from capability regression: behavior change = code does something different. Structural breakage = interface changed and some consumers were not updated. Refactoring tools address both within tool scope.*
+*Capability regression means the code does something different. Structural breakage means the interface changed and some consumers were not updated. Refactoring tools address both within tool scope.*
 
 **Worry surface**: number of direct consumers of the changed interface or type.
 
@@ -280,7 +280,7 @@ No known Prevention-level mechanism for design quality in the general case.
 
 *Renaming, clarifying, restructuring for readability, improving inline documentation.*
 
-Business stake: every future developer and AI agent starts with reading. Explainability reduces the cost of every subsequent decision.
+Business stake: every future developer and AI agent starts by reading. Explainability reduces the cost of every subsequent decision.
 
 **Agency delegation path:**
 
@@ -325,13 +325,13 @@ Business stake: every future developer and AI agent starts with reading. Explain
 
 #### Worry: Documentation-code misalignment
 
-**The worry**: "Does our documentation -- READMEs, how-to guides, API docs, architecture diagrams, decision records, any of it -- still describe what the system actually does? When docs and code disagree, which one is right?"
+**The worry**: "Does our documentation (READMEs, how-to guides, API docs, architecture diagrams, decision records) still describe what the system actually does? When docs and code disagree, which one is right?"
 
 **Worry surface**: number of documented concepts, behaviors, or structures whose documentation no longer matches reality. Countable by auditing docs against the current system for each documented item.
 
 **Rate event**: every change to code or system behavior not reflected in documentation, or every doc update not reflected in code.
 
-**Note**: resolution is bidirectional. Sometimes code evolved correctly and docs need updating. Sometimes docs reflect intended design and code needs correcting. The error is the misalignment, not the direction.
+**Note**: resolution is bidirectional. Sometimes code evolved correctly and docs need updating; sometimes docs reflect intended design and code needs correcting. The error is the misalignment, not the direction.
 
 **Scope-shrinking options:**
 
@@ -357,7 +357,7 @@ Business stake: every future developer and AI agent starts with reading. Explain
 
 *Extracting domain concepts into code, naming things after business concepts, aligning code structure to business structure.*
 
-Business stake: when code speaks the language of the domain, experts can validate behavior without translation. Without this, every business conversation requires a developer as translator.
+Business stake: when code speaks the language of the domain, experts can validate behavior directly. Every business conversation that requires a developer as interpreter is a tax on velocity and accuracy.
 
 **Agency delegation path:**
 
@@ -397,7 +397,7 @@ Business stake: when code speaks the language of the domain, experts can validat
 | Domain expert review of new abstractions | Vigilance | What expert noticed |
 | Planning tool requiring domain concept mapping | Prevention | All new concepts via the tool |
 
-**Gap condition**: invisible until businesspeople can no longer reason about the product without translation.
+**Gap condition**: invisible until business experts can no longer reason about the product without a developer present.
 
 ---
 
@@ -405,14 +405,14 @@ Business stake: when code speaks the language of the domain, experts can validat
 
 *Adding logging, instrumentation, tracing, observability.*
 
-Business stake: every incident is cheaper when you can see what happened. Opacity is a tax on every investigation.
+Business stake: every incident is cheaper when you can see what happened. Opacity multiplies investigation cost for every production event, audit, and compliance review.
 
 **Agency delegation path:**
 
 | Agency level | What it looks like | Safety required |
 |---|---|---|
 | A1: AI assists | AI suggests logging; human adds it | No minimum |
-| A2: AI executes, human reviews | AI adds observability through a module; human reviews | Security violation: Prevention (structured logging) |
+| A2: AI executes, human reviews | AI adds observability across a module; human reviews | Security violation: Prevention (structured logging) |
 | A3: AI operates in scope | AI instruments autonomously | Security violation: Prevention required |
 
 ---
@@ -450,7 +450,7 @@ Business stake: every incident is cheaper when you can see what happened. Opacit
 
 *Establishing and honoring consistent behavioral patterns across the product surface and over time.*
 
-Business stake: consistent behavior lets users build reliable mental models. Each surprise erodes trust. Consistency is a promise; breaking it is expensive even when the reason is legitimate.
+Business stake: consistent behavior lets users build reliable mental models. Each surprise erodes trust and generates support cost. Breaking a pattern is expensive even when the reason is legitimate.
 
 **Agency delegation path:**
 
@@ -524,7 +524,7 @@ Business stake: consistent behavior lets users build reliable mental models. Eac
 
 *Adding authentication, authorization, input sanitization, access controls.*
 
-Business stake: security failures are catastrophic and irreversible. One successful attack can exceed years of security investment.
+Business stake: security failures are catastrophic and often irreversible. One successful attack can wipe out years of customer trust and exceed years of security investment in remediation cost alone.
 
 **Agency delegation path:**
 
@@ -532,7 +532,7 @@ Business stake: security failures are catastrophic and irreversible. One success
 |---|---|---|
 | A1: AI assists | AI suggests security improvements; human implements | No minimum |
 | A2: AI executes, human reviews | AI implements controls; human reviews | Security regression: Deterministic (SAST) |
-| A3: AI operates in scope | AI hardens within scope | Security regression: Prevention (formal models) -- A2 is the practical ceiling for most teams without formal methods |
+| A3: AI operates in scope | AI hardens within scope | Security regression: Prevention (formal models); A2 is the practical ceiling for most teams without formal methods |
 
 ---
 
@@ -717,7 +717,7 @@ Business stake: security failures are catastrophic and irreversible. One success
 
 ## Domain: Operations
 
-*All the work required to keep the product running: provisioning and managing systems infrastructure, deploying new versions, operating the product in production, and maintaining the environments that support it. Unlike the product facets (which improve properties of the product code) or Work on the system (which builds the development and safety apparatus), Operations keeps everything alive and available.*
+*All the work required to keep the product running: provisioning and managing infrastructure, deploying new versions, and maintaining the environments that support it. Product work improves what the product does; Work on the system builds the development and safety apparatus; Operations keeps everything alive and available.*
 
 ### Work type: Deploying and operating infrastructure
 
@@ -782,7 +782,7 @@ Business stake: security failures are catastrophic and irreversible. One success
 
 ## Domain: Work on the system
 
-*Most other domains are work inside the product -- adding features, evolving design, improving quality. This domain is work on the infrastructure that makes all other work possible. The work product is the execution and safety systems themselves: orchestration, CI/CD, deployment, evaluation frameworks, monitoring, oversight mechanisms, process enforcement, and boundary controls.*
+*Most other domains are work inside the product: adding features, evolving design, improving quality. This domain produces the execution and safety systems themselves: orchestration, CI/CD, deployment, evaluation frameworks, monitoring, oversight mechanisms, process enforcement, and boundary controls.*
 
 *Building these systems well makes careless work inside the product safe. Building them poorly creates hidden gaps that the other domains' safety investments cannot compensate for.*
 
