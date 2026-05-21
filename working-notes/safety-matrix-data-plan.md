@@ -63,7 +63,7 @@ export interface SafetyLadderData {
     {
       "level": 3,
       "name": "Deterministic",
-      "what_it_means": "Known error classes are reliably caught. Careless is fine for covered classes.",
+      "what_it_means": "Known worries are reliably caught. Careless is fine for covered ones.",
       "can_reach_zero_vigilance": false
     },
     {

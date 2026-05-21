@@ -8,7 +8,7 @@ Purpose: map all types of product work to their vigilance requirements and the s
 
 ## How to Read This Document
 
-**The worry**: the gut-check developers feel. Each error class corresponds to a worry experienced developers recognize.
+**The worry**: the gut-check developers feel — named for what experienced developers recognize when they encounter this work type.
 
 **Worry surface**: the scope of existing product a single instance of this error can affect. Quantifiable -- something we can count for our specific product.
 
@@ -20,7 +20,7 @@ Safety options either reduce the worry surface (fewer things at risk per event) 
 
 **Tests are safety mechanisms, not work types.** Their quality (structure, coverage, duplication, environment coupling) determines their effective safety level.
 
-**Product facets and work types**: work is organized by what facet is being improved. Improving one facet always risks degrading others. Error classes are many-to-many.
+**Product facets and work types**: work is organized by what facet is being improved. Improving one facet always risks degrading others. Worries are many-to-many.
 
 ---
 
@@ -32,7 +32,7 @@ How careless can an implementor be and still achieve safety? Higher levels mean 
 |-------|------|---------------|
 | 5 | **Carefree** | The system makes the right action easy and mistakes structurally hard. Careless implementors thrive. |
 | 4 | **Prevention** | Mistakes cannot propagate past the originator. Careless is fine within well-defined scopes. |
-| 3 | **Deterministic** | Known error classes are reliably caught. Careless is fine for covered classes, but boundaries are fuzzy and require care. |
+| 3 | **Deterministic** | Known worries are reliably caught. Careless is fine for covered ones, but boundaries are fuzzy and require care. |
 | 2 | **Probabilistic** | Errors are sometimes caught. Careless is sometimes fine. |
 | 1 | **Vigilance** | Errors are caught only when someone is paying attention. Careless is never fine. |
 | 0 | **Hope** | No mechanism exists. Errors propagate undetected. |
@@ -74,7 +74,7 @@ Business stake: the most visible work, but capability delivered on an adaptabili
 
 ---
 
-#### Error class: Capability regression
+#### Worry: Capability regression
 
 **The worry**: "Did I break something that was working? Who's going to find out in production before I do?"
 
@@ -106,7 +106,7 @@ Business stake: the most visible work, but capability delivered on an adaptabili
 
 ---
 
-#### Error class: Adaptability reduction in touched code
+#### Worry: Adaptability reduction in touched code
 
 **The worry**: "Is this code going to be a nightmare to change when requirements shift next quarter?"
 
@@ -136,7 +136,7 @@ Key: AI defaults to mock-based coupling. It will not reach for Nullables or Hexa
 
 ---
 
-#### Error class: Consistency violation in touched code
+#### Worry: Consistency violation in touched code
 
 **The worry**: "Is this consistent with how everything else works, or am I creating a surprise for the next person?"
 
@@ -175,11 +175,11 @@ Business stake: every future pivot costs less when the design can absorb it. Thi
 | A3: AI operates in scope | AI plans and executes multi-step design improvements | Capability regression: Carefree (AST tools); design regression: Deterministic |
 | A4: Human in the loop | AI continuously improves design within architectural principles | All structural classes: Carefree (AST tools) |
 
-Note: this work type can reach A3 ahead of others because AST tools provide Carefree-level safety for the primary error class.
+Note: this work type can reach A3 ahead of others because AST tools provide Carefree-level safety for the primary worry.
 
 ---
 
-#### Error class: Capability regression (accidental behavior change)
+#### Worry: Capability regression (accidental behavior change)
 
 **The worry**: "Did my restructuring change what the code actually does, even slightly?"
 
@@ -193,7 +193,7 @@ Additional scope-shrinking specific to this work type:
 
 ---
 
-#### Error class: Adaptability regression in other areas (design regression)
+#### Worry: Adaptability regression in other areas (design regression)
 
 **The worry**: "Did I choose the wrong abstraction and make future work harder for everyone?"
 
@@ -220,7 +220,7 @@ No known Prevention-level mechanism for design quality in the general case.
 
 ---
 
-#### Error class: Consistency violation (structural breakage)
+#### Worry: Consistency violation (structural breakage)
 
 **The worry**: "Did I update every single place that uses this interface, or did I miss some?"
 
@@ -249,7 +249,7 @@ No known Prevention-level mechanism for design quality in the general case.
 
 ---
 
-#### Error class: Adaptability reduction in vigilance mechanisms (test duplication)
+#### Worry: Adaptability reduction in vigilance mechanisms (test duplication)
 
 **The worry**: "When I change this code, am I going to have to fix 40 tests that all break together?"
 
@@ -292,13 +292,13 @@ Business stake: every future developer and AI agent starts with reading. Explain
 
 ---
 
-#### Error class: Capability regression (renames that change behavior)
+#### Worry: Capability regression (renames that change behavior)
 
 → See *Capability regression* in *Adding new behavior*. Rare here but applies for symbols called via reflection.
 
 ---
 
-#### Error class: Consistency violation (partial rename)
+#### Worry: Consistency violation (partial rename)
 
 **The worry**: "Did I update every callsite, or are some places still using the old name?"
 
@@ -323,7 +323,7 @@ Business stake: every future developer and AI agent starts with reading. Explain
 
 ---
 
-#### Error class: Documentation-code misalignment
+#### Worry: Documentation-code misalignment
 
 **The worry**: "Does our documentation -- READMEs, how-to guides, API docs, architecture diagrams, decision records, any of it -- still describe what the system actually does? When docs and code disagree, which one is right?"
 
@@ -369,13 +369,13 @@ Business stake: when code speaks the language of the domain, experts can validat
 
 ---
 
-#### Error class: Capability regression
+#### Worry: Capability regression
 
 → See *Capability regression* in *Adding new behavior*. Renaming and restructuring carry the same risk.
 
 ---
 
-#### Error class: Domain model corruption
+#### Worry: Domain model corruption
 
 **The worry**: "Does this concept match what the businesspeople actually call it, or did I invent terminology that drifts from the domain?"
 
@@ -417,13 +417,13 @@ Business stake: every incident is cheaper when you can see what happened. Opacit
 
 ---
 
-#### Error class: Capability regression
+#### Worry: Capability regression
 
 → See *Capability regression* in *Adding new behavior*. Logging code can introduce bugs or performance degradation.
 
 ---
 
-#### Error class: Security violation (logs expose sensitive data)
+#### Worry: Security violation (logs expose sensitive data)
 
 **The worry**: "Am I accidentally logging a password, session token, or credit card number?"
 
@@ -462,7 +462,7 @@ Business stake: consistent behavior lets users build reliable mental models. Eac
 
 ---
 
-#### Error class: Behavioral inconsistency
+#### Worry: Behavioral inconsistency
 
 **The worry**: "Does this behave the same way as the similar feature over there, or will users be confused when the pattern breaks?"
 
@@ -488,13 +488,13 @@ Business stake: consistent behavior lets users build reliable mental models. Eac
 
 ---
 
-#### Error class: Structural breakage
+#### Worry: Structural breakage
 
 → See *Structural breakage* in *Evolving the design*. Same entry: interface change without updating all consumers.
 
 ---
 
-#### Error class: Decision inconsistency
+#### Worry: Decision inconsistency
 
 **The worry**: "Does this architectural decision contradict something we decided six months ago? Are we building on conflicting assumptions?"
 
@@ -536,13 +536,13 @@ Business stake: security failures are catastrophic and irreversible. One success
 
 ---
 
-#### Error class: Capability regression
+#### Worry: Capability regression
 
 → See *Capability regression* in *Adding new behavior*. Security controls that are too restrictive break features.
 
 ---
 
-#### Error class: Security regression (new security code introduces vulnerability)
+#### Worry: Security regression (new security code introduces vulnerability)
 
 **The worry**: "Did my auth change open a hole I am not seeing?"
 
@@ -582,7 +582,7 @@ Business stake: security failures are catastrophic and irreversible. One success
 
 ---
 
-#### Error class: Ungrounded goals
+#### Worry: Ungrounded goals
 
 **The worry**: "Are we building the right thing, or did we just assume we know what users want?"
 
@@ -605,7 +605,7 @@ Business stake: security failures are catastrophic and irreversible. One success
 
 ---
 
-#### Error class: Decomposition gaps
+#### Worry: Decomposition gaps
 
 **The worry**: "Did we think through all the tricky parts, or are there hidden surprises mid-sprint?"
 
@@ -628,7 +628,7 @@ Business stake: security failures are catastrophic and irreversible. One success
 
 ---
 
-#### Error class: Missing or wrong success criteria
+#### Worry: Missing or wrong success criteria
 
 **The worry**: "How will we know if this is actually done and correct?"
 
@@ -651,7 +651,7 @@ Business stake: security failures are catastrophic and irreversible. One success
 
 ---
 
-#### Error class: Priority errors
+#### Worry: Priority errors
 
 **The worry**: "Are we working on what matters most right now?"
 
@@ -689,7 +689,7 @@ Business stake: security failures are catastrophic and irreversible. One success
 
 ---
 
-#### Error class: Reality disconnect
+#### Worry: Reality disconnect
 
 **The worry**: "Is what we built actually solving the problem users have?"
 
@@ -731,7 +731,7 @@ Business stake: security failures are catastrophic and irreversible. One success
 
 ---
 
-#### Error class: Deployment failure
+#### Worry: Deployment failure
 
 **The worry**: "Did the deployment break something in production? How many users are affected?"
 
@@ -755,7 +755,7 @@ Business stake: security failures are catastrophic and irreversible. One success
 
 ---
 
-#### Error class: Configuration drift
+#### Worry: Configuration drift
 
 **The worry**: "Is the environment still what we think it is?"
 
@@ -801,7 +801,7 @@ Business stake: security failures are catastrophic and irreversible. One success
 
 ---
 
-#### Error class: Evaluation coverage gap
+#### Worry: Evaluation coverage gap
 
 **The worry**: "Does our evaluation system actually catch the problems we care about, or does it have blind spots we haven't noticed?"
 
@@ -842,7 +842,7 @@ Business stake: security failures are catastrophic and irreversible. One success
 
 ---
 
-#### Error class: Monitoring blind spot
+#### Worry: Monitoring blind spot
 
 **The worry**: "Is there a health dimension we are not measuring that could fail silently for weeks before we notice?"
 
@@ -880,7 +880,7 @@ Business stake: security failures are catastrophic and irreversible. One success
 
 ---
 
-#### Error class: Oversight mechanism gap
+#### Worry: Oversight mechanism gap
 
 **The worry**: "Does our gate actually stop the bad cases, or does it let them through while we think we are protected?"
 
@@ -916,7 +916,7 @@ Business stake: security failures are catastrophic and irreversible. One success
 
 ---
 
-#### Error class: Missing escalation conditions
+#### Worry: Missing escalation conditions
 
 **The worry**: "Did the AI keep going past the point where I should have been consulted, because we forgot to define a halt condition for that situation?"
 
@@ -955,7 +955,7 @@ Business stake: security failures are catastrophic and irreversible. One success
 
 ---
 
-#### Error class: Process enforcement gap
+#### Worry: Process enforcement gap
 
 **The worry**: "Does our process enforcement actually cover the decisions that matter, or are important rules only documented and not enforced?"
 
@@ -989,7 +989,7 @@ Business stake: security failures are catastrophic and irreversible. One success
 
 ---
 
-#### Error class: Scope enforcement gap
+#### Worry: Scope enforcement gap
 
 **The worry**: "Is the scope we defined for each AI agent actually enforced, or do agents have more access than they should?"
 
@@ -1017,7 +1017,7 @@ Business stake: security failures are catastrophic and irreversible. One success
 
 ## Summary: Worry Surfaces and Safety Minimums
 
-| Work type | Error class | Worry surface (what to count) | Minimum safe | Target |
+| Work type | Worry | Worry surface (what to count) | Minimum safe | Target |
 |-----------|------------|-------------------------------|--------------|--------|
 | Adding new behavior | Capability regression | Callers + customers | Deterministic | + Carefree scope-shrinking |
 | Adding new behavior | Adaptability reduction | Coupling depth / mock count | Deterministic (Nullables) | Carefree (functional/template) |
