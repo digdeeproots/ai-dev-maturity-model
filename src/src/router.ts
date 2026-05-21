@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import SafetyMatrixView from './views/SafetyMatrixView.vue'
 import OverviewView from './views/OverviewView.vue'
 import FateChoiceDetailView from './views/FateChoiceDetailView.vue'
 import PrimaryAxisView from './views/PrimaryAxisView.vue'
@@ -13,6 +14,11 @@ import ProtoF from './views/ProtoF.vue'
 const router = createRouter({
   history: createWebHistory(),
   routes: [
+    {
+      path: '/safety',
+      name: 'safety-matrix',
+      component: SafetyMatrixView,
+    },
     {
       path: '/',
       name: 'overview',
