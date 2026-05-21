@@ -6,7 +6,7 @@ import type { WorkType, WorryRef } from '@/types'
 
 const {
   safetyLadder, domains, worryMap,
-  bestScopeLevel, bestEfficiencyLevel, worstScopeLevel,
+  bestScopeLevel, bestEfficiencyLevel,
   mergedScopeOptions, domainOfWorkType,
 } = useSafetyData()
 
@@ -20,6 +20,25 @@ const LEVEL_BG     = ['#fef2f2', '#fff7ed', '#fffbeb', '#f7fee7', '#f0fdf4', '#e
 function levelColor(n: number) { return LEVEL_COLORS[n] ?? '#999' }
 function levelBg(n: number)    { return LEVEL_BG[n]    ?? '#f5f5f5' }
 function levelName(n: number)  { return safetyLadder.value.find(l => l.level === n)?.name ?? '' }
+
+// ── Domain colour palette (cell bg → card bg → header) ───────
+
+const DOMAIN_COLORS: Record<string, { cell: string; card: string; header: string }> = {
+  product_work:        { cell: '#fdf5e0', card: '#f2d07a', header: '#7a4e0e' },
+  planning:            { cell: '#eef2fc', card: '#a8c0ec', header: '#284490' },
+  operations:          { cell: '#edf8f1', card: '#8fd4aa', header: '#1a5c30' },
+  work_on_the_system:  { cell: '#f3eefb', card: '#c0a0e0', header: '#4c2e88' },
+}
+
+const FALLBACK_COLORS = { cell: '#f5f3f0', card: '#e2ddd8', header: '#444' }
+
+function domainColors(domainId: string) {
+  return DOMAIN_COLORS[domainId] ?? FALLBACK_COLORS
+}
+
+const selectedDomainId = computed(() =>
+  selectedWT.value ? (domainOfWorkType(selectedWT.value.id)?.id ?? '') : ''
+)
 
 // ── Focus state ──────────────────────────────────────────────
 
@@ -121,6 +140,7 @@ const boardStyle = computed(() => ({
         v-for="domain in domains"
         :key="domain.id"
         class="domain-cell"
+        :style="{ background: domainColors(domain.id).cell }"
       >
         <div class="domain-label">{{ domain.name }}</div>
         <div class="wt-list">
@@ -129,24 +149,9 @@ const boardStyle = computed(() => ({
             :key="wt.id"
             class="wt-card"
             :data-wt="wt.id"
+            :style="{ background: domainColors(domain.id).card }"
             @click="focusWT(wt, $event)"
           >
-            <!-- Safety signature: one colored segment per worry -->
-            <div class="wt-sig">
-              <div
-                v-for="ref in wt.worries"
-                :key="ref.worry_id"
-                class="sig-seg"
-                :style="{ background: levelColor(bestScopeLevel(ref.worry_id)) }"
-              ></div>
-            </div>
-
-            <!-- Worst-worry accent on left edge -->
-            <div
-              class="wt-accent"
-              :style="{ background: levelColor(worstScopeLevel(wt.worries)) }"
-            ></div>
-
             <div class="wt-card-body">
               <div class="wt-name">{{ wt.name }}</div>
               <div class="wt-desc">{{ wt.description_markdown }}</div>
@@ -166,7 +171,7 @@ const boardStyle = computed(() => ({
     <!-- ── Work type overlay (morph) ───────────────────── -->
     <div v-if="selectedWT" class="wt-overlay" :style="overlayStyle">
 
-      <div class="ov-header">
+      <div class="ov-header" :style="{ background: domainColors(selectedDomainId).header }">
         <button class="ov-back" @click="unfocusWT">
           <span>←</span> All work types
         </button>
@@ -393,51 +398,38 @@ const boardStyle = computed(() => ({
 .wt-list {
   flex: 1;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
   gap: 10px;
   overflow-y: auto;
+  align-content: flex-start;
   min-height: 0;
   padding-right: 4px;
   scrollbar-width: thin;
-  scrollbar-color: #c8c2b8 transparent;
+  scrollbar-color: rgba(0,0,0,0.15) transparent;
 }
 
 /* ── Work type card ───────────────────────────────────────── */
 
 .wt-card {
-  background: #fff;
-  border-radius: 12px;
+  width: 190px;
+  border-radius: 10px;
   overflow: hidden;
   cursor: pointer;
   position: relative;
   flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07), 0 0 0 1px rgba(0,0,0,0.04);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.06);
   transition: transform 200ms cubic-bezier(0.34,1.56,0.64,1), box-shadow 180ms;
   user-select: none;
 }
 
 .wt-card:hover {
-  transform: translateY(-3px) scale(1.01);
-  box-shadow: 0 8px 28px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04);
-}
-
-.wt-sig {
-  height: 6px;
-  display: flex;
-}
-
-.sig-seg { flex: 1; }
-
-.wt-accent {
-  position: absolute;
-  left: 0;
-  top: 6px;
-  bottom: 0;
-  width: 3px;
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.16), 0 0 0 1px rgba(0,0,0,0.06);
 }
 
 .wt-card-body {
-  padding: 10px 12px 12px 17px;
+  padding: 10px 12px 12px 12px;
 }
 
 .wt-name {
@@ -467,17 +459,17 @@ const boardStyle = computed(() => ({
 }
 
 .worry-badge {
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 500;
-  padding: 2px 8px;
+  padding: 2px 7px;
   border-radius: 8px;
-  background: #ece8e2;
-  color: #6a6258;
-  border: 1px solid #ddd8d0;
+  background: rgba(255,255,255,0.6);
+  color: #444;
+  border: 1px solid rgba(0,0,0,0.12);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 180px;
+  max-width: 170px;
 }
 
 /* ── Work type overlay ────────────────────────────────────── */
@@ -490,7 +482,6 @@ const boardStyle = computed(() => ({
 .ov-header {
   height: 60px;
   min-height: 60px;
-  background: #1a1a1a;
   display: flex;
   align-items: center;
   padding: 0 24px;
