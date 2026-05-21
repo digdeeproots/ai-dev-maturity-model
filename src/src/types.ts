@@ -119,3 +119,87 @@ export interface ModelOverview {
   secondary_axes: SecondaryAxis[]
   fate_determining_choices: FateDeterminingChoice[]
 }
+
+// ── Safety Matrix types ─────────────────────────────────────
+
+export interface SafetyLevel {
+  level: number
+  name: string
+  what_it_means: string
+  can_reach_zero_vigilance: boolean
+}
+
+export interface SafetyLadderData {
+  levels: SafetyLevel[]
+}
+
+export interface SafetyOption {
+  name: string
+  safety_level: number
+  safety_level_note?: string
+  pattern_ref?: string
+  effect?: string
+  scope?: string
+}
+
+export interface AgencyPathEntry {
+  agency_level: string
+  label: string
+  description: string
+  safety_required: string
+}
+
+export interface WorryRef {
+  worry_id: string
+  context_note?: string
+  additional_scope_shrinking?: SafetyOption[]
+}
+
+export interface WorkType {
+  id: string
+  name: string
+  description_markdown: string
+  business_stake_markdown: string
+  total_toil_formula_markdown?: string
+  agency_path: AgencyPathEntry[]
+  worries: WorryRef[]
+}
+
+export interface BehavioralDomain {
+  id: string
+  name: string
+  description_markdown: string
+  work_types: WorkType[]
+}
+
+export interface WorkTypesData {
+  domains: BehavioralDomain[]
+}
+
+export interface Worry {
+  id: string
+  name: string
+  worry: string
+  worry_surface: string
+  rate_event: string
+  note?: string
+  gap_condition_markdown?: string
+  scope_shrinking_options: SafetyOption[]
+  efficiency_options: SafetyOption[]
+}
+
+export interface WorriesData {
+  worries: Worry[]
+}
+
+export interface Pattern {
+  id: string
+  name: string
+  tagline: string
+  description_markdown: string
+  worry_examples: string[]
+}
+
+export interface PatternsData {
+  patterns: Pattern[]
+}
