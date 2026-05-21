@@ -55,6 +55,8 @@ How careless can an implementor be and still achieve safety? Higher levels mean 
 
 ## Domain: Product Work
 
+*Work that directly improves the product across its seven facets. Architectural decisions -- which determine the system's long-term adaptability and consistency -- are part of Evolving the design and Making behavior predictable at the system level, not a separate category.*
+
 ### Work type: Adding new behavior
 
 *Adding new behavior, fixing defects, implementing requirements.*
@@ -321,6 +323,36 @@ Business stake: every future developer and AI agent starts with reading. Explain
 
 ---
 
+#### Error class: Documentation-code misalignment
+
+**The worry**: "Does our documentation -- READMEs, how-to guides, API docs, architecture diagrams, decision records, any of it -- still describe what the system actually does? When docs and code disagree, which one is right?"
+
+**Worry surface**: number of documented concepts, behaviors, or structures whose documentation no longer matches reality. Countable by auditing docs against the current system for each documented item.
+
+**Rate event**: every change to code or system behavior not reflected in documentation, or every doc update not reflected in code.
+
+**Note**: resolution is bidirectional. Sometimes code evolved correctly and docs need updating. Sometimes docs reflect intended design and code needs correcting. The error is the misalignment, not the direction.
+
+**Scope-shrinking options:**
+
+| Option | Effect | Safety level |
+|--------|--------|-------------|
+| Fewer, well-bounded documented items | Smaller surface of docs to keep in sync | Deterministic |
+| Modular design (narrow responsibilities per documented item) | Docs stay accurate longer; each change affects fewer doc surfaces | Deterministic |
+
+**Efficiency options:**
+
+| Option | Safety level | Scope |
+|--------|-------------|-------|
+| Human review of docs vs. code | Vigilance | When someone thinks to check |
+| AI alignment scan (compare docs to code; surface discrepancies) | Probabilistic | Broader than rules; unpredictable |
+| Architecture linters (check structural intent vs. code) | Deterministic | Configured rule set |
+| Doc update embedded in planning workflow | Deterministic | All changes that touch a documented item |
+| Automated doc-code alignment tool | Prevention | All items covered by the tool |
+| Auto-generated documentation (docs derived from code annotations, tests, or living-doc tools; regenerated on every change) | Prevention | All items expressible in generated form -- including API docs, behavior docs from tests, compliance docs from test results, governance reports |
+
+---
+
 ### Work type: Building the shared vocabulary
 
 *Extracting domain concepts into code, naming things after business concepts, aligning code structure to business structure.*
@@ -462,6 +494,32 @@ Business stake: consistent behavior lets users build reliable mental models. Eac
 
 ---
 
+#### Error class: Decision inconsistency
+
+**The worry**: "Does this architectural decision contradict something we decided six months ago? Are we building on conflicting assumptions?"
+
+**Worry surface**: number of code areas that make assumptions about the violated decision.
+
+**Rate event**: every architectural decision made without consulting prior decisions.
+
+**Scope-shrinking options:**
+
+| Option | Effect | Safety level |
+|--------|--------|-------------|
+| Modular architecture (clean seams) | Inconsistent decisions stay contained; cannot cascade to other modules | Deterministic |
+| Architectural experiments (prove before committing) | Wrong experiments affect only experimental scope | Deterministic |
+
+**Efficiency options:**
+
+| Option | Safety level | Scope |
+|--------|-------------|-------|
+| Tribal knowledge | Vigilance | Whatever team remembers |
+| Architecture Decision Records (ADRs) | Probabilistic | Written; requires active reference |
+| ADR review in planning workflow | Deterministic | All decisions in planning scope |
+| Planning tool requiring ADR reference | Prevention | All decisions via the tool |
+
+---
+
 ### Work type: Hardening against threats
 
 *Adding authentication, authorization, input sanitization, access controls.*
@@ -505,76 +563,6 @@ Business stake: security failures are catastrophic and irreversible. One success
 | Security code review | Vigilance | Whatever reviewer noticed |
 | Automated security scanning (SAST) | Deterministic | Known vulnerability patterns |
 | Formal security models (threat modeling + verification) | Prevention | Modeled threat classes |
-
----
-
-## Domain: System Design
-
-### Work type: Making architectural decisions
-
-*Choosing system structure: module boundaries, data flow, service boundaries, technology choices.*
-
-Business stake: architectural decisions constrain all future decisions. The wrong architecture makes every future capability addition expensive or impossible.
-
-**Agency delegation path:**
-
-| Agency level | What it looks like | Safety required |
-|---|---|---|
-| A1: AI assists | AI suggests options; human decides | No minimum |
-| A2: AI proposes, human decides | AI researches and proposes; human approves | Decision inconsistency: Probabilistic (ADRs) |
-| A3: AI makes tactical decisions | AI makes decisions within established principles | Decision inconsistency: Prevention (planning tool); without this, A2 is the safe ceiling |
-| A4: Human in the loop | AI decides; human anchors principles | All classes: Prevention; drift: Deterministic |
-
----
-
-#### Error class: Decision inconsistency
-
-**The worry**: "Does this architectural decision contradict something we decided six months ago?"
-
-**Worry surface**: number of code areas that make assumptions about the decision being violated.
-
-**Rate event**: every architectural decision made without consulting prior decisions.
-
-**Scope-shrinking options:**
-
-| Option | Effect | Safety level |
-|--------|--------|-------------|
-| Modular architecture (clean seams, limited dependencies) | Inconsistent decisions stay contained; cannot cascade | Deterministic |
-| Architectural experiments (prove before committing full codebase) | Wrong experiments affect only experimental scope; main codebase unaffected | Deterministic |
-
-**Efficiency options:**
-
-| Option | Safety level | Scope |
-|--------|-------------|-------|
-| Tribal knowledge | Vigilance | Whatever team remembers |
-| Architecture Decision Records (ADRs) | Probabilistic | Written; requires active reference |
-| ADR review in planning workflow | Deterministic | All decisions in planning scope |
-| Planning tool requiring ADR reference | Prevention | All decisions via the tool |
-
----
-
-#### Error class: Architectural drift
-
-**The worry**: "Is the code still following the architecture, or is it slowly becoming something else while nobody notices?"
-
-**Worry surface**: number of violations of intended architecture currently in the codebase. Countable with linting tools.
-
-**Rate event**: every code change made without checking architectural intent.
-
-**Scope-shrinking options:**
-
-| Option | Effect | Safety level |
-|--------|--------|-------------|
-| Modular architecture (strong boundaries between layers) | Drift in one module cannot cross into others | Deterministic |
-
-**Efficiency options:**
-
-| Option | Safety level | Scope |
-|--------|-------------|-------|
-| Ad hoc review | Vigilance | Occasional; decays fast |
-| AI drift guardian (scans + abstracts anomalies) | Probabilistic | Broader than rules; unpredictable |
-| Architecture linters | Deterministic | Configured rule set |
-| Drift to ADR pipeline | Bootstrapped to Deterministic | Systematic improvement |
 
 ---
 
@@ -727,160 +715,9 @@ Business stake: architectural decisions constrain all future decisions. The wron
 
 ---
 
-## Domain: Evaluation and Oversight
-
-*These responsibilities are themselves safety mechanisms. The question is what level they operate at.*
-
-### Work type: Evaluating outputs
-
-**Agency delegation path:**
-
-| Agency level | What it looks like | Safety required |
-|---|---|---|
-| A1: AI assists | AI assists human evaluation | No minimum |
-| A2: AI evaluates, human spot-checks | AI evaluates; human spot-checks | Bad output: Probabilistic minimum |
-| A3: AI evaluates in scope | AI evaluates within defined criteria | Bad output: Deterministic |
-| A4: AI gates deployment | AI evaluates and gates; human sees summary | Bad output: Prevention |
-
----
-
-#### Error class: Bad output accepted
-
-**The worry**: "Is this output correct, or are we about to deploy something wrong?"
-
-**Worry surface**: number of downstream consumers of the bad output -- systems, users, and decisions that inherit it.
-
-**Rate event**: every output evaluation without structured criteria.
-
-**Scope-shrinking options:**
-
-| Option | Effect | Safety level |
-|--------|--------|-------------|
-| Modular output consumers | A bad output affects fewer downstream systems | Deterministic |
-
-**Efficiency options:**
-
-| Option | Safety level | Scope |
-|--------|-------------|-------|
-| Human review | Vigilance | Whatever human noticed |
-| LLM-as-judge (single run) | Probabilistic | May share AI biases |
-| LLM-as-judge (multi-run, adversarial) | Probabilistic to Deterministic | Improves with adversarial variation |
-| Automated eval against defined criteria | Deterministic | Criteria-covered behaviors |
-| Criteria coverage tool | Prevention | All criteria through the tool |
-
----
-
-### Work type: Monitoring system health
-
-**Agency delegation path:**
-
-| Agency level | What it looks like | Safety required |
-|---|---|---|
-| A1-A2 | Human monitors with AI assistance | Drift: Probabilistic minimum |
-| A3 | AI monitors continuously; human reviews alerts | Drift: Deterministic |
-| A4 | AI monitors, triages, and resolves | Drift: Prevention |
-
----
-
-#### Error class: Drift not detected
-
-**The worry**: "Is the system slowly getting worse in ways nobody is noticing?"
-
-**Worry surface**: accumulated drift x time-to-detection.
-
-**Rate event**: every development cycle without active monitoring.
-
-**Scope-shrinking options:**
-
-| Option | Effect | Safety level |
-|--------|--------|-------------|
-| Short feedback loops | Less drift accumulates before detection | Deterministic |
-
-**Efficiency options:**
-
-| Option | Safety level | Scope |
-|--------|-------------|-------|
-| Human situational awareness | Vigilance | What team notices |
-| AI drift guardian | Probabilistic | Broader; unpredictable |
-| Metrics + alerts | Deterministic | Measured metrics only |
-| Drift to deterministic check pipeline | Bootstrapped to Deterministic | Systematic improvement |
-
----
-
-### Work type: Overseeing development steps and cycles
-
-**Agency delegation path:**
-
-| Agency level | What it looks like | Safety required |
-|---|---|---|
-| A1 | Human reads everything | No minimum |
-| A2 | AI summarizes; human spot-checks | Bad step: Deterministic |
-| A3 | Automated gates; human reviews exceptions | Bad step: Prevention |
-
----
-
-#### Error class: Bad step or cycle accepted
-
-**The worry**: "Did that step actually work correctly, or did something silently go wrong that everything else is now building on?"
-
-**Worry surface**: all work built on top of the bad step. Grows with each subsequent step.
-
-**Rate event**: every step executed without verification gates.
-
-**Scope-shrinking options:**
-
-| Option | Effect | Safety level |
-|--------|--------|-------------|
-| Small steps with fast feedback | Less work builds on a bad step before detection | Deterministic |
-
-**Efficiency options:**
-
-| Option | Safety level | Scope |
-|--------|-------------|-------|
-| Human reads every step | Vigilance | Decays with throughput |
-| Automated health check at boundary | Deterministic | What health check covers |
-| Deterministic pass/fail gate per step | Prevention | All work through the gate |
-
----
-
-### Work type: Making escalation decisions
-
-**Agency delegation path:**
-
-| Agency level | What it looks like | Safety required |
-|---|---|---|
-| A2 | AI signals uncertainty; human decides | Probabilistic (agent flags uncertainty) |
-| A3 | Circuit breakers govern; AI flags ambiguous cases | Prevention (deterministic halt conditions) |
-
----
-
-#### Error class: Work continues past safe boundary
-
-**The worry**: "Did the AI keep going past the point where I should have been consulted?"
-
-**Worry surface**: number of actions taken past the safe boundary.
-
-**Rate event**: every autonomous decision point without explicit halt conditions.
-
-**Scope-shrinking options:**
-
-| Option | Effect | Safety level |
-|--------|--------|-------------|
-| Narrow task scope (AI given small, bounded tasks) | Fewer autonomous decisions per invocation; maximum overshoot is small | Prevention |
-
-**Efficiency options:**
-
-| Option | Safety level | Scope |
-|--------|-------------|-------|
-| Human checks in | Vigilance | Depends on attention |
-| Agent detects uncertainty and flags | Probabilistic | Misses confident-but-wrong |
-| Deterministic halt conditions (circuit breakers) | Prevention | All conditions in the rule set |
-
-**Gap condition**: even one uncaught event can be high-cost. Probabilistic alone is insufficient.
-
----
-
 ## Domain: Operations
+
+*All the work required to keep the product running: provisioning and managing systems infrastructure, deploying new versions, operating the product in production, and maintaining the environments that support it. Unlike the product facets (which improve properties of the product code) or Work on the system (which builds the development and safety apparatus), Operations keeps everything alive and available.*
 
 ### Work type: Deploying and operating infrastructure
 
@@ -941,7 +778,170 @@ Business stake: architectural decisions constrain all future decisions. The wron
 
 ---
 
-## Domain: Process Governance
+
+
+## Domain: Work on the system
+
+*Most other domains are work inside the product -- adding features, evolving design, improving quality. This domain is work on the infrastructure that makes all other work possible. The work product is the execution and safety systems themselves: orchestration, CI/CD, deployment, evaluation frameworks, monitoring, oversight mechanisms, process enforcement, and boundary controls.*
+
+*Building these systems well makes careless work inside the product safe. Building them poorly creates hidden gaps that the other domains' safety investments cannot compensate for.*
+
+### Work type: Building evaluation systems
+
+*Designing criteria, evaluation frameworks, automated checks, and review processes that determine whether outputs meet quality standards.*
+
+**Agency delegation path:**
+
+| Agency level | What it looks like | Safety required |
+|---|---|---|
+| A1: AI assists | AI assists humans designing criteria and eval mechanisms | No minimum |
+| A2: AI proposes, human validates | AI proposes evaluation criteria and mechanisms; human validates | Coverage gap: Probabilistic minimum |
+| A3: AI designs in scope | AI designs and updates eval systems within quality principles | Coverage gap: Deterministic |
+| A4: AI maintains autonomously | AI evolves criteria and mechanisms based on observed outcomes | Coverage gap: Prevention |
+
+---
+
+#### Error class: Evaluation coverage gap
+
+**The worry**: "Does our evaluation system actually catch the problems we care about, or does it have blind spots we haven't noticed?"
+
+**Worry surface**: all outputs produced while a gap exists, weighted by defect rate in the uncovered class. Proxy: output volume x estimated miss rate.
+
+**Rate event**: every defect in an uncovered class that occurs while the system lacks coverage for it.
+
+**Scope-shrinking options:**
+
+| Option | Effect | Safety level |
+|--------|--------|-------------|
+| Modular output consumers | A bad output affects fewer downstream systems | Deterministic |
+
+**Efficiency options:**
+
+| Option | Safety level | Scope |
+|--------|-------------|-------|
+| Human review | Vigilance | Whatever human noticed |
+| LLM-as-judge (single run) | Probabilistic | May share AI biases |
+| LLM-as-judge (multi-run, adversarial) | Probabilistic to Deterministic | Improves with adversarial variation |
+| Automated eval against defined criteria | Deterministic | Criteria-covered behaviors |
+| Criteria coverage tool | Prevention | All criteria through the tool |
+
+---
+
+### Work type: Building monitoring systems
+
+*Designing metrics, dashboards, alerts, and health checks that keep the development system's health visible.*
+
+**Agency delegation path:**
+
+| Agency level | What it looks like | Safety required |
+|---|---|---|
+| A1 | Human designs monitoring approach; AI assists | No minimum |
+| A2 | AI proposes monitoring systems; human validates coverage | Blind spots: Probabilistic minimum |
+| A3 | AI designs and maintains monitoring within principles | Blind spots: Deterministic |
+| A4 | AI autonomously evolves monitoring based on observed patterns | Blind spots: Prevention |
+
+---
+
+#### Error class: Monitoring blind spot
+
+**The worry**: "Is there a health dimension we are not measuring that could fail silently for weeks before we notice?"
+
+**Worry surface**: time-to-detection x rate of problems in the unmonitored dimension. Proxy: number of health dimensions with no active metric.
+
+**Rate event**: every health problem that occurs in an unmonitored dimension.
+
+**Scope-shrinking options:**
+
+| Option | Effect | Safety level |
+|--------|--------|-------------|
+| Short feedback loops | Less drift accumulates before detection | Deterministic |
+
+**Efficiency options:**
+
+| Option | Safety level | Scope |
+|--------|-------------|-------|
+| Human situational awareness | Vigilance | What team notices |
+| AI drift guardian | Probabilistic | Broader; unpredictable |
+| Metrics + alerts | Deterministic | Measured metrics only |
+| Drift to deterministic check pipeline | Bootstrapped to Deterministic | Systematic improvement |
+
+---
+
+### Work type: Designing oversight mechanisms
+
+**Agency delegation path:**
+
+| Agency level | What it looks like | Safety required |
+|---|---|---|
+| A1 | Human designs all gates; AI assists with specification | No minimum |
+| A2 | AI proposes gate designs; human validates coverage and thresholds | Mechanism gap: Deterministic |
+| A3 | AI designs oversight systems within defined risk tolerance | Mechanism gap: Prevention |
+| A4 | AI autonomously tightens or loosens gates based on observed outcomes | All mechanism classes: Prevention |
+
+---
+
+#### Error class: Oversight mechanism gap
+
+**The worry**: "Does our gate actually stop the bad cases, or does it let them through while we think we are protected?"
+
+**Worry surface**: all bad work that passes through the gap x downstream impact. Count uncovered step types.
+
+**Rate event**: every bad step or cycle that passes through an insufficiently specified gate.
+
+**Scope-shrinking options:**
+
+| Option | Effect | Safety level |
+|--------|--------|-------------|
+| Small steps with fast feedback | Less work builds on a bad step before detection | Deterministic |
+
+**Efficiency options:**
+
+| Option | Safety level | Scope |
+|--------|-------------|-------|
+| Human reads every step | Vigilance | Decays with throughput |
+| Automated health check at boundary | Deterministic | What health check covers |
+| Deterministic pass/fail gate per step | Prevention | All work through the gate |
+
+---
+
+### Work type: Designing escalation rules
+
+**Agency delegation path:**
+
+| Agency level | What it looks like | Safety required |
+|---|---|---|
+| A1 | Human defines all halt conditions; AI assists | No minimum |
+| A2 | AI proposes halt conditions; human validates | Missing conditions: Probabilistic |
+| A3 | AI designs and encodes escalation rules within policy | Missing conditions: Prevention |
+
+---
+
+#### Error class: Missing escalation conditions
+
+**The worry**: "Did the AI keep going past the point where I should have been consulted, because we forgot to define a halt condition for that situation?"
+
+**Worry surface**: number of autonomous action categories not covered by halt conditions. Directly countable from the circuit breaker rule set.
+
+**Rate event**: every novel situation the AI encounters with no defined halt condition.
+
+**Scope-shrinking options:**
+
+| Option | Effect | Safety level |
+|--------|--------|-------------|
+| Narrow task scope (AI given small, bounded tasks) | Fewer autonomous decisions per invocation; maximum overshoot is small | Prevention |
+
+**Efficiency options:**
+
+| Option | Safety level | Scope |
+|--------|-------------|-------|
+| Human checks in | Vigilance | Depends on attention |
+| Agent detects uncertainty and flags | Probabilistic | Misses confident-but-wrong |
+| Deterministic halt conditions (circuit breakers) | Prevention | All conditions in the rule set |
+
+**Gap condition**: even one uncaught event can be high-cost. Probabilistic alone is insufficient.
+
+---
+
 
 ### Work type: Designing and enforcing process
 
@@ -955,13 +955,13 @@ Business stake: architectural decisions constrain all future decisions. The wron
 
 ---
 
-#### Error class: Process not followed
+#### Error class: Process enforcement gap
 
-**The worry**: "Did the AI (or developer) skip steps that are there for a reason?"
+**The worry**: "Does our process enforcement actually cover the decisions that matter, or are important rules only documented and not enforced?"
 
-**Worry surface**: number of work products that bypassed process controls in a period.
+**Worry surface**: number of decision types or workflow steps without enforcement gates. Directly countable from the workflow definition.
 
-**Rate event**: every workflow execution without enforcement gates.
+**Rate event**: every workflow execution where a required gate is absent.
 
 **Scope-shrinking options:**
 
@@ -989,9 +989,9 @@ Business stake: architectural decisions constrain all future decisions. The wron
 
 ---
 
-#### Error class: AI acts outside delegated scope
+#### Error class: Scope enforcement gap
 
-**The worry**: "Did the AI touch something it wasn't supposed to?"
+**The worry**: "Is the scope we defined for each AI agent actually enforced, or do agents have more access than they should?"
 
 **Worry surface**: files or systems touched beyond authorized scope. Countable from access logs or git diff.
 
@@ -1015,12 +1015,6 @@ Business stake: architectural decisions constrain all future decisions. The wron
 
 ---
 
-## Open Question for Arlo
-
-@human: **Coverage gaps and worry surface.** I removed "coverage gaps" as a standalone error class. My reasoning: a coverage gap reduces the effective safety level of the efficiency mechanism (tests), but does not create its own worry surface. The worry surface belongs to whatever error the gap fails to catch. Coverage quality appears as an effective-level qualifier in efficiency options (e.g., "recipe-based tests with comprehensive coverage: Deterministic effective; ad hoc tests: drops toward Probabilistic"). Does this framing work?
-
----
-
 ## Summary: Worry Surfaces and Safety Minimums
 
 | Work type | Error class | Worry surface (what to count) | Minimum safe | Target |
@@ -1033,14 +1027,23 @@ Business stake: architectural decisions constrain all future decisions. The wron
 | Making intent visible | Partial rename | Callsites not updated | Prevention (type system) | Carefree (AST tools) |
 | Building shared vocabulary | Domain model corruption | Diverged domain concepts | Probabilistic (domain docs) | Prevention (planning tool) |
 | Making behavior predictable | Behavioral inconsistency | User journeys affected | Probabilistic (design system) | Prevention (enforced) |
-| Architectural decisions | Decision inconsistency | Code areas with violated assumptions | Probabilistic (ADRs) | Prevention (planning tool) |
-| Architectural decisions | Drift | Violations in codebase | Probabilistic (guardian) | Deterministic (linters) |
+| Making intent visible | Documentation-code misalignment | Documented items out of sync | Probabilistic (AI scan) | Deterministic (linters + workflow) |
+| Making behavior predictable | Decision inconsistency | Code areas with violated assumptions | Probabilistic (ADRs) | Prevention (planning tool) |
 | Planning | Ungrounded goals | Unvalidated story points | Prevention (planning tool) | Prevention |
 | Planning | Missing criteria | Work items without criteria | Deterministic (stakeholder review) | Prevention |
 | Grounding | Reality disconnect | Users experiencing diverged behavior | Deterministic (metrics) | Prevention (outcome gates) |
-| Evaluating outputs | Bad output accepted | Downstream consumers | Probabilistic (LLM judge) | Deterministic (eval framework) |
-| Oversight | Bad step accepted | Work built on bad step | Deterministic (health check) | Prevention (gate) |
-| Escalation | Work past boundary | Actions past boundary | Prevention (circuit breakers) | Prevention |
+| Building evaluation systems | Evaluation coverage gap | Output volume x miss rate | Probabilistic (LLM judge) | Deterministic (eval framework) |
+| Designing oversight mechanisms | Mechanism gap | Uncovered step types | Deterministic (health check) | Prevention (gate) |
+| Designing escalation rules | Missing conditions | Action categories without halt rules | Prevention (circuit breakers) | Prevention |
+| Deploying | Deployment failure | Customers affected during failure | Deterministic (CI/CD) | Prevention (declarative) |
 | Deploying | Configuration drift | Environment differences from desired | Deterministic (IaC) | Prevention (immutable) |
-| Process | Process bypassed | Bypasses per period | Deterministic (CI gates) | Prevention (workflow code) |
-| Boundaries | AI outside scope | Files/systems out of scope | Prevention (tooling) | Prevention |
+| Designing and enforcing process | Process enforcement gap | Decision types without gates | Deterministic (CI gates) | Prevention (workflow code) |
+| Defining and enforcing boundaries | Scope enforcement gap | Agent capabilities beyond scope | Prevention (tooling) | Prevention |
+
+
+
+
+
+
+
+
