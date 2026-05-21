@@ -113,6 +113,57 @@ const DOMAINS = [
       },
     ],
   },
+  {
+    id: 'evaluation_work',
+    name: 'Evaluation Work',
+    workTypes: [
+      {
+        id: 'assessing_ai_output',
+        name: 'Assessing AI Output',
+        description: 'Judging whether AI-produced content, code, or decisions are correct and appropriate.',
+        businessStake: 'Evaluation is the feedback loop. Without it, every improvement is guesswork and every delegation is a gamble.',
+        worryIds: ['capability_regression', 'documentation_misalignment'],
+        agencyPath: [
+          { level: 'A1', label: 'AI assists', desc: 'AI flags candidates; human judges each', required: 'No minimum' },
+          { level: 'A2', label: 'AI executes, human reviews', desc: 'AI evaluates batches; human reviews summary', required: 'Cap. regression: Deterministic' },
+          { level: 'A3', label: 'AI operates in scope', desc: 'AI runs evals autonomously within defined criteria', required: 'Cap. regression: Prevention' },
+          { level: 'A4', label: 'Human in the loop', desc: 'AI owns eval pipeline; human sets criteria', required: 'All eval classes: Prevention' },
+        ],
+      },
+      {
+        id: 'monitoring',
+        name: 'Monitoring & Observability',
+        description: 'Watching running systems for anomalies, regressions, and unexpected behavior in production.',
+        businessStake: 'What you cannot see, you cannot fix. Monitoring determines whether problems are found by you or by your customers.',
+        worryIds: ['capability_regression', 'adaptability_reduction'],
+        agencyPath: [
+          { level: 'A1', label: 'AI assists', desc: 'AI surfaces alerts; human investigates', required: 'No minimum' },
+          { level: 'A2', label: 'AI executes, human reviews', desc: 'AI triages and groups alerts; human approves action', required: 'Cap. regression: Deterministic' },
+          { level: 'A3', label: 'AI operates in scope', desc: 'AI remediates known classes autonomously', required: 'Cap. regression: Prevention' },
+          { level: 'A4', label: 'Human in the loop', desc: 'AI manages full incident response loop', required: 'All classes: Prevention; escalation gates required' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'planning_work',
+    name: 'Planning Work',
+    workTypes: [
+      {
+        id: 'task_breakdown',
+        name: 'Task Breakdown & Estimation',
+        description: 'Decomposing features and goals into concrete tasks with scope and effort estimates.',
+        businessStake: 'Bad decomposition creates invisible dependencies and false confidence. The plan is the first artifact that can mislead everyone downstream.',
+        worryIds: ['documentation_misalignment', 'adaptability_reduction'],
+        agencyPath: [
+          { level: 'A1', label: 'AI assists', desc: 'AI suggests breakdowns; human shapes and owns them', required: 'No minimum' },
+          { level: 'A2', label: 'AI executes, human reviews', desc: 'AI generates full task trees; human reviews', required: 'Doc misalignment: Probabilistic' },
+          { level: 'A3', label: 'AI operates in scope', desc: 'AI breaks down work within defined goal boundaries', required: 'Doc misalignment: Deterministic' },
+          { level: 'A4', label: 'Human in the loop', desc: 'AI plans and replans continuously; human sets goals', required: 'All planning classes: Prevention' },
+        ],
+      },
+    ],
+  },
 ]
 
 const worryMap = Object.fromEntries(WORRIES.map(w => [w.id, w]))
@@ -249,15 +300,9 @@ const boardStyle = computed(() => ({
                   v-for="wId in wt.worryIds"
                   :key="wId"
                   class="worry-badge"
-                  :style="{ background: LEVEL_BG[bestScope(wId)], color: LEVEL_COLORS[bestScope(wId)], borderColor: LEVEL_COLORS[bestScope(wId)] }"
                 >
-                  <span class="wb-dot" :style="{ background: LEVEL_COLORS[bestScope(wId)] }"></span>
                   {{ worryMap[wId]?.short }}
                 </span>
-              </div>
-
-              <div class="wt-agency-row">
-                <span v-for="step in wt.agencyPath" :key="step.level" class="agency-pip">{{ step.level }}</span>
               </div>
             </div>
           </div>
@@ -495,6 +540,11 @@ const boardStyle = computed(() => ({
   min-height: 100vh;
   transition: opacity 380ms, filter 380ms, transform 380ms cubic-bezier(0.4,0,0.2,1);
   transform-style: preserve-3d;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 32px 40px;
+  align-content: start;
 }
 
 .board-dimmed {
@@ -504,7 +554,7 @@ const boardStyle = computed(() => ({
 }
 
 .domain-section {
-  margin-bottom: 32px;
+  min-width: 0;
 }
 
 .domain-label {
@@ -602,35 +652,13 @@ const boardStyle = computed(() => ({
 .worry-badge {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  font-size: 10px;
-  font-weight: 600;
-  padding: 3px 8px 3px 5px;
+  font-size: 10.5px;
+  font-weight: 500;
+  padding: 3px 9px;
   border-radius: 10px;
-  border: 1px solid;
-}
-
-.wb-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.wt-agency-row {
-  display: flex;
-  gap: 4px;
-}
-
-.agency-pip {
-  font-size: 9.5px;
-  font-weight: 700;
-  color: #76232f;
-  background: #fef5f4;
-  border: 1px solid #f0cdc9;
-  border-radius: 4px;
-  padding: 2px 6px;
-  letter-spacing: 0.02em;
+  background: #ece8e2;
+  color: #6a6258;
+  border: 1px solid #ddd8d0;
 }
 
 /* ── Work type overlay ────────────────────────────────────────── */
