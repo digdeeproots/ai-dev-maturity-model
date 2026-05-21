@@ -1,0 +1,555 @@
+{
+  "domains": [
+    {
+      "id": "product_work",
+      "name": "Product Work",
+      "description_markdown": "Work that directly improves the product across its seven facets. Architectural decisions, which determine the system's long-term adaptability and consistency, are part of Evolving the design and Making behavior predictable at the system level.",
+      "work_types": [
+        {
+          "id": "adding_new_behavior",
+          "name": "Adding new behavior",
+          "description_markdown": "Adding new behavior, fixing defects, implementing requirements.",
+          "business_stake_markdown": "The most visible work. Capability delivered on a codebase with poor adaptability degrades every other facet with each release.",
+          "agency_path": [
+            {
+              "agency_level": "A1",
+              "label": "AI assists",
+              "description": "AI suggests; human executes and reviews every line",
+              "safety_required": "No minimum"
+            },
+            {
+              "agency_level": "A2",
+              "label": "AI executes, human reviews",
+              "description": "AI writes complete modules; human reviews results",
+              "safety_required": "Capability regression: Deterministic"
+            },
+            {
+              "agency_level": "A3",
+              "label": "AI operates in scope",
+              "description": "AI implements features autonomously within task boundaries",
+              "safety_required": "Capability regression: Prevention or Carefree scope-shrinking; adaptability: Deterministic"
+            },
+            {
+              "agency_level": "A4",
+              "label": "Human in the loop",
+              "description": "AI implements and self-tests; human anchors scope",
+              "safety_required": "All major classes: Prevention; escalation: circuit breakers"
+            }
+          ],
+          "worries": [
+            { "worry_id": "capability_regression" },
+            { "worry_id": "adaptability_reduction_in_touched_code" },
+            { "worry_id": "consistency_violation_in_code" }
+          ]
+        },
+        {
+          "id": "evolving_the_design",
+          "name": "Evolving the design",
+          "description_markdown": "Refactoring, restructuring, improving design, extracting abstractions.",
+          "business_stake_markdown": "Every future pivot costs less when the design can absorb it. This is not cleanup; it is preserving the team's ability to act on business decisions quickly.",
+          "agency_path": [
+            {
+              "agency_level": "A1",
+              "label": "AI assists",
+              "description": "AI suggests refactoring; human executes each step",
+              "safety_required": "No minimum"
+            },
+            {
+              "agency_level": "A2",
+              "label": "AI executes, human reviews",
+              "description": "AI executes refactoring sequences; human validates results",
+              "safety_required": "Capability regression: Deterministic"
+            },
+            {
+              "agency_level": "A3",
+              "label": "AI operates in scope",
+              "description": "AI plans and executes multi-step design improvements",
+              "safety_required": "Capability regression: Carefree (AST tools); design regression: Deterministic"
+            },
+            {
+              "agency_level": "A4",
+              "label": "Human in the loop",
+              "description": "AI continuously improves design within architectural principles",
+              "safety_required": "All structural classes: Carefree (AST tools)"
+            }
+          ],
+          "worries": [
+            {
+              "worry_id": "capability_regression",
+              "context_note": "Did my restructuring change what the code actually does, even slightly?",
+              "additional_scope_shrinking": [
+                {
+                  "name": "AST-based refactoring tools only (no edit-file)",
+                  "effect": "Behavioral safety guaranteed by tool; wrong structural choices undone as cheaply as made",
+                  "safety_level": 5
+                }
+              ]
+            },
+            { "worry_id": "adaptability_regression_design" },
+            { "worry_id": "consistency_violation_structural_breakage" },
+            { "worry_id": "adaptability_reduction_test_duplication" }
+          ]
+        },
+        {
+          "id": "making_intent_visible",
+          "name": "Making intent visible",
+          "description_markdown": "Renaming, clarifying, restructuring for readability, improving inline documentation.",
+          "business_stake_markdown": "Every future developer and AI agent starts by reading. Explainability reduces the cost of every subsequent decision.",
+          "agency_path": [
+            {
+              "agency_level": "A1",
+              "label": "AI assists",
+              "description": "AI suggests renames; human executes",
+              "safety_required": "No minimum"
+            },
+            {
+              "agency_level": "A2",
+              "label": "AI executes, human reviews",
+              "description": "AI executes renames and clarifications; human reviews",
+              "safety_required": "Partial rename: Prevention (type system)"
+            },
+            {
+              "agency_level": "A3",
+              "label": "AI operates in scope",
+              "description": "AI improves code clarity autonomously",
+              "safety_required": "Partial rename: Carefree (AST tools)"
+            }
+          ],
+          "worries": [
+            {
+              "worry_id": "capability_regression",
+              "context_note": "Rare here but applies for symbols called via reflection."
+            },
+            { "worry_id": "partial_rename" },
+            { "worry_id": "documentation_code_misalignment" }
+          ]
+        },
+        {
+          "id": "building_the_shared_vocabulary",
+          "name": "Building the shared vocabulary",
+          "description_markdown": "Extracting domain concepts into code, naming things after business concepts, aligning code structure to business structure.",
+          "business_stake_markdown": "When code speaks the language of the domain, experts can validate behavior directly. Every business conversation that requires a developer as interpreter is a tax on velocity and accuracy.",
+          "agency_path": [
+            {
+              "agency_level": "A1",
+              "label": "AI assists",
+              "description": "AI suggests domain-aligned names; human validates with experts",
+              "safety_required": "No minimum"
+            },
+            {
+              "agency_level": "A2",
+              "label": "AI executes, human reviews",
+              "description": "AI proposes domain model changes; human validates with domain experts",
+              "safety_required": "Domain model corruption: Probabilistic (domain docs)"
+            },
+            {
+              "agency_level": "A3",
+              "label": "AI operates in scope",
+              "description": "AI aligns vocabulary to domain autonomously",
+              "safety_required": "Domain model corruption: Deterministic (planning tool review)"
+            }
+          ],
+          "worries": [
+            {
+              "worry_id": "capability_regression",
+              "context_note": "Renaming and restructuring carry the same risk."
+            },
+            { "worry_id": "domain_model_corruption" }
+          ]
+        },
+        {
+          "id": "illuminating_system_behavior",
+          "name": "Illuminating system behavior",
+          "description_markdown": "Adding logging, instrumentation, tracing, observability.",
+          "business_stake_markdown": "Every incident is cheaper when you can see what happened. Opacity multiplies investigation cost for every production event, audit, and compliance review.",
+          "agency_path": [
+            {
+              "agency_level": "A1",
+              "label": "AI assists",
+              "description": "AI suggests logging; human adds it",
+              "safety_required": "No minimum"
+            },
+            {
+              "agency_level": "A2",
+              "label": "AI executes, human reviews",
+              "description": "AI adds observability across a module; human reviews",
+              "safety_required": "Security violation: Prevention (structured logging)"
+            },
+            {
+              "agency_level": "A3",
+              "label": "AI operates in scope",
+              "description": "AI instruments autonomously",
+              "safety_required": "Security violation: Prevention required"
+            }
+          ],
+          "worries": [
+            {
+              "worry_id": "capability_regression",
+              "context_note": "Logging code can introduce bugs or performance degradation."
+            },
+            { "worry_id": "security_violation_logs" }
+          ]
+        },
+        {
+          "id": "making_behavior_predictable",
+          "name": "Making behavior predictable",
+          "description_markdown": "Establishing and honoring consistent behavioral patterns across the product surface and over time.",
+          "business_stake_markdown": "Consistent behavior lets users build reliable mental models. Each surprise erodes trust and generates support cost. Breaking a pattern is expensive even when the reason is legitimate.",
+          "agency_path": [
+            {
+              "agency_level": "A1",
+              "label": "AI assists",
+              "description": "AI flags inconsistencies; human corrects",
+              "safety_required": "No minimum"
+            },
+            {
+              "agency_level": "A2",
+              "label": "AI executes, human reviews",
+              "description": "AI applies consistency corrections; human reviews",
+              "safety_required": "Behavioral inconsistency: Deterministic"
+            },
+            {
+              "agency_level": "A3",
+              "label": "AI operates in scope",
+              "description": "AI maintains consistency autonomously",
+              "safety_required": "Behavioral inconsistency: Prevention (enforced design system)"
+            }
+          ],
+          "worries": [
+            { "worry_id": "behavioral_inconsistency" },
+            {
+              "worry_id": "consistency_violation_structural_breakage",
+              "context_note": "Same entry: interface change without updating all consumers."
+            },
+            { "worry_id": "decision_inconsistency" }
+          ]
+        },
+        {
+          "id": "hardening_against_threats",
+          "name": "Hardening against threats",
+          "description_markdown": "Adding authentication, authorization, input sanitization, access controls.",
+          "business_stake_markdown": "Security failures are catastrophic and often irreversible. One successful attack can wipe out years of customer trust and exceed years of security investment in remediation cost alone.",
+          "agency_path": [
+            {
+              "agency_level": "A1",
+              "label": "AI assists",
+              "description": "AI suggests security improvements; human implements",
+              "safety_required": "No minimum"
+            },
+            {
+              "agency_level": "A2",
+              "label": "AI executes, human reviews",
+              "description": "AI implements controls; human reviews",
+              "safety_required": "Security regression: Deterministic (SAST)"
+            },
+            {
+              "agency_level": "A3",
+              "label": "AI operates in scope",
+              "description": "AI hardens within scope",
+              "safety_required": "Security regression: Prevention (formal models); A2 is the practical ceiling for most teams without formal methods"
+            }
+          ],
+          "worries": [
+            {
+              "worry_id": "capability_regression",
+              "context_note": "Security controls that are too restrictive break features."
+            },
+            { "worry_id": "security_regression" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "planning",
+      "name": "Planning",
+      "description_markdown": "",
+      "work_types": [
+        {
+          "id": "planning_and_scoping_work",
+          "name": "Planning and scoping work",
+          "description_markdown": "Defining goals, decomposing into tasks, setting success criteria, and prioritizing.",
+          "business_stake_markdown": "",
+          "agency_path": [
+            {
+              "agency_level": "A1",
+              "label": "AI assists",
+              "description": "AI assists goal definition; human validates every goal",
+              "safety_required": "No minimum"
+            },
+            {
+              "agency_level": "A2",
+              "label": "AI structures, human validates",
+              "description": "AI structures plans and decomposition; human validates",
+              "safety_required": "Ungrounded goals: Prevention (planning tool)"
+            },
+            {
+              "agency_level": "A3",
+              "label": "AI plans in scope",
+              "description": "AI plans autonomously within established criteria",
+              "safety_required": "All planning classes: Prevention"
+            }
+          ],
+          "worries": [
+            { "worry_id": "ungrounded_goals" },
+            { "worry_id": "decomposition_gaps" },
+            { "worry_id": "missing_success_criteria" },
+            { "worry_id": "priority_errors" }
+          ]
+        },
+        {
+          "id": "grounding_in_reality",
+          "name": "Grounding in reality",
+          "description_markdown": "Connecting the product to actual user needs and outcomes.",
+          "business_stake_markdown": "",
+          "agency_path": [
+            {
+              "agency_level": "A1",
+              "label": "AI assists",
+              "description": "AI suggests grounding approaches; human validates",
+              "safety_required": "No minimum"
+            },
+            {
+              "agency_level": "A2",
+              "label": "AI analyzes, human validates",
+              "description": "AI analyzes metrics and user data; human validates conclusions",
+              "safety_required": "Reality disconnect: Deterministic (metrics)"
+            },
+            {
+              "agency_level": "A3",
+              "label": "AI grounds autonomously",
+              "description": "AI adjusts product direction based on evidence",
+              "safety_required": "Reality disconnect: Prevention (outcome gates)"
+            }
+          ],
+          "worries": [
+            { "worry_id": "reality_disconnect" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "operations",
+      "name": "Operations",
+      "description_markdown": "All the work required to keep the product running: provisioning and managing infrastructure, deploying new versions, and maintaining the environments that support it. Product work improves what the product does; Work on the system builds the development and safety apparatus; Operations keeps everything alive and available.",
+      "work_types": [
+        {
+          "id": "deploying_and_operating_infrastructure",
+          "name": "Deploying and operating infrastructure",
+          "description_markdown": "",
+          "business_stake_markdown": "",
+          "agency_path": [
+            {
+              "agency_level": "A1",
+              "label": "",
+              "description": "Human runs deployment with AI assistance",
+              "safety_required": "No minimum"
+            },
+            {
+              "agency_level": "A2",
+              "label": "",
+              "description": "AI orchestrates deployment; human approves",
+              "safety_required": "Deployment failure: Deterministic (CI/CD)"
+            },
+            {
+              "agency_level": "A3",
+              "label": "",
+              "description": "AI deploys autonomously",
+              "safety_required": "Deployment failure: Prevention; configuration drift: Prevention"
+            }
+          ],
+          "worries": [
+            { "worry_id": "deployment_failure" },
+            { "worry_id": "configuration_drift" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "work_on_the_system",
+      "name": "Work on the system",
+      "description_markdown": "Most other domains are work inside the product: adding features, evolving design, improving quality. This domain produces the execution and safety systems themselves: orchestration, CI/CD, deployment, evaluation frameworks, monitoring, oversight mechanisms, process enforcement, and boundary controls.\n\nBuilding these systems well makes careless work inside the product safe. Building them poorly creates hidden gaps that the other domains' safety investments cannot compensate for.",
+      "work_types": [
+        {
+          "id": "building_evaluation_systems",
+          "name": "Building evaluation systems",
+          "description_markdown": "Designing criteria, evaluation frameworks, automated checks, and review processes that determine whether outputs meet quality standards.",
+          "business_stake_markdown": "",
+          "agency_path": [
+            {
+              "agency_level": "A1",
+              "label": "AI assists",
+              "description": "AI assists humans designing criteria and eval mechanisms",
+              "safety_required": "No minimum"
+            },
+            {
+              "agency_level": "A2",
+              "label": "AI proposes, human validates",
+              "description": "AI proposes evaluation criteria and mechanisms; human validates",
+              "safety_required": "Coverage gap: Probabilistic minimum"
+            },
+            {
+              "agency_level": "A3",
+              "label": "AI designs in scope",
+              "description": "AI designs and updates eval systems within quality principles",
+              "safety_required": "Coverage gap: Deterministic"
+            },
+            {
+              "agency_level": "A4",
+              "label": "AI maintains autonomously",
+              "description": "AI evolves criteria and mechanisms based on observed outcomes",
+              "safety_required": "Coverage gap: Prevention"
+            }
+          ],
+          "worries": [
+            { "worry_id": "evaluation_coverage_gap" }
+          ]
+        },
+        {
+          "id": "building_monitoring_systems",
+          "name": "Building monitoring systems",
+          "description_markdown": "Designing metrics, dashboards, alerts, and health checks that keep the development system's health visible.",
+          "business_stake_markdown": "",
+          "agency_path": [
+            {
+              "agency_level": "A1",
+              "label": "",
+              "description": "Human designs monitoring approach; AI assists",
+              "safety_required": "No minimum"
+            },
+            {
+              "agency_level": "A2",
+              "label": "",
+              "description": "AI proposes monitoring systems; human validates coverage",
+              "safety_required": "Blind spots: Probabilistic minimum"
+            },
+            {
+              "agency_level": "A3",
+              "label": "",
+              "description": "AI designs and maintains monitoring within principles",
+              "safety_required": "Blind spots: Deterministic"
+            },
+            {
+              "agency_level": "A4",
+              "label": "",
+              "description": "AI autonomously evolves monitoring based on observed patterns",
+              "safety_required": "Blind spots: Prevention"
+            }
+          ],
+          "worries": [
+            { "worry_id": "monitoring_blind_spot" }
+          ]
+        },
+        {
+          "id": "designing_oversight_mechanisms",
+          "name": "Designing oversight mechanisms",
+          "description_markdown": "",
+          "business_stake_markdown": "",
+          "agency_path": [
+            {
+              "agency_level": "A1",
+              "label": "",
+              "description": "Human designs all gates; AI assists with specification",
+              "safety_required": "No minimum"
+            },
+            {
+              "agency_level": "A2",
+              "label": "",
+              "description": "AI proposes gate designs; human validates coverage and thresholds",
+              "safety_required": "Mechanism gap: Deterministic"
+            },
+            {
+              "agency_level": "A3",
+              "label": "",
+              "description": "AI designs oversight systems within defined risk tolerance",
+              "safety_required": "Mechanism gap: Prevention"
+            },
+            {
+              "agency_level": "A4",
+              "label": "",
+              "description": "AI autonomously tightens or loosens gates based on observed outcomes",
+              "safety_required": "All mechanism classes: Prevention"
+            }
+          ],
+          "worries": [
+            { "worry_id": "oversight_mechanism_gap" }
+          ]
+        },
+        {
+          "id": "designing_escalation_rules",
+          "name": "Designing escalation rules",
+          "description_markdown": "",
+          "business_stake_markdown": "",
+          "agency_path": [
+            {
+              "agency_level": "A1",
+              "label": "",
+              "description": "Human defines all halt conditions; AI assists",
+              "safety_required": "No minimum"
+            },
+            {
+              "agency_level": "A2",
+              "label": "",
+              "description": "AI proposes halt conditions; human validates",
+              "safety_required": "Missing conditions: Probabilistic"
+            },
+            {
+              "agency_level": "A3",
+              "label": "",
+              "description": "AI designs and encodes escalation rules within policy",
+              "safety_required": "Missing conditions: Prevention"
+            }
+          ],
+          "worries": [
+            { "worry_id": "missing_escalation_conditions" }
+          ]
+        },
+        {
+          "id": "designing_and_enforcing_process",
+          "name": "Designing and enforcing process",
+          "description_markdown": "",
+          "business_stake_markdown": "",
+          "agency_path": [
+            {
+              "agency_level": "A1",
+              "label": "",
+              "description": "AI suggests process improvements; human implements",
+              "safety_required": "No minimum"
+            },
+            {
+              "agency_level": "A2",
+              "label": "",
+              "description": "AI follows process in guided workflows; human reviews",
+              "safety_required": "Process: Deterministic (CI gates)"
+            },
+            {
+              "agency_level": "A3",
+              "label": "",
+              "description": "AI orchestrates and enforces autonomously",
+              "safety_required": "Process: Prevention (workflow orchestration)"
+            }
+          ],
+          "worries": [
+            { "worry_id": "process_enforcement_gap" }
+          ]
+        },
+        {
+          "id": "defining_and_enforcing_boundaries",
+          "name": "Defining and enforcing boundaries",
+          "description_markdown": "",
+          "business_stake_markdown": "",
+          "agency_path": [
+            {
+              "agency_level": "Any autonomous agency",
+              "label": "",
+              "description": "Tools enforce boundaries before any autonomous action",
+              "safety_required": "Prevention required; Vigilance (documentation only) is insufficient"
+            }
+          ],
+          "worries": [
+            { "worry_id": "scope_enforcement_gap" }
+          ]
+        }
+      ]
+    }
+  ]
+}
