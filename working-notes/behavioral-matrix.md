@@ -55,7 +55,7 @@ How careless can an implementor be and still achieve safety? Higher levels mean 
 
 ## Domain: Product Work
 
-*Work that directly improves the product: the seven facets plus architectural decisions, which are adaptability and consistency work at the system level.*
+*Work that directly improves the product across its seven facets. Architectural decisions -- which determine the system's long-term adaptability and consistency -- are part of Evolving the design and Making behavior predictable at the system level, not a separate category.*
 
 ### Work type: Adding new behavior
 
@@ -275,6 +275,30 @@ No known Prevention-level mechanism for design quality in the general case.
 **Gap condition**: expensive at high test volume. Grows silently alongside the test suite.
 
 ---
+#### Error class: Architectural drift
+
+**The worry**: "Is the code still following the architecture, or is it slowly becoming something else while nobody notices?"
+
+**Worry surface**: number of violations of intended architecture in the codebase. Countable with linting tools.
+
+**Rate event**: every code change made without checking architectural intent.
+
+**Scope-shrinking options:**
+
+| Option | Effect | Safety level |
+|--------|--------|-------------|
+| Modular architecture (strong boundaries between layers) | Drift in one module cannot cross into others | Deterministic |
+
+**Efficiency options:**
+
+| Option | Safety level | Scope |
+|--------|-------------|-------|
+| Ad hoc review | Vigilance | Occasional; decays fast |
+| AI drift guardian (scans + abstracts anomalies) | Probabilistic | Broader than rules; unpredictable |
+| Architecture linters | Deterministic | Configured rule set |
+| Drift to ADR pipeline | Bootstrapped to Deterministic | Systematic improvement |
+
+---
 
 ### Work type: Making intent visible
 
@@ -464,6 +488,32 @@ Business stake: consistent behavior lets users build reliable mental models. Eac
 
 ---
 
+#### Error class: Decision inconsistency
+
+**The worry**: "Does this architectural decision contradict something we decided six months ago? Are we building on conflicting assumptions?"
+
+**Worry surface**: number of code areas that make assumptions about the violated decision.
+
+**Rate event**: every architectural decision made without consulting prior decisions.
+
+**Scope-shrinking options:**
+
+| Option | Effect | Safety level |
+|--------|--------|-------------|
+| Modular architecture (clean seams) | Inconsistent decisions stay contained; cannot cascade to other modules | Deterministic |
+| Architectural experiments (prove before committing) | Wrong experiments affect only experimental scope | Deterministic |
+
+**Efficiency options:**
+
+| Option | Safety level | Scope |
+|--------|-------------|-------|
+| Tribal knowledge | Vigilance | Whatever team remembers |
+| Architecture Decision Records (ADRs) | Probabilistic | Written; requires active reference |
+| ADR review in planning workflow | Deterministic | All decisions in planning scope |
+| Planning tool requiring ADR reference | Prevention | All decisions via the tool |
+
+---
+
 ### Work type: Hardening against threats
 
 *Adding authentication, authorization, input sanitization, access controls.*
@@ -507,74 +557,6 @@ Business stake: security failures are catastrophic and irreversible. One success
 | Security code review | Vigilance | Whatever reviewer noticed |
 | Automated security scanning (SAST) | Deterministic | Known vulnerability patterns |
 | Formal security models (threat modeling + verification) | Prevention | Modeled threat classes |
-
----
-
-### Work type: Making architectural decisions
-
-*Shaping the overall structure of the system: module boundaries, data flow, service boundaries, technology choices. Architectural decisions are adaptability and consistency work at the highest level of granularity -- they determine how easily every other facet can improve over time.*
-
-Business stake: architectural decisions constrain all future decisions. The wrong architecture makes every future capability addition expensive or impossible.
-
-**Agency delegation path:**
-
-| Agency level | What it looks like | Safety required |
-|---|---|---|
-| A1: AI assists | AI suggests options; human decides | No minimum |
-| A2: AI proposes, human decides | AI researches and proposes; human approves | Decision inconsistency: Probabilistic (ADRs) |
-| A3: AI makes tactical decisions | AI makes decisions within established principles | Decision inconsistency: Prevention (planning tool); without this, A2 is the safe ceiling |
-| A4: Human in the loop | AI decides; human anchors principles | All classes: Prevention; drift: Deterministic |
-
----
-
-#### Error class: Decision inconsistency
-
-**The worry**: "Does this architectural decision contradict something we decided six months ago?"
-
-**Worry surface**: number of code areas that make assumptions about the decision being violated.
-
-**Rate event**: every architectural decision made without consulting prior decisions.
-
-**Scope-shrinking options:**
-
-| Option | Effect | Safety level |
-|--------|--------|-------------|
-| Modular architecture (clean seams, limited dependencies) | Inconsistent decisions stay contained; cannot cascade | Deterministic |
-| Architectural experiments (prove before committing full codebase) | Wrong experiments affect only experimental scope; main codebase unaffected | Deterministic |
-
-**Efficiency options:**
-
-| Option | Safety level | Scope |
-|--------|-------------|-------|
-| Tribal knowledge | Vigilance | Whatever team remembers |
-| Architecture Decision Records (ADRs) | Probabilistic | Written; requires active reference |
-| ADR review in planning workflow | Deterministic | All decisions in planning scope |
-| Planning tool requiring ADR reference | Prevention | All decisions via the tool |
-
----
-
-#### Error class: Architectural drift
-
-**The worry**: "Is the code still following the architecture, or is it slowly becoming something else while nobody notices?"
-
-**Worry surface**: number of violations of intended architecture currently in the codebase. Countable with linting tools.
-
-**Rate event**: every code change made without checking architectural intent.
-
-**Scope-shrinking options:**
-
-| Option | Effect | Safety level |
-|--------|--------|-------------|
-| Modular architecture (strong boundaries between layers) | Drift in one module cannot cross into others | Deterministic |
-
-**Efficiency options:**
-
-| Option | Safety level | Scope |
-|--------|-------------|-------|
-| Ad hoc review | Vigilance | Occasional; decays fast |
-| AI drift guardian (scans + abstracts anomalies) | Probabilistic | Broader than rules; unpredictable |
-| Architecture linters | Deterministic | Configured rule set |
-| Drift to ADR pipeline | Bootstrapped to Deterministic | Systematic improvement |
 
 ---
 
@@ -1039,8 +1021,8 @@ Business stake: architectural decisions constrain all future decisions. The wron
 | Making intent visible | Partial rename | Callsites not updated | Prevention (type system) | Carefree (AST tools) |
 | Building shared vocabulary | Domain model corruption | Diverged domain concepts | Probabilistic (domain docs) | Prevention (planning tool) |
 | Making behavior predictable | Behavioral inconsistency | User journeys affected | Probabilistic (design system) | Prevention (enforced) |
-| Architectural decisions | Decision inconsistency | Code areas with violated assumptions | Probabilistic (ADRs) | Prevention (planning tool) |
-| Architectural decisions | Drift | Violations in codebase | Probabilistic (guardian) | Deterministic (linters) |
+| Evolving the design | Architectural drift | Violations in codebase | Probabilistic (guardian) | Deterministic (linters) |
+| Making behavior predictable | Decision inconsistency | Code areas with violated assumptions | Probabilistic (ADRs) | Prevention (planning tool) |
 | Planning | Ungrounded goals | Unvalidated story points | Prevention (planning tool) | Prevention |
 | Planning | Missing criteria | Work items without criteria | Deterministic (stakeholder review) | Prevention |
 | Grounding | Reality disconnect | Users experiencing diverged behavior | Deterministic (metrics) | Prevention (outcome gates) |
@@ -1051,6 +1033,7 @@ Business stake: architectural decisions constrain all future decisions. The wron
 | Deploying | Configuration drift | Environment differences from desired | Deterministic (IaC) | Prevention (immutable) |
 | Designing and enforcing process | Process enforcement gap | Decision types without gates | Deterministic (CI gates) | Prevention (workflow code) |
 | Defining and enforcing boundaries | Scope enforcement gap | Agent capabilities beyond scope | Prevention (tooling) | Prevention |
+
 
 
 
