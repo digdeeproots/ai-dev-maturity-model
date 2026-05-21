@@ -55,7 +55,7 @@ How careless can an implementor be and still achieve safety? Higher levels mean 
 
 ## Domain: Product Work
 
-*Work that directly improves the product across its seven facets.*
+*Work that directly improves the product: the seven facets plus architectural decisions, which are adaptability and consistency work at the system level.*
 
 ### Work type: Adding new behavior
 
@@ -510,11 +510,9 @@ Business stake: security failures are catastrophic and irreversible. One success
 
 ---
 
-## Domain: System Design
-
 ### Work type: Making architectural decisions
 
-*Choosing system structure: module boundaries, data flow, service boundaries, technology choices.*
+*Shaping the overall structure of the system: module boundaries, data flow, service boundaries, technology choices. Architectural decisions are adaptability and consistency work at the highest level of granularity -- they determine how easily every other facet can improve over time.*
 
 Business stake: architectural decisions constrain all future decisions. The wrong architecture makes every future capability addition expensive or impossible.
 
@@ -1053,6 +1051,7 @@ Business stake: architectural decisions constrain all future decisions. The wron
 | Deploying | Configuration drift | Environment differences from desired | Deterministic (IaC) | Prevention (immutable) |
 | Designing and enforcing process | Process enforcement gap | Decision types without gates | Deterministic (CI gates) | Prevention (workflow code) |
 | Defining and enforcing boundaries | Scope enforcement gap | Agent capabilities beyond scope | Prevention (tooling) | Prevention |
+
 
 
 
