@@ -57,6 +57,17 @@ const PROTOTYPES = [
     bg: '#f5eed4',
     accent: '#76232f',
   },
+  {
+    id: 'proto-f',
+    letter: 'F',
+    name: 'The Object',
+    direction: 'Spatial / Zoom',
+    tagline: 'Full-screen spatial interface: dot-grid board with 3D tilt, morph animation from card to full viewport, worry drawer slides from edge.',
+    palette: ['#1a1a1a', '#eeeae3', '#76232f', '#15803d', '#0e7490'],
+    font: 'Open Sans',
+    bg: '#eeeae3',
+    accent: '#76232f',
+  },
 ]
 </script>
 

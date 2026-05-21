@@ -8,6 +8,7 @@ import ProtoC from './views/ProtoC.vue'
 import ProtoD from './views/ProtoD.vue'
 import ProtoE from './views/ProtoE.vue'
 import ProtoIndex from './views/ProtoIndex.vue'
+import ProtoF from './views/ProtoF.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -34,6 +35,7 @@ const router = createRouter({
     { path: '/proto-d', name: 'proto-d', component: ProtoD },
     { path: '/proto-e', name: 'proto-e', component: ProtoE },
     { path: '/prototypes', name: 'prototypes', component: ProtoIndex },
+    { path: '/proto-f', name: 'proto-f', component: ProtoF },
   ]
 })
 
