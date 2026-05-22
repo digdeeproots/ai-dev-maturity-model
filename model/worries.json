@@ -510,6 +510,32 @@
       ]
     },
     {
+      "id": "stale_direction_in_context",
+      "name": "Stale direction in context",
+      "worry": "After this discovery changed our direction, does the AI still have the old plan in reach? Will it blend pre-pivot assumptions into post-pivot work?",
+      "worry_surface": "Number of stories, plan items, and context fragments that reference the superseded direction and remain accessible to the AI.",
+      "rate_event": "Every discovery that causes a meaningful pivot in direction.",
+      "scope_shrinking_options": [
+        {
+          "name": "Short story batches (few stories in flight per cycle)",
+          "effect": "Less stale plan to invalidate when a pivot occurs",
+          "safety_level": 3
+        }
+      ],
+      "efficiency_options": [
+        {
+          "name": "Re-explain current direction at session start",
+          "safety_level": 1,
+          "scope": "Single session; AI may still blend old signals from in-context stories"
+        },
+        {
+          "name": "Delete superseded stories; rewrite remaining stories to reflect new direction; reset context to defined base state",
+          "safety_level": 4,
+          "scope": "All work through the plan — AI cannot access prior directions because they no longer exist"
+        }
+      ]
+    },
+    {
       "id": "ungrounded_goals",
       "name": "Ungrounded goals",
       "worry": "Are we building the right thing, or did we just assume we know what users want?",

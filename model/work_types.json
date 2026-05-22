@@ -297,6 +297,35 @@
           ]
         },
         {
+          "id": "responding_to_discoveries",
+          "name": "Responding to discoveries",
+          "description_markdown": "Integrating pivots surfaced during demos, prototypes, or exploration into the working plan — without leaving contradictory signals in the AI's accessible context.",
+          "business_stake_markdown": "Direction pivots are unavoidable and valuable. The cost is paid when the AI operates with mixed signals — the old plan is partially right, partially obsolete, and the AI can't tell which is which. Each session pays re-anchoring tax, and sometimes the AI bets on the wrong direction anyway.",
+          "agency_path": [
+            {
+              "agency_level": "A1",
+              "label": "AI assists",
+              "description": "Human integrates pivot manually; re-explains current direction each session",
+              "safety_required": "No minimum"
+            },
+            {
+              "agency_level": "A2",
+              "label": "AI rewrites, human validates",
+              "description": "AI rewrites plan to reflect pivot; human validates coherence",
+              "safety_required": "Stale direction in context: Deterministic"
+            },
+            {
+              "agency_level": "A3",
+              "label": "AI responds autonomously",
+              "description": "AI detects pivot signal, restructures plan, resets working context",
+              "safety_required": "Stale direction in context: Prevention"
+            }
+          ],
+          "worries": [
+            { "worry_id": "stale_direction_in_context" }
+          ]
+        },
+        {
           "id": "grounding_in_reality",
           "name": "Grounding in reality",
           "description_markdown": "Connecting the product to actual user needs and outcomes.",
